@@ -71,6 +71,7 @@ namespace TKUOF.TRIGGER.PURTAB
 
                     connection.Close();
                     connection.Dispose();
+
                 }
             }
             catch
