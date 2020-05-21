@@ -76,6 +76,7 @@ namespace TKUOF.TRIGGER.COPMA
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
                     command.Parameters.Add("@MA001", SqlDbType.NVarChar).Value = MA001;
                     command.Parameters.Add("@MA002", SqlDbType.NVarChar).Value = MA002;
+                     
 
                     command.Connection.Open();
 
