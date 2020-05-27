@@ -314,7 +314,7 @@ namespace TKUOF.TRIGGER.COPMA
             COPMA.MA064 = "";
             COPMA.MA065 = "";
             COPMA.MA066 = node.Attributes["MA066"].Value;
-            COPMA.MA067 = "";
+            COPMA.MA067 = "0";
             COPMA.MA068 = "";
             COPMA.MA069 = "";
             COPMA.MA070 = "";
@@ -353,15 +353,15 @@ namespace TKUOF.TRIGGER.COPMA
             COPMA.MA103 = node.Attributes["MA103"].Value;
             COPMA.MA104 = "";
             COPMA.MA105 = "";
-            COPMA.MA106 = "";
+            COPMA.MA106 = node.Attributes["MA015"].Value;
             COPMA.MA107 = "";
             COPMA.MA108 = "";
             COPMA.MA109 = "";
             COPMA.MA110 = "";
             COPMA.MA111 = "";
             COPMA.MA112 = "";
-            COPMA.MA113 = "";
-            COPMA.MA114 = "";
+            COPMA.MA113 = "0";
+            COPMA.MA114 = "0";
             COPMA.MA115 = "";
             COPMA.MA116 = "";
             COPMA.MA117 = "";
@@ -372,8 +372,8 @@ namespace TKUOF.TRIGGER.COPMA
             COPMA.MA122 = "";
             COPMA.MA123 = "";
             COPMA.MA124 = "";
-            COPMA.MA125 = "";
-            COPMA.MA126 = "";
+            COPMA.MA125 = "0";
+            COPMA.MA126 = "0";
             COPMA.MA127 = node.Attributes["MA127"].Value;
             COPMA.MA128 = "";
             COPMA.MA129 = "";
@@ -385,30 +385,30 @@ namespace TKUOF.TRIGGER.COPMA
             COPMA.MA135 = "";
             COPMA.MA136 = "";
             COPMA.MA137 = "";
-            COPMA.MA138 = "";
+            COPMA.MA138 = "0";
             COPMA.MA139 = "";
             COPMA.MA140 = "";
-            COPMA.MA141 = "";
+            COPMA.MA141 = "0";
             COPMA.MA142 = "";
             COPMA.MA143 = "";
             COPMA.MA144 = "";
-            COPMA.MA145 = "";
+            COPMA.MA145 = "0";
             COPMA.MA146 = "";
             COPMA.MA147 = node.Attributes["MA147"].Value;
             COPMA.MA148 = node.Attributes["MA148"].Value;
             COPMA.MA149 = node.Attributes["MA149"].Value;
             COPMA.MA150 = node.Attributes["MA150"].Value;
-            COPMA.MA151 = "";
-            COPMA.MA152 = "";
-            COPMA.MA153 = "";
-            COPMA.MA154 = "";
+            COPMA.MA151 = "0";
+            COPMA.MA152 = "0";
+            COPMA.MA153 = "0";
+            COPMA.MA154 = "0";
             COPMA.MA155 = "";
             COPMA.MA156 = "";
             COPMA.MA157 = "";
             COPMA.MA158 = "";
             COPMA.MA159 = "";
             COPMA.MA160 = "";
-            COPMA.MA161 = "";
+            COPMA.MA161 = "Y";
             COPMA.MA162 = node.Attributes["MA162"].Value;
             COPMA.MA163 = "";
             COPMA.UDF01 = "";
@@ -416,11 +416,11 @@ namespace TKUOF.TRIGGER.COPMA
             COPMA.UDF03 = "";
             COPMA.UDF04 = "";
             COPMA.UDF05 = "";
-            COPMA.UDF06 = "";
-            COPMA.UDF07 = "";
-            COPMA.UDF08 = "";
-            COPMA.UDF09 = "";
-            COPMA.UDF10 = "";
+            COPMA.UDF06 = "0";
+            COPMA.UDF07 = "0";
+            COPMA.UDF08 = "0";
+            COPMA.UDF09 = "0";
+            COPMA.UDF10 = "0";
 
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
@@ -692,7 +692,7 @@ namespace TKUOF.TRIGGER.COPMA
                     command.Parameters.Add("@UDF08", SqlDbType.NVarChar).Value = COPMA.UDF08;
                     command.Parameters.Add("@UDF09", SqlDbType.NVarChar).Value = COPMA.UDF09;
                     command.Parameters.Add("@UDF10", SqlDbType.NVarChar).Value = COPMA.UDF10;
-                   
+
 
                     command.Connection.Open();
 
