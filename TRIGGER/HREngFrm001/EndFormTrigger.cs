@@ -21,22 +21,25 @@ namespace TKUOF.TRIGGER.HREngFrm001
     {
         public class DATAHREngFrm001
         {
-            public string TaskId;
+            public string TaskId;            
             public string HREngFrm001SN;
             public string HREngFrm001Date;
             public string HREngFrm001User;
-            public string HREngFrm001Name;
             public string HREngFrm001UsrDpt;
             public string HREngFrm001Rank;
-            public string HREngFrm001TITLE;
+            public string HREngFrm001OutDate;
+            public string HREngFrm001Location;
             public string HREngFrm001Agent;
             public string HREngFrm001Transp;
-            public string HREngFrm001Location;
+            public string HREngFrm001LicPlate;
             public string HREngFrm001Cause;
             public string HREngFrm001DefOutTime;
+            public string HREngFrm001FF;
             public string HREngFrm001OutTime;
             public string HREngFrm001DefBakTime;
+            public string HREngFrm001CH;
             public string HREngFrm001BakTime;
+            public string CRADNO;
 
         }
         public void Finally()
@@ -51,23 +54,32 @@ namespace TKUOF.TRIGGER.HREngFrm001
            
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
-            HREngFrm001.TaskId = applyTask.Task.TaskId;
+            HREngFrm001.TaskId = applyTask.Task.TaskId;           
+
             HREngFrm001.HREngFrm001SN = applyTask.Task.CurrentDocument.Fields["HREngFrm001SN"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001Date = applyTask.Task.CurrentDocument.Fields["HREngFrm001Date"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001User = applyTask.Task.CurrentDocument.Fields["HREngFrm001User"].FieldValue.ToString().Trim();
-            HREngFrm001.HREngFrm001Name = applyTask.Task.CurrentDocument.Fields["HREngFrm001Name"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001UsrDpt = applyTask.Task.CurrentDocument.Fields["HREngFrm001UsrDpt"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001Rank = applyTask.Task.CurrentDocument.Fields["HREngFrm001Rank"].FieldValue.ToString().Trim();
-            HREngFrm001.HREngFrm001TITLE = applyTask.Task.CurrentDocument.Fields["HREngFrm001TITLE"].FieldValue.ToString().Trim();
+            HREngFrm001.HREngFrm001OutDate = applyTask.Task.CurrentDocument.Fields["HREngFrm001OutDate"].FieldValue.ToString().Trim();
+            HREngFrm001.HREngFrm001Location = applyTask.Task.CurrentDocument.Fields["HREngFrm001Location"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001Agent = applyTask.Task.CurrentDocument.Fields["HREngFrm001Agent"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001Transp = applyTask.Task.CurrentDocument.Fields["HREngFrm001Transp"].FieldValue.ToString().Trim();
-            HREngFrm001.HREngFrm001Location = applyTask.Task.CurrentDocument.Fields["HREngFrm001Location"].FieldValue.ToString().Trim();
+            HREngFrm001.HREngFrm001LicPlate = applyTask.Task.CurrentDocument.Fields["HREngFrm001LicPlate"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001Cause = applyTask.Task.CurrentDocument.Fields["HREngFrm001Cause"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001DefOutTime = applyTask.Task.CurrentDocument.Fields["HREngFrm001DefOutTime"].FieldValue.ToString().Trim();
+            HREngFrm001.HREngFrm001FF = applyTask.Task.CurrentDocument.Fields["HREngFrm001FF"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001OutTime = applyTask.Task.CurrentDocument.Fields["HREngFrm001OutTime"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001DefBakTime = applyTask.Task.CurrentDocument.Fields["HREngFrm001DefBakTime"].FieldValue.ToString().Trim();
+            HREngFrm001.HREngFrm001CH = applyTask.Task.CurrentDocument.Fields["HREngFrm001CH"].FieldValue.ToString().Trim();
             HREngFrm001.HREngFrm001BakTime = applyTask.Task.CurrentDocument.Fields["HREngFrm001BakTime"].FieldValue.ToString().Trim();
-            
+
+
+            string account = HREngFrm001.HREngFrm001User;
+            account=account.Substring(4,6);
+            HREngFrm001.CRADNO = SEARCHCARDNO(account);
+
+
 
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
@@ -95,9 +107,9 @@ namespace TKUOF.TRIGGER.HREngFrm001
             //queryString.AppendFormat(@" VALUES (@MA001,@MA001,@MA002)");
 
             queryString.AppendFormat(@" INSERT INTO  [TKGAFFAIRS].[dbo].[HREngFrm001]");
-            queryString.AppendFormat(@" ([TaskId],[HREngFrm001SN],[HREngFrm001Date],[HREngFrm001User],[HREngFrm001Name],[HREngFrm001UsrDpt],[HREngFrm001Rank],[HREngFrm001TITLE],[HREngFrm001Agent],[HREngFrm001Transp],[HREngFrm001Location],[HREngFrm001Cause],[HREngFrm001DefOutTime],[HREngFrm001OutTime],[HREngFrm001DefBakTime],[HREngFrm001BakTime])");
+            queryString.AppendFormat(@" ([TaskId],[HREngFrm001SN],[HREngFrm001Date],[HREngFrm001User],[HREngFrm001UsrDpt],[HREngFrm001Rank],[HREngFrm001OutDate],[HREngFrm001Location],[HREngFrm001Agent],[HREngFrm001Transp],[HREngFrm001LicPlate],[HREngFrm001Cause],[HREngFrm001DefOutTime],[HREngFrm001FF],[HREngFrm001OutTime],[HREngFrm001DefBakTime],[HREngFrm001CH],[HREngFrm001BakTime],[CRADNO])");
             queryString.AppendFormat(@" VALUES");
-            queryString.AppendFormat(@" (@TaskId,@HREngFrm001SN,@HREngFrm001Date,@HREngFrm001User,@HREngFrm001Name,@HREngFrm001UsrDpt,@HREngFrm001Rank,@HREngFrm001TITLE,@HREngFrm001Agent,@HREngFrm001Transp,@HREngFrm001Location,@HREngFrm001Cause,@HREngFrm001DefOutTime,@HREngFrm001OutTime,@HREngFrm001DefBakTime,@HREngFrm001BakTime)");
+            queryString.AppendFormat(@" (@TaskId,@HREngFrm001SN,@HREngFrm001Date,@HREngFrm001User,@HREngFrm001UsrDpt,@HREngFrm001Rank,@HREngFrm001OutDate,@HREngFrm001Location,@HREngFrm001Agent,@HREngFrm001Transp,@HREngFrm001LicPlate,@HREngFrm001Cause,@HREngFrm001DefOutTime,@HREngFrm001FF,@HREngFrm001OutTime,@HREngFrm001DefBakTime,@HREngFrm001CH,@HREngFrm001BakTime,@CRADNO)");
             queryString.AppendFormat(@" ");
             queryString.AppendFormat(@" ");
 
@@ -111,18 +123,22 @@ namespace TKUOF.TRIGGER.HREngFrm001
                     command.Parameters.Add("@HREngFrm001SN", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001SN;
                     command.Parameters.Add("@HREngFrm001Date", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Date;
                     command.Parameters.Add("@HREngFrm001User", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001User;
-                    command.Parameters.Add("@HREngFrm001Name", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Name;
                     command.Parameters.Add("@HREngFrm001UsrDpt", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001UsrDpt;
                     command.Parameters.Add("@HREngFrm001Rank", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Rank;
-                    command.Parameters.Add("@HREngFrm001TITLE", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001TITLE;
+                    command.Parameters.Add("@HREngFrm001OutDate", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001OutDate;
+                    command.Parameters.Add("@HREngFrm001Location", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Location;
                     command.Parameters.Add("@HREngFrm001Agent", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Agent;
                     command.Parameters.Add("@HREngFrm001Transp", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Transp;
-                    command.Parameters.Add("@HREngFrm001Location", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Location;
+                    command.Parameters.Add("@HREngFrm001LicPlate", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001LicPlate;
                     command.Parameters.Add("@HREngFrm001Cause", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001Cause;
                     command.Parameters.Add("@HREngFrm001DefOutTime", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001DefOutTime;
+                    command.Parameters.Add("@HREngFrm001FF", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001FF;
                     command.Parameters.Add("@HREngFrm001OutTime", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001OutTime;
                     command.Parameters.Add("@HREngFrm001DefBakTime", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001DefBakTime;
+                    command.Parameters.Add("@HREngFrm001CH", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001CH;
                     command.Parameters.Add("@HREngFrm001BakTime", SqlDbType.NVarChar).Value = HREngFrm001.HREngFrm001BakTime;
+                    command.Parameters.Add("@CRADNO", SqlDbType.NVarChar).Value = HREngFrm001.CRADNO;
+
 
 
                     command.Connection.Open();
@@ -141,6 +157,33 @@ namespace TKUOF.TRIGGER.HREngFrm001
             finally
             {
 
+            }
+        }
+
+        public string SEARCHCARDNO(string Account)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["CHIYUconnectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+            string cmdTxt = @" SELECT [EmployeeID],[CardNo]
+                                FROM [CHIYU].[dbo].[Person]
+                                WHERE [EmployeeID]=@Account
+                        ";
+
+            m_db.AddParameter("@Account", Account);
+           
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt));
+
+            if(dt.Rows.Count>0)
+            {
+                return dt.Rows[0]["CardNo"].ToString();
+            }
+            else
+            {
+                return null;
             }
         }
     }
