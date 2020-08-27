@@ -77,6 +77,7 @@
     <Compile Include="TRIGGER\COPMA\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\HREngFrm001\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTAB\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\QC\EndFormTrigger.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
