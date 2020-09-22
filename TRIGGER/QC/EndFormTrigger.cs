@@ -43,20 +43,25 @@ namespace TKUOF.TRIGGER.QC
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
             QC.TaskId = applyTask.Task.TaskId;
 
-            QC.QCFrm002SN = applyTask.Task.CurrentDocument.Fields["QCFrm002SN"].FieldValue.ToString().Trim();
-            QC.QCFrm002QCC = applyTask.Task.CurrentDocument.Fields["QCFrm002QCC"].FieldValue.ToString().Trim();
-            QC.QCFrm002PN = applyTask.Task.CurrentDocument.Fields["QCFrm002PN"].FieldValue.ToString().Trim();
-
-
-            if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
+            //檢查QCFrm002SN的欄位是否存在，存在才繼續
+            if (applyTask.Task.CurrentDocument.Fields["QCFrm002SN"]!=null)
             {
-                if (!string.IsNullOrEmpty(QC.TaskId))
+                QC.QCFrm002SN = applyTask.Task.CurrentDocument.Fields["QCFrm002SN"].FieldValue.ToString().Trim();
+                QC.QCFrm002QCC = applyTask.Task.CurrentDocument.Fields["QCFrm002QCC"].FieldValue.ToString().Trim();
+                QC.QCFrm002PN = applyTask.Task.CurrentDocument.Fields["QCFrm002PN"].FieldValue.ToString().Trim();
+
+
+                if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
                 {
-                    ADDTBFORMQC(QC);
+                    if (!string.IsNullOrEmpty(QC.TaskId))
+                    {
+                        ADDTBFORMQC(QC);
+                    }
                 }
             }
 
             return "";
+
         }
 
         public void OnError(Exception errorException)
