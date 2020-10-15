@@ -19,6 +19,8 @@ namespace TKUOF.TRIGGER.GAFrm
 {
     class EndFormTrigger : ICallbackTriggerPlugin
     {
+        int ROWS = 0;
+
         public class DATAUOFGAFrm
         {
             public string TaskId;
@@ -38,6 +40,7 @@ namespace TKUOF.TRIGGER.GAFrm
 
 
 
+
         }
         public void Finally()
         {
@@ -47,7 +50,8 @@ namespace TKUOF.TRIGGER.GAFrm
         public string GetFormResult(ApplyTask applyTask)
         {
             DATAUOFGAFrm UOFGAFrm = new DATAUOFGAFrm();
-  
+
+           
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
@@ -61,14 +65,19 @@ namespace TKUOF.TRIGGER.GAFrm
             UOFGAFrm.GAFrm004PID = applyTask.Task.CurrentDocument.Fields["GAFrm004PID"].FieldValue.ToString().Trim();
             UOFGAFrm.GAFrm004RD = applyTask.Task.CurrentDocument.Fields["GAFrm004RD"].FieldValue.ToString().Trim();
 
-            XmlNodeList NodeLists = applyTask.Task.CurrentDocument.;
 
 
-            foreach (XmlNode OneNode in NodeLists)
+            //針對DETAIL抓出來的資料作處理
+
+            foreach (XmlNode node in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='GAFrm004IT']/DataGrid/Row"))
             {
-                String StrAttrName = OneNode.Attributes.Name;
-                String StrAttrValue = OneNode.Attributes[" MyAttr1 "].Value;
-                String StrAttrValue = OneNode.InnerText;
+                UOFGAFrm.GAFrm004DN[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004DN']").Attributes["fieldValue"].Value;
+                UOFGAFrm.GAFrm004NB[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004NB']").Attributes["fieldValue"].Value;
+                UOFGAFrm.GAFrm004ID[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ID']").Attributes["fieldValue"].Value;
+                UOFGAFrm.GAFrm004ER[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ER']").Attributes["fieldValue"].Value;
+                UOFGAFrm.GAFrm004S0ND[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004S0ND']").Attributes["fieldValue"].Value;
+
+                ROWS = ROWS + 1;
             }
 
 
@@ -91,38 +100,65 @@ namespace TKUOF.TRIGGER.GAFrm
 
         public void ADDTKGAFFAIRSUOFGAFrm(DATAUOFGAFrm UOFGAFrm)
         {
+            int SERNO = 0;
+
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
-            //queryString.AppendFormat(@" INSERT INTO [TK].dbo.COPMA");
-            //queryString.AppendFormat(@" (COMPANY,MA001,MA002)");
-            //queryString.AppendFormat(@" VALUES (@MA001,@MA001,@MA002)");
-
-            queryString.AppendFormat(@" INSERT INTO  [TKGAFFAIRS].[dbo].[HREngFrm001]");
-            queryString.AppendFormat(@" ([TaskId],[HREngFrm001SN],[HREngFrm001Date],[HREngFrm001PIR],[HREngFrm001User],[HREngFrm001UsrDpt],[HREngFrm001Rank],[HREngFrm001OutDate],[HREngFrm001Location],[HREngFrm001Agent],[HREngFrm001Transp],[HREngFrm001LicPlate],[HREngFrm001Cause],[HREngFrm001DefOutTime],[HREngFrm001FF],[HREngFrm001OutTime],[HREngFrm001DefBakTime],[HREngFrm001CH],[HREngFrm001BakTime],[CRADNO])");
-            queryString.AppendFormat(@" VALUES");
-            queryString.AppendFormat(@" (@TaskId,@HREngFrm001SN,@HREngFrm001Date,@HREngFrm001PIR,@HREngFrm001User,@HREngFrm001UsrDpt,@HREngFrm001Rank,@HREngFrm001OutDate,@HREngFrm001Location,@HREngFrm001Agent,@HREngFrm001Transp,@HREngFrm001LicPlate,@HREngFrm001Cause,@HREngFrm001DefOutTime,@HREngFrm001FF,@HREngFrm001OutTime,@HREngFrm001DefBakTime,@HREngFrm001CH,@HREngFrm001BakTime,@CRADNO)");
-            queryString.AppendFormat(@" ");
             queryString.AppendFormat(@" ");
 
             try
             {
+
+                queryString.AppendFormat(@" 
+                                        INSERT INTO [TKGAFFAIRS].[dbo].[UOFGAFrm]
+                                        ([TaskId],[GAFrm004SN],[SERNO],[GAFrm004SI],[GAFrm004CM],[GAFrm004OD],[GAFrm004DN],[GAFrm004NB],[GAFrm004ID],[GAFrm004ER],[GAFrm004S0ND],[GAFrm004PS],[GAFrm004PID],[GAFrm004RD])
+                                        VALUES
+                                        (@TaskId,@GAFrm004SN,@SERNO,@GAFrm004SI,@GAFrm004CM,@GAFrm004OD,@GAFrm004DN,@GAFrm004NB,@GAFrm004ID,@GAFrm004ER,@GAFrm004S0ND,@GAFrm004PS,@GAFrm004PID,@GAFrm004RD)
+                                        ");
+
+
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-                    command.Parameters.Add("@TaskId", SqlDbType.NVarChar).Value = HREngFrm001.TaskId;
-                   
-
-
 
                     command.Connection.Open();
 
-                    int count = command.ExecuteNonQuery();
+                    //command.Parameters.Clear();//清除掉目前宣告出來的Parameters
+                    //command.Parameters.Add("@TaskId", SqlDbType.NVarChar).Value = UOFGAFrm.TaskId;
+                    //command.Parameters.Add("@GAFrm004SN", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004SN;
+                    //command.Parameters.Add("@SERNO", SqlDbType.NVarChar).Value = SERNO.ToString();
+                    //int count = command.ExecuteNonQuery();
+
+                    for (int i = 0; i < ROWS; i++)
+                    {
+
+                        command.Parameters.Clear();//清除掉目前宣告出來的Parameters
+                        command.Parameters.Add("@TaskId", SqlDbType.NVarChar).Value = UOFGAFrm.TaskId;
+                        command.Parameters.Add("@GAFrm004SN", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004SN;
+
+                        SERNO = i + 1;
+                        command.Parameters.Add("@SERNO", SqlDbType.NVarChar).Value = SERNO.ToString();
+                        command.Parameters.Add("@GAFrm004SI", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004SI;
+                        command.Parameters.Add("@GAFrm004CM", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004CM;
+                        command.Parameters.Add("@GAFrm004OD", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004OD;
+                        command.Parameters.Add("@GAFrm004DN", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004DN[i].ToString();
+                        command.Parameters.Add("@GAFrm004NB", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004NB[i].ToString();
+                        command.Parameters.Add("@GAFrm004ID", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004ID[i].ToString();
+                        command.Parameters.Add("@GAFrm004ER", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004ER[i].ToString();
+                        command.Parameters.Add("@GAFrm004S0ND", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004S0ND[i].ToString();
+                        command.Parameters.Add("@GAFrm004PS", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004PS;
+                        command.Parameters.Add("@GAFrm004PID", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004PID;
+                        command.Parameters.Add("@GAFrm004RD", SqlDbType.NVarChar).Value = UOFGAFrm.GAFrm004RD;
+
+
+                        int count = command.ExecuteNonQuery();
+
+
+                    }
 
                     connection.Close();
                     connection.Dispose();
-
                 }
             }
             catch
