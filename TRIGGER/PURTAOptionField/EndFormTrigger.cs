@@ -238,7 +238,10 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
         public string GetFormResult(ApplyTask applyTask)
         {
+            int ROWS = 1;
+
             DATAPURTA DataPURTA = new DATAPURTA();
+            DATAPURTB DataPURTB = new DATAPURTB();
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
@@ -246,6 +249,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             //MA001 = applyTask.Task.CurrentDocument.Fields["MA001"].FieldValue.ToString().Trim();
             //MA002 = applyTask.Task.CurrentDocument.Fields["MA002"].FieldValue.ToString().Trim();
 
+            //針對主檔抓出來的資料作處理
             XmlNode node = xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']");
 
             DataPURTA.TaskId = applyTask.Task.TaskId;
@@ -254,6 +258,18 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             DataPURTA.TA004 = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
             DataPURTA.TA006 = node.SelectSingleNode("FieldValue").Attributes["COMMENT"].Value;
             DataPURTA.TA012 = node.SelectSingleNode("FieldValue").Attributes["NAME"].Value;
+
+            //針對DETAIL抓出來的資料作處理
+
+            foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem/FieldValue"))
+            {
+                DataPURTB.TB001 = "A312";
+                DataPURTB.TB002 = "20201224099";
+                DataPURTB.TB003 = ROWS.ToString().PadLeft(4, '0');
+                DataPURTB.TB004 = nodeDetail.SelectSingleNode("./Item").Attributes["品號"].Value;
+
+                ROWS = ROWS + 1;
+            }
 
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
