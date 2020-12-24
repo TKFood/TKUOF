@@ -239,6 +239,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
         public string GetFormResult(ApplyTask applyTask)
         {
             int ROWS = 1;
+            StringBuilder PURTBSB = new StringBuilder();
 
             DATAPURTA DataPURTA = new DATAPURTA();
             DATAPURTB DataPURTB = new DATAPURTB();
@@ -261,21 +262,25 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
             //針對DETAIL抓出來的資料作處理
 
-            foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem/FieldValue"))
+            foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue"))
             {
                 DataPURTB.TB001 = "A312";
                 DataPURTB.TB002 = "20201224099";
                 DataPURTB.TB003 = ROWS.ToString().PadLeft(4, '0');
                 DataPURTB.TB004 = nodeDetail.SelectSingleNode("./Item").Attributes["品號"].Value;
 
+                //PURTBSB.Append(SETADDPURDTB(DataPURTB));
+                //PURTBSB.AppendLine();
+
                 ROWS = ROWS + 1;
+
             }
 
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 if (!string.IsNullOrEmpty(DataPURTA.TA001) && !string.IsNullOrEmpty(DataPURTA.TA002))
                 {
-                    INSERTINTOPURTAB(DataPURTA);
+                    INSERTINTOPURTAB(DataPURTA, PURTBSB);
                 }
             }
 
@@ -286,8 +291,20 @@ namespace TKUOF.TRIGGER.PURTAOptionField
         {
             
         }
+        public StringBuilder SETADDPURDTB(DATAPURTB DataPURTB)
+        {
+            StringBuilder ADDPURDTB = new StringBuilder();
+            ADDPURDTB.AppendFormat(@"
+                                    INSERT INTO [TK].dbo.PURTB
+                                    (TB001,TB002,TB003,TB004)
+                                    VALUES
+                                    ('{0}','{1}','{2}','{3}')
+                                    ", DataPURTB.TB001, DataPURTB.TB002, DataPURTB.TB003, DataPURTB.TB004);
 
-        public void INSERTINTOPURTAB(DATAPURTA DataPURTA)
+            return ADDPURDTB;
+        }
+
+        public void INSERTINTOPURTAB(DATAPURTA DataPURTA, StringBuilder PURTBSB)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
@@ -298,6 +315,8 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                                         VALUES
                                         (@TA001,@TA002,@TA004,@TA006,@TA012) 
                                     ");
+            queryString.AppendLine();
+            queryString.Append(PURTBSB.ToString());
 
             try
             {
