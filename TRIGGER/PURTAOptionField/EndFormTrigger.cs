@@ -262,15 +262,15 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
             //針對DETAIL抓出來的資料作處理
 
-            foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue"))
+            foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue/Item"))
             {
                 DataPURTB.TB001 = "A312";
                 DataPURTB.TB002 = "20201224099";
                 DataPURTB.TB003 = ROWS.ToString().PadLeft(4, '0');
-                DataPURTB.TB004 = nodeDetail.SelectSingleNode("./Item").Attributes["品號"].Value;
+                DataPURTB.TB004 = nodeDetail.Attributes["品號"].Value;
 
-                //PURTBSB.Append(SETADDPURDTB(DataPURTB));
-                //PURTBSB.AppendLine();
+                PURTBSB.Append(SETADDPURDTB(DataPURTB));
+                PURTBSB.AppendLine();
 
                 ROWS = ROWS + 1;
 
