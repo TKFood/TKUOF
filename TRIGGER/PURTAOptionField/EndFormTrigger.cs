@@ -13,6 +13,8 @@ using System.Data.OleDb;
 using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
+using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.WKF.CustomExternal;
 
 namespace TKUOF.TRIGGER.PURTAOptionField
 {
@@ -254,8 +256,9 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             XmlNode node = xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']");
 
             DataPURTA.TaskId = applyTask.Task.TaskId;
-            DataPURTA.TA001 = "A312";
-            DataPURTA.TA002 = "20201224099";
+            DataPURTA.TA001 = "A311";
+            DataPURTA.TA002 = FINDMAXPURTATA002("A311");
+
             DataPURTA.TA004 = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
             DataPURTA.TA006 = node.SelectSingleNode("FieldValue").Attributes["COMMENT"].Value;
             DataPURTA.TA012 = node.SelectSingleNode("FieldValue").Attributes["NAME"].Value;
@@ -264,8 +267,8 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
             foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue/Item"))
             {
-                DataPURTB.TB001 = "A312";
-                DataPURTB.TB002 = "20201224099";
+                DataPURTB.TB001 = "A311";
+                DataPURTB.TB002 = DataPURTA.TA002;
                 DataPURTB.TB003 = ROWS.ToString().PadLeft(4, '0');
                 DataPURTB.TB004 = nodeDetail.Attributes["品號"].Value;
 
@@ -280,7 +283,8 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             {
                 if (!string.IsNullOrEmpty(DataPURTA.TA001) && !string.IsNullOrEmpty(DataPURTA.TA002))
                 {
-                    INSERTINTOPURTAB(DataPURTA, PURTBSB);
+                    UPDATETB_WKF_TASK(applyTask, DataPURTA.TA001, DataPURTA.TA002);
+                    INSERTINTOPURTAB(DataPURTA, PURTBSB, applyTask.FormNumber);
                 }
             }
 
@@ -289,8 +293,101 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
         public void OnError(Exception errorException)
         {
-            
+          
         }
+
+        public void UPDATETB_WKF_TASK(ApplyTask applyTask,string TA001,string TA002)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(applyTask.CurrentDocXML);
+
+            XmlElement att = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue");
+            att.SetAttribute("TA001", TA001);
+            att.SetAttribute("TA002", TA002);
+            //string str = xmlDoc.OuterXml;
+
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@" 
+                                        UPDATE [UOFTEST].dbo.TB_WKF_TASK
+                                        SET CURRENT_DOC=@CURRENT_DOC
+                                        WHERE TASK_ID=@TASK_ID
+                                        ");
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@CURRENT_DOC", SqlDbType.NVarChar).Value = xmlDoc.OuterXml;
+                    command.Parameters.Add("@TASK_ID", SqlDbType.NVarChar).Value = applyTask.TaskId;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public string FINDMAXPURTATA002(string TA001)
+        {
+            String connectionString;
+            SqlConnection conn;
+            connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ConnectionString;
+            conn = new SqlConnection(connectionString);
+            DataSet PURTADS = new DataSet();
+            string TA002 = "";      
+          
+            //找出請購最大的單號
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.AppendFormat(@" 
+                                SELECT ISNULL(MAX(TA002),'00000000000') AS TA002
+                                FROM [TK].[dbo].[PURTA] 
+                                WHERE  TA001='{0}' AND TA003='{1}'
+                                ", TA001, DateTime.Now.ToString("yyyyMMdd"));
+
+          
+            SqlCommand cmd = new SqlCommand(sbSql.ToString(), conn);           
+            conn.Open();
+            SqlDataAdapter adapt = new SqlDataAdapter(cmd);
+            adapt.Fill(PURTADS);
+
+
+            TA002 = SETTA002(PURTADS.Tables[0].Rows[0]["TA002"].ToString());
+            return TA002;
+        }
+
+        public string SETTA002(string TA002)
+        {
+            if (TA002.Equals("00000000000"))
+            {
+                return DateTime.Now.ToString("yyyyMMdd") + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TA002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return DateTime.Now.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
         public StringBuilder SETADDPURDTB(DATAPURTB DataPURTB)
         {
             StringBuilder ADDPURDTB = new StringBuilder();
@@ -304,16 +401,16 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             return ADDPURDTB;
         }
 
-        public void INSERTINTOPURTAB(DATAPURTA DataPURTA, StringBuilder PURTBSB)
+        public void INSERTINTOPURTAB(DATAPURTA DataPURTA, StringBuilder PURTBSB,string FormNumber)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                        INSERT INTO [TK].dbo.PURTA
-                                        (TA001,TA002,TA004,TA006,TA012)
+                                        (TA001,TA002,TA004,TA005,TA006,TA012)
                                         VALUES
-                                        (@TA001,@TA002,@TA004,@TA006,@TA012) 
+                                        (@TA001,@TA002,@TA004,@TA005,@TA006,@TA012) 
                                     ");
             queryString.AppendLine();
             queryString.Append(PURTBSB.ToString());
@@ -327,6 +424,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                     command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = DataPURTA.TA001;
                     command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = DataPURTA.TA002;
                     command.Parameters.Add("@TA004", SqlDbType.NVarChar).Value = DataPURTA.TA004;
+                    command.Parameters.Add("@TA005", SqlDbType.NVarChar).Value = FormNumber;
                     command.Parameters.Add("@TA006", SqlDbType.NVarChar).Value = DataPURTA.TA006;
                     command.Parameters.Add("@TA012", SqlDbType.NVarChar).Value = DataPURTA.TA012;
 
