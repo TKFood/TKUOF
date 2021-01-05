@@ -110,6 +110,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
         {
             public string TaskId;
 
+            public string COMPANY;
             public string CREATOR;
             public string USR_GROUP;
             public string CREATE_DATE;
@@ -346,10 +347,32 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 
             foreach (XmlNode nodeDetail in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']/FieldValue/Item"))
             {
+                DataPURTB.COMPANY = DataPURTA.COMPANY;
+                DataPURTB.CREATOR = DataPURTA.CREATOR;
+                DataPURTB.USR_GROUP = DataPURTA.USR_GROUP;
+                DataPURTB.CREATE_DATE = DataPURTA.CREATE_DATE;
+                DataPURTB.MODIFIER = DataPURTA.MODIFIER;
+                DataPURTB.MODI_DATE = DataPURTA.MODI_DATE;
+                DataPURTB.FLAG = DataPURTA.FLAG;
+                DataPURTB.CREATE_TIME = DataPURTA.CREATE_TIME;
+                DataPURTB.MODI_TIME = DataPURTA.MODI_TIME;
+                DataPURTB.TRANS_TYPE = DataPURTA.TRANS_TYPE;
+                DataPURTB.TRANS_NAME = DataPURTA.TRANS_NAME;
+                DataPURTB.sync_date = DataPURTA.sync_date;
+                DataPURTB.sync_time = DataPURTA.sync_time;
+                DataPURTB.sync_mark = DataPURTA.sync_mark;
+                DataPURTB.sync_count = DataPURTA.sync_count;
+                DataPURTB.DataUser = DataPURTA.DataUser;
+                DataPURTB.DataGroup = DataPURTA.DataGroup;
+
                 DataPURTB.TB001 = "A311";
                 DataPURTB.TB002 = DataPURTA.TA002;
                 DataPURTB.TB003 = ROWS.ToString().PadLeft(4, '0');
                 DataPURTB.TB004 = nodeDetail.Attributes["品號"].Value;
+                DataPURTB.TB009 = nodeDetail.Attributes["數量"].Value;
+                DataPURTB.TB011 = nodeDetail.Attributes["需求日"].Value;
+                DataPURTB.TB012 = nodeDetail.Attributes["單身備註"].Value;
+                DataPURTB.TB024 = nodeDetail.Attributes["單身備註"].Value;
 
                 PURTBSB.Append(SETADDPURDTB(DataPURTB));
                 PURTBSB.AppendLine();
@@ -500,10 +523,40 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             StringBuilder ADDPURDTB = new StringBuilder();
             ADDPURDTB.AppendFormat(@"
                                     INSERT INTO [TK].dbo.PURTB
-                                    (TB001,TB002,TB003,TB004)
-                                    VALUES
-                                    ('{0}','{1}','{2}','{3}')
-                                    ", DataPURTB.TB001, DataPURTB.TB002, DataPURTB.TB003, DataPURTB.TB004);
+                                    (
+                                    COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME,sync_date,sync_time,sync_mark,sync_count,DataUser,DataGroup
+                                    ,TB001,TB002,TB003,TB004,TB005,TB006,TB007,TB008,TB009,TB010
+                                    ,TB011,TB012,TB013,TB014,TB015,TB016,TB017,TB018,TB019,TB020
+                                    ,TB021,TB022,TB023,TB024,TB025,TB026,TB027,TB028,TB029,TB030
+                                    ,TB031,TB032,TB033,TB034,TB035,TB036,TB037,TB038,TB039,TB040
+                                    ,TB041,TB042,TB043,TB044,TB045,TB046,TB047,TB048,TB049,TB050
+                                    ,TB051,TB052,TB053,TB054,TB055,TB056,TB057,TB058,TB059,TB060
+                                    ,TB061,TB062,TB063,TB064,TB065,TB066,TB067,TB068,TB069,TB070
+                                    ,TB071,TB072,TB073,TB074,TB075,TB076,TB077,TB078,TB079,TB080
+                                    ,TB081,TB082,TB083,TB084,TB085,TB086,TB087,TB088,TB089,TB090
+                                    ,TB091,TB092,TB093,TB094,TB095,TB096,TB097,TB098,TB099
+                                    ,UDF01,UDF02,UDF03,UDF04,UDF05,UDF06,UDF07,UDF08,UDF09,UDF10
+                                    )
+
+                                   SELECT 
+                                    '{1}'COMPANY,'{2}' CREATOR,'{3}' USR_GROUP,'{4}' CREATE_DATE,'{5}' MODIFIER,'{6}' MODI_DATE,'{7}'FLAG,'{8}' CREATE_TIME,'{9}' MODI_TIME,'{10}' TRANS_TYPE,'{11}' TRANS_NAME,'{12}' sync_date,'{13}' sync_time,'{14}' sync_mark,'{15}' sync_count,'{16}' DataUser,'{17}' DataGroup
+                                    ,'{18}' TB001,'{19}' TB002,'{20}' TB003,MB001 TB004,MB002 TB005,MB003 TB006,MB004 TB007,MB017 TB008,'{21}' TB009,MB032 TB010
+                                    ,'{22}' TB011,'{23}' TB012,MB067 TB013,'{21}' TB014,MB004 TB015,'NTD' TB016,CONVERT(DECIMAL(16,3),MB065/MB064) TB017,CONVERT(INT,MB065/MB064) TB018,'{22}' TB019,'N' TB020
+                                    ,'N' TB021,'' TB022,'' TB023,'{24}' TB024,'N' TB025,CASE WHEN ISNULL(MA044,'')<>'' THEN MA044 ELSE '1' END TB026,'' TB027,'' TB028,'' TB029,'' TB030
+                                    ,'' TB031,'N' TB032,'' TB033,0 TB034,0 TB035,'' TB036,'' TB037,'' TB038,'N' TB039,0 TB040
+                                    ,0 TB041,'' TB042,'' TB043,'' TB044,'' TB045,'' TB046,'' TB047,'' TB048,0 TB049,'' TB050
+                                    ,0 TB051,0 TB052,0 TB053,'' TB054,'' TB055,'' TB056,'' TB057,'1' TB058,'' TB059,'' TB060
+                                    ,'' TB061,'' TB062,0 TB063,'N' TB064,'1' TB065,'' TB066,'2' TB067,0 TB068,0 TB069,'' TB070
+                                    ,'' TB071,'' TB072,'' TB073,'' TB074,0 TB075,'' TB076,0 TB077,'' TB078,'' TB079,'' TB080
+                                    ,0 TB081,0 TB082,0 TB083,0 TB084,0 TB085,'' TB086,'' TB087,'0' TB088,'1' TB089,0 TB090
+                                    ,0 TB091,0 TB092,0 TB093,'' TB094,'' TB095,'' TB096,'' TB097,'' TB098,'' TB099
+                                    ,'' UDF01,'' UDF02,'' UDF03,'' UDF04,'' UDF05,0 UDF06,0 UDF07,0 UDF08,0 UDF09,0 UDF10
+                                    FROM [TK].dbo.INVMB
+                                    LEFT JOIN [TK].dbo.PURMA ON MA001=MB032
+                                    WHERE MB001 IN ('{0}')
+                                    ", DataPURTB.TB004
+                                    , DataPURTB.COMPANY, DataPURTB.CREATOR, DataPURTB.USR_GROUP, DataPURTB.CREATE_DATE, DataPURTB.MODIFIER, DataPURTB.MODI_DATE, DataPURTB.FLAG, DataPURTB.CREATE_TIME, DataPURTB.MODI_TIME, DataPURTB.TRANS_TYPE, DataPURTB.TRANS_NAME, DataPURTB.sync_date, DataPURTB.sync_time, DataPURTB.sync_mark, DataPURTB.sync_count, DataPURTB.DataUser, DataPURTB.DataGroup
+                                    ,  DataPURTB.TB001, DataPURTB.TB002, DataPURTB.TB003, DataPURTB.TB009, DataPURTB.TB011, DataPURTB.TB012, DataPURTB.TB024);
 
             return ADDPURDTB;
         }
@@ -536,7 +589,14 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                                         ) 
                                     ");
             queryString.AppendLine();
+
             queryString.Append(PURTBSB.ToString());
+
+            queryString.AppendFormat(@"
+                                    UPDATE [TK].dbo.PURTA
+                                    SET TA011=(SELECT ISNULL(SUM(TB009),0) FROM [TK].dbo.PURTB WHERE TB001=@TB001 AND TB002=@TB002)
+                                    WHERE TA001=@TA001 AND TA002=@TA002
+                                    ");
 
             try
             {
@@ -618,6 +678,10 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                     command.Parameters.Add("@UDF08", SqlDbType.NVarChar).Value = DataPURTA.UDF08;
                     command.Parameters.Add("@UDF09", SqlDbType.NVarChar).Value = DataPURTA.UDF09;
                     command.Parameters.Add("@UDF10", SqlDbType.NVarChar).Value = DataPURTA.UDF10;
+
+
+                    command.Parameters.Add("@TB001", SqlDbType.NVarChar).Value = DataPURTA.TA001;
+                    command.Parameters.Add("@TB002", SqlDbType.NVarChar).Value = DataPURTA.TA002;
 
                     command.Connection.Open();
 
