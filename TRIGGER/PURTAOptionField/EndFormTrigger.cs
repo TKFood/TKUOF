@@ -20,10 +20,16 @@ namespace TKUOF.TRIGGER.PURTAOptionField
 {
     class EndFormTrigger : ICallbackTriggerPlugin
     {
+        UserUCO UserUCOSuperior = new UserUCO();
+        string account;
+        string userGuid;
+
+
         public class DATAPURTA
         {
             public string TaskId;
 
+            public string COMPANY;
             public string CREATOR;
             public string USR_GROUP;
             public string CREATE_DATE;
@@ -249,6 +255,9 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
 
+            //找出最後的簽核者
+            account = xmlDoc.SelectSingleNode("./Form/Applicant").Attributes["account"].Value;
+
             //MA001 = applyTask.Task.CurrentDocument.Fields["MA001"].FieldValue.ToString().Trim();
             //MA002 = applyTask.Task.CurrentDocument.Fields["MA002"].FieldValue.ToString().Trim();
 
@@ -256,12 +265,82 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             XmlNode node = xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='PURTAB']");
 
             DataPURTA.TaskId = applyTask.Task.TaskId;
+
+            DataPURTA.COMPANY = "TK";
+            DataPURTA.CREATOR = node.SelectSingleNode("FieldValue").Attributes["NAME"].Value;
+            DataPURTA.USR_GROUP = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
+            DataPURTA.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
+            DataPURTA.MODIFIER = account;
+            DataPURTA.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
+            DataPURTA.FLAG = "1";
+            DataPURTA.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
+            DataPURTA.MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            DataPURTA.TRANS_TYPE = "P001";
+            DataPURTA.TRANS_NAME = "PURI05";
+            DataPURTA.sync_date = "";
+            DataPURTA.sync_time = "";
+            DataPURTA.sync_mark = "";
+            DataPURTA.sync_count = "0";
+            DataPURTA.DataUser = "";
+            DataPURTA.DataGroup = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
+
             DataPURTA.TA001 = "A311";
             DataPURTA.TA002 = FINDMAXPURTATA002("A311");
-
+            DataPURTA.TA003 = DateTime.Now.ToString("yyyyMMdd");
             DataPURTA.TA004 = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
+            DataPURTA.TA005 = applyTask.Task.TaskId;
             DataPURTA.TA006 = node.SelectSingleNode("FieldValue").Attributes["COMMENT"].Value;
+            DataPURTA.TA007 = "N";
+            DataPURTA.TA008 = "0";
+            DataPURTA.TA009 = "9";
+            DataPURTA.TA010 = "20";
+            DataPURTA.TA011 = "0";
             DataPURTA.TA012 = node.SelectSingleNode("FieldValue").Attributes["NAME"].Value;
+            DataPURTA.TA013 = DateTime.Now.ToString("yyyyMMdd");
+            DataPURTA.TA014 = account;
+            DataPURTA.TA015 = "0";
+            DataPURTA.TA016 = "N";
+            DataPURTA.TA017 = "0";
+            DataPURTA.TA018 = "";
+            DataPURTA.TA019 = "";
+            DataPURTA.TA020 = "0";
+            DataPURTA.TA021 = "";
+            DataPURTA.TA022 = "";
+            DataPURTA.TA023 = "0";
+            DataPURTA.TA024 = "0";
+            DataPURTA.TA025 = "";
+            DataPURTA.TA026 = "";
+            DataPURTA.TA027 = "";
+            DataPURTA.TA028 = "";
+            DataPURTA.TA029 = "";
+            DataPURTA.TA030 = "0";
+            DataPURTA.TA031 = "";
+            DataPURTA.TA032 = "0";
+            DataPURTA.TA033 = "";
+            DataPURTA.TA034 = "";
+            DataPURTA.TA035 = "";
+            DataPURTA.TA036 = "0";
+            DataPURTA.TA037 = "0";
+            DataPURTA.TA038 = "0";
+            DataPURTA.TA039 = "0";
+            DataPURTA.TA040 = "0";
+            DataPURTA.TA041 = "";
+            DataPURTA.TA042 = "";
+            DataPURTA.TA043 = "";
+            DataPURTA.TA044 = "";
+            DataPURTA.TA045 = "";
+            DataPURTA.TA046 = "";
+            DataPURTA.UDF01 = "";
+            DataPURTA.UDF02 = "";
+            DataPURTA.UDF03 = "";
+            DataPURTA.UDF04 = "";
+            DataPURTA.UDF05 = "";
+            DataPURTA.UDF06 = "0";
+            DataPURTA.UDF07 = "0";
+            DataPURTA.UDF08 = "0";
+            DataPURTA.UDF09 = "0";
+            DataPURTA.UDF10 = "0";
+
 
             //針對DETAIL抓出來的資料作處理
 
@@ -388,6 +467,34 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             }
         }
 
+        public string FINDCMSMVMV004(string MV001)
+        {
+            String connectionString;
+            SqlConnection conn;
+            connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ConnectionString;
+            conn = new SqlConnection(connectionString);
+            DataSet PURTADS = new DataSet();
+            string MV004 = "";
+
+            //找出請購最大的單號
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.AppendFormat(@"                                 
+                                SELECT MV004
+                                FROM [TK].dbo.CMSMV
+                                WHERE MV001='{0}'
+                                ", MV001);
+
+
+            SqlCommand cmd = new SqlCommand(sbSql.ToString(), conn);
+            conn.Open();
+            SqlDataAdapter adapt = new SqlDataAdapter(cmd);
+            adapt.Fill(PURTADS);
+
+
+            MV004 = SETTA002(PURTADS.Tables[0].Rows[0]["MV004"].ToString());
+            return MV004;
+        }
+
         public StringBuilder SETADDPURDTB(DATAPURTB DataPURTB)
         {
             StringBuilder ADDPURDTB = new StringBuilder();
@@ -408,9 +515,25 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                        INSERT INTO [TK].dbo.PURTA
-                                        (TA001,TA002,TA004,TA005,TA006,TA012)
+                                        (
+                                        COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME,sync_date,sync_time,sync_mark,sync_count,DataUser,DataGroup,
+                                        TA001,TA002,TA003,TA004,TA005,TA006,TA007,TA008,TA009,TA010,
+                                        TA011,TA012,TA013,TA014,TA015,TA016,TA017,TA018,TA019,TA020,
+                                        TA021,TA022,TA023,TA024,TA025,TA026,TA027,TA028,TA029,TA030,
+                                        TA031,TA032,TA033,TA034,TA035,TA036,TA037,TA038,TA039,TA040,
+                                        TA041,TA042,TA043,TA044,TA045,TA046,
+                                        UDF01,UDF02,UDF03,UDF04,UDF05,UDF06,UDF07,UDF08,UDF09,UDF10
+                                        )
                                         VALUES
-                                        (@TA001,@TA002,@TA004,@TA005,@TA006,@TA012) 
+                                        (
+                                        @COMPANY,@CREATOR,@USR_GROUP,@CREATE_DATE,@MODIFIER,@MODI_DATE,@FLAG,@CREATE_TIME,@MODI_TIME,@TRANS_TYPE,@TRANS_NAME,@sync_date,@sync_time,@sync_mark,@sync_count,@DataUser,@DataGroup,
+                                        @TA001,@TA002,@TA003,@TA004,@TA005,@TA006,@TA007,@TA008,@TA009,@TA010,
+                                        @TA011,@TA012,@TA013,@TA014,@TA015,@TA016,@TA017,@TA018,@TA019,@TA020,
+                                        @TA021,@TA022,@TA023,@TA024,@TA025,@TA026,@TA027,@TA028,@TA029,@TA030,
+                                        @TA031,@TA032,@TA033,@TA034,@TA035,@TA036,@TA037,@TA038,@TA039,@TA040,
+                                        @TA041,@TA042,@TA043,@TA044,@TA045,@TA046,
+                                        @UDF01,@UDF02,@UDF03,@UDF04,@UDF05,@UDF06,@UDF07,@UDF08,@UDF09,@UDF10
+                                        ) 
                                     ");
             queryString.AppendLine();
             queryString.Append(PURTBSB.ToString());
@@ -421,12 +544,80 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                 {
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+
+                    command.Parameters.Add("@COMPANY", SqlDbType.NVarChar).Value = DataPURTA.COMPANY;
+                    command.Parameters.Add("@CREATOR", SqlDbType.NVarChar).Value = DataPURTA.CREATOR;
+                    command.Parameters.Add("@USR_GROUP", SqlDbType.NVarChar).Value = DataPURTA.USR_GROUP;
+                    command.Parameters.Add("@CREATE_DATE", SqlDbType.NVarChar).Value = DataPURTA.CREATE_DATE;
+                    command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = DataPURTA.MODIFIER;
+                    command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DataPURTA.MODI_DATE;
+                    command.Parameters.Add("@FLAG", SqlDbType.NVarChar).Value = DataPURTA.FLAG;
+                    command.Parameters.Add("@CREATE_TIME", SqlDbType.NVarChar).Value = DataPURTA.CREATE_TIME;
+                    command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DataPURTA.MODI_TIME;
+                    command.Parameters.Add("@TRANS_TYPE", SqlDbType.NVarChar).Value = DataPURTA.TRANS_TYPE;
+                    command.Parameters.Add("@TRANS_NAME", SqlDbType.NVarChar).Value = DataPURTA.TRANS_NAME;
+                    command.Parameters.Add("@sync_date", SqlDbType.NVarChar).Value = DataPURTA.sync_date;
+                    command.Parameters.Add("@sync_time", SqlDbType.NVarChar).Value = DataPURTA.sync_time;
+                    command.Parameters.Add("@sync_mark", SqlDbType.NVarChar).Value = DataPURTA.sync_mark;
+                    command.Parameters.Add("@sync_count", SqlDbType.NVarChar).Value = DataPURTA.sync_count;
+                    command.Parameters.Add("@DataUser", SqlDbType.NVarChar).Value = DataPURTA.DataUser;
+                    command.Parameters.Add("@DataGroup", SqlDbType.NVarChar).Value = DataPURTA.DataGroup;
                     command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = DataPURTA.TA001;
                     command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = DataPURTA.TA002;
+                    command.Parameters.Add("@TA003", SqlDbType.NVarChar).Value = DataPURTA.TA003;
                     command.Parameters.Add("@TA004", SqlDbType.NVarChar).Value = DataPURTA.TA004;
                     command.Parameters.Add("@TA005", SqlDbType.NVarChar).Value = FormNumber;
                     command.Parameters.Add("@TA006", SqlDbType.NVarChar).Value = DataPURTA.TA006;
+                    command.Parameters.Add("@TA007", SqlDbType.NVarChar).Value = DataPURTA.TA007;
+                    command.Parameters.Add("@TA008", SqlDbType.NVarChar).Value = DataPURTA.TA008;
+                    command.Parameters.Add("@TA009", SqlDbType.NVarChar).Value = DataPURTA.TA009;
+                    command.Parameters.Add("@TA010", SqlDbType.NVarChar).Value = DataPURTA.TA010;
+                    command.Parameters.Add("@TA011", SqlDbType.NVarChar).Value = DataPURTA.TA011;
                     command.Parameters.Add("@TA012", SqlDbType.NVarChar).Value = DataPURTA.TA012;
+                    command.Parameters.Add("@TA013", SqlDbType.NVarChar).Value = DataPURTA.TA013;
+                    command.Parameters.Add("@TA014", SqlDbType.NVarChar).Value = DataPURTA.TA014;
+                    command.Parameters.Add("@TA015", SqlDbType.NVarChar).Value = DataPURTA.TA015;
+                    command.Parameters.Add("@TA016", SqlDbType.NVarChar).Value = DataPURTA.TA016;
+                    command.Parameters.Add("@TA017", SqlDbType.NVarChar).Value = DataPURTA.TA017;
+                    command.Parameters.Add("@TA018", SqlDbType.NVarChar).Value = DataPURTA.TA018;
+                    command.Parameters.Add("@TA019", SqlDbType.NVarChar).Value = DataPURTA.TA019;
+                    command.Parameters.Add("@TA020", SqlDbType.NVarChar).Value = DataPURTA.TA020;
+                    command.Parameters.Add("@TA021", SqlDbType.NVarChar).Value = DataPURTA.TA021;
+                    command.Parameters.Add("@TA022", SqlDbType.NVarChar).Value = DataPURTA.TA022;
+                    command.Parameters.Add("@TA023", SqlDbType.NVarChar).Value = DataPURTA.TA023;
+                    command.Parameters.Add("@TA024", SqlDbType.NVarChar).Value = DataPURTA.TA024;
+                    command.Parameters.Add("@TA025", SqlDbType.NVarChar).Value = DataPURTA.TA025;
+                    command.Parameters.Add("@TA026", SqlDbType.NVarChar).Value = DataPURTA.TA026;
+                    command.Parameters.Add("@TA027", SqlDbType.NVarChar).Value = DataPURTA.TA027;
+                    command.Parameters.Add("@TA028", SqlDbType.NVarChar).Value = DataPURTA.TA028;
+                    command.Parameters.Add("@TA029", SqlDbType.NVarChar).Value = DataPURTA.TA029;
+                    command.Parameters.Add("@TA030", SqlDbType.NVarChar).Value = DataPURTA.TA030;
+                    command.Parameters.Add("@TA031", SqlDbType.NVarChar).Value = DataPURTA.TA031;
+                    command.Parameters.Add("@TA032", SqlDbType.NVarChar).Value = DataPURTA.TA032;
+                    command.Parameters.Add("@TA033", SqlDbType.NVarChar).Value = DataPURTA.TA033;
+                    command.Parameters.Add("@TA034", SqlDbType.NVarChar).Value = DataPURTA.TA034;
+                    command.Parameters.Add("@TA035", SqlDbType.NVarChar).Value = DataPURTA.TA035;
+                    command.Parameters.Add("@TA036", SqlDbType.NVarChar).Value = DataPURTA.TA036;
+                    command.Parameters.Add("@TA037", SqlDbType.NVarChar).Value = DataPURTA.TA037;
+                    command.Parameters.Add("@TA038", SqlDbType.NVarChar).Value = DataPURTA.TA038;
+                    command.Parameters.Add("@TA039", SqlDbType.NVarChar).Value = DataPURTA.TA039;
+                    command.Parameters.Add("@TA040", SqlDbType.NVarChar).Value = DataPURTA.TA040;
+                    command.Parameters.Add("@TA041", SqlDbType.NVarChar).Value = DataPURTA.TA041;
+                    command.Parameters.Add("@TA042", SqlDbType.NVarChar).Value = DataPURTA.TA042;
+                    command.Parameters.Add("@TA043", SqlDbType.NVarChar).Value = DataPURTA.TA043;
+                    command.Parameters.Add("@TA044", SqlDbType.NVarChar).Value = DataPURTA.TA044;
+                    command.Parameters.Add("@TA045", SqlDbType.NVarChar).Value = DataPURTA.TA045;
+                    command.Parameters.Add("@TA046", SqlDbType.NVarChar).Value = DataPURTA.TA046;
+                    command.Parameters.Add("@UDF01", SqlDbType.NVarChar).Value = DataPURTA.UDF01;
+                    command.Parameters.Add("@UDF02", SqlDbType.NVarChar).Value = DataPURTA.UDF02;
+                    command.Parameters.Add("@UDF03", SqlDbType.NVarChar).Value = DataPURTA.UDF03;
+                    command.Parameters.Add("@UDF04", SqlDbType.NVarChar).Value = DataPURTA.UDF04;
+                    command.Parameters.Add("@UDF05", SqlDbType.NVarChar).Value = DataPURTA.UDF05;
+                    command.Parameters.Add("@UDF06", SqlDbType.NVarChar).Value = DataPURTA.UDF06;
+                    command.Parameters.Add("@UDF07", SqlDbType.NVarChar).Value = DataPURTA.UDF07;
+                    command.Parameters.Add("@UDF08", SqlDbType.NVarChar).Value = DataPURTA.UDF08;
+                    command.Parameters.Add("@UDF09", SqlDbType.NVarChar).Value = DataPURTA.UDF09;
+                    command.Parameters.Add("@UDF10", SqlDbType.NVarChar).Value = DataPURTA.UDF10;
 
                     command.Connection.Open();
 
