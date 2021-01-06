@@ -102,3 +102,4 @@ C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\Ede.Uof.Utility.Configuration.dll
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\Ede.Uof.Utility.Log.dll
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\Ede.Uof.Utility.Task.dll
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\Ede.Uof.Utility.Task.dll.config
+C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csprojAssemblyReference.cache

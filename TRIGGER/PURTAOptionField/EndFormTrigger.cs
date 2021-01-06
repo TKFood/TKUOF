@@ -286,8 +286,8 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             DataPURTA.DataGroup = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
 
             DataPURTA.TA001 = "A311";
-            DataPURTA.TA002 = FINDMAXPURTATA002("A311");
-            DataPURTA.TA003 = DateTime.Now.ToString("yyyyMMdd");
+            DataPURTA.TA002 = FINDMAXPURTATA002("A311", node.SelectSingleNode("FieldValue").Attributes["TA003"].Value);
+            DataPURTA.TA003 = node.SelectSingleNode("FieldValue").Attributes["TA003"].Value;
             DataPURTA.TA004 = node.SelectSingleNode("FieldValue").Attributes["DEP"].Value;
             DataPURTA.TA005 = applyTask.Task.TaskId;
             DataPURTA.TA006 = node.SelectSingleNode("FieldValue").Attributes["COMMENT"].Value;
@@ -297,7 +297,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             DataPURTA.TA010 = "20";
             DataPURTA.TA011 = "0";
             DataPURTA.TA012 = node.SelectSingleNode("FieldValue").Attributes["NAME"].Value;
-            DataPURTA.TA013 = DateTime.Now.ToString("yyyyMMdd");
+            DataPURTA.TA013 = node.SelectSingleNode("FieldValue").Attributes["TA003"].Value;
             DataPURTA.TA014 = account;
             DataPURTA.TA015 = "0";
             DataPURTA.TA016 = "N";
@@ -445,7 +445,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             }
         }
 
-        public string FINDMAXPURTATA002(string TA001)
+        public string FINDMAXPURTATA002(string TA001,string TA003)
         {
             String connectionString;
             SqlConnection conn;
@@ -460,7 +460,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                                 SELECT ISNULL(MAX(TA002),'00000000000') AS TA002
                                 FROM [TK].[dbo].[PURTA] 
                                 WHERE  TA001='{0}' AND TA003='{1}'
-                                ", TA001, DateTime.Now.ToString("yyyyMMdd"));
+                                ", TA001, TA003);
 
           
             SqlCommand cmd = new SqlCommand(sbSql.ToString(), conn);           
@@ -469,15 +469,15 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             adapt.Fill(PURTADS);
 
 
-            TA002 = SETTA002(PURTADS.Tables[0].Rows[0]["TA002"].ToString());
+            TA002 = SETTA002(PURTADS.Tables[0].Rows[0]["TA002"].ToString(),TA003);
             return TA002;
         }
 
-        public string SETTA002(string TA002)
+        public string SETTA002(string TA002, string TA003)
         {
             if (TA002.Equals("00000000000"))
             {
-                return DateTime.Now.ToString("yyyyMMdd") + "001";
+                return TA003 + "001";
             }
 
             else
@@ -486,7 +486,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
                 serno = serno + 1;
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
-                return DateTime.Now.ToString("yyyyMMdd") + temp.ToString();
+                return TA003 + temp.ToString();
             }
         }
 
@@ -514,7 +514,7 @@ namespace TKUOF.TRIGGER.PURTAOptionField
             adapt.Fill(PURTADS);
 
 
-            MV004 = SETTA002(PURTADS.Tables[0].Rows[0]["MV004"].ToString());
+            MV004 = PURTADS.Tables[0].Rows[0]["MV004"].ToString();
             return MV004;
         }
 
