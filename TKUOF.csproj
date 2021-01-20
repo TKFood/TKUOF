@@ -80,6 +80,7 @@
     <Compile Include="TRIGGER\PROLOSAL\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTAB\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTAOptionField\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\QCFrm002\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QC\EndFormTrigger.cs" />
   </ItemGroup>
   <ItemGroup />
