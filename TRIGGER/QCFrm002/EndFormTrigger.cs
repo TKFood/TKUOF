@@ -627,7 +627,7 @@ namespace TKUOF.TRIGGER.QCFrm002
             string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
-            queryString.AppendFormat(@" INSERT INTO [UOFTEST].dbo.TB_WKF_EXTERNAL_TASK
+            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
                                      (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
                                     VALUES (NEWID(),@XML,2)
                                     ");
