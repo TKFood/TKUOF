@@ -28,6 +28,7 @@ namespace TKUOF.TRIGGER.QCFrm002
         {
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
+                //ADD();
                 ADDTB_WKF_EXTERNAL_TASK(applyTask);
             }
                
@@ -214,7 +215,6 @@ namespace TKUOF.TRIGGER.QCFrm002
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
-
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002Prove");
             Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Prove"].FieldValue.ToString().Trim());
@@ -243,59 +243,61 @@ namespace TKUOF.TRIGGER.QCFrm002
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
-            var value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
-                         where xl.Attribute("fieldId").Value == "QCFrm002Abn"
-                         select xl
-                      ).FirstOrDefault().Attribute("fieldValue").Value;
-            //判斷value是否為NUll
-            string QCFrm002Abn = "";
-            if (!string.IsNullOrEmpty(value.ToString()))
-            {
-                QCFrm002Abn = XElement.Parse(value).Value.ToString();
-            }
+           
+            ////只取值，不含字型設定
+            //var value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
+            //             where xl.Attribute("fieldId").Value == "QCFrm002Abn"
+            //             select xl
+            //          ).FirstOrDefault().Attribute("fieldValue").Value;
+            ////判斷value是否為NUll
+            //string QCFrm002Abn = "";
+            //if (!string.IsNullOrEmpty(value.ToString()))
+            //{
+            //    QCFrm002Abn = XElement.Parse(value).Value.ToString();
+            //}
 
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002Abn");
-            Cell.SetAttribute("fieldValue", QCFrm002Abn);
+            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abn"].FieldValue.ToString().Trim());
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
 
-            value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
-                     where xl.Attribute("fieldId").Value == "QCFrm002Process"
-                     select xl
-                     ).FirstOrDefault().Attribute("fieldValue").Value;
+            //value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
+            //         where xl.Attribute("fieldId").Value == "QCFrm002Process"
+            //         select xl
+            //         ).FirstOrDefault().Attribute("fieldValue").Value;
 
-            //判斷value是否為NUll
-            string QCFrm002Process = "";
-            if (!string.IsNullOrEmpty(value.ToString()))
-            {
-                QCFrm002Process = XElement.Parse(value).Value.ToString();
-            }
+            ////判斷value是否為NUll
+            //string QCFrm002Process = "";
+            //if (!string.IsNullOrEmpty(value.ToString()))
+            //{
+            //    QCFrm002Process = XElement.Parse(value).Value.ToString();
+            //}
 
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002Process");
-            Cell.SetAttribute("fieldValue", QCFrm002Process);
+            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Process"].FieldValue.ToString().Trim());
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
 
-            value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
-                     where xl.Attribute("fieldId").Value == "QCFrm002PR"
-                     select xl
-                  ).FirstOrDefault().Attribute("fieldValue").Value;
+            //value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
+            //         where xl.Attribute("fieldId").Value == "QCFrm002PR"
+            //         select xl
+            //      ).FirstOrDefault().Attribute("fieldValue").Value;
 
-            //判斷value是否為NUll
-            string QCFrm002PR = "";
-            if (!string.IsNullOrEmpty(value.ToString()))
-            {
-                QCFrm002PR = XElement.Parse(value).Value.ToString();
-            }
+            ////判斷value是否為NUll
+            //string QCFrm002PR = "";
+            //if (!string.IsNullOrEmpty(value.ToString()))
+            //{
+            //    QCFrm002PR = XElement.Parse(value).Value.ToString();
+            //}
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002PR");
-            Cell.SetAttribute("fieldValue", QCFrm002PR);
+            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002PR"].FieldValue.ToString().Trim());
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
@@ -322,35 +324,35 @@ namespace TKUOF.TRIGGER.QCFrm002
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
 
-            value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
-                     where xl.Attribute("fieldId").Value == "QCFrm002RCA"
-                     select xl
-                   ).FirstOrDefault().Attribute("fieldValue").Value;
-            //判斷value是否為NUll
-            string QCFrm002RCA = "";
-            if (!string.IsNullOrEmpty(value.ToString()))
-            {
-                QCFrm002RCA = XElement.Parse(value).Value.ToString();
-            }
+            //value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
+            //         where xl.Attribute("fieldId").Value == "QCFrm002RCA"
+            //         select xl
+            //       ).FirstOrDefault().Attribute("fieldValue").Value;
+            ////判斷value是否為NUll
+            //string QCFrm002RCA = "";
+            //if (!string.IsNullOrEmpty(value.ToString()))
+            //{
+            //    QCFrm002RCA = XElement.Parse(value).Value.ToString();
+            //}
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002RCA");
-            Cell.SetAttribute("fieldValue", QCFrm002RCA);
+            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002RCA"].FieldValue.ToString().Trim());
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
 
-            //Cell.SetAttribute("fieldId", "B02");
-            //Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["A02"].FieldValue.ToString().Trim());
-            //Cell.SetAttribute("realValue", "");
-            //Cell.SetAttribute("enableSearch", "True");
-            //Cell.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
-            //Cell.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
-            //Cell.SetAttribute("fillerAccount", applyTask.Task.Applicant.Account);
-            //Cell.SetAttribute("fillSiteId", "");
-            //加入至members節點底下
-            //CELL應是Row的子節點
-            //Row.AppendChild(Cell);
+            ////Cell.SetAttribute("fieldId", "B02");
+            ////Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["A02"].FieldValue.ToString().Trim());
+            ////Cell.SetAttribute("realValue", "");
+            ////Cell.SetAttribute("enableSearch", "True");
+            ////Cell.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
+            ////Cell.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
+            ////Cell.SetAttribute("fillerAccount", applyTask.Task.Applicant.Account);
+            ////Cell.SetAttribute("fillSiteId", "");
+            ////加入至members節點底下
+            ////CELL應是Row的子節點
+            ////Row.AppendChild(Cell);
 
 
             //建立節點FieldItem
@@ -670,6 +672,43 @@ namespace TKUOF.TRIGGER.QCFrm002
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
                     command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = Form.OuterXml;                    
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void ADD()
+        {  //ADD TO DB
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                     (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
+                                    VALUES (NEWID(),@XML,2)
+                                    ");
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = "";
 
                     command.Connection.Open();
 
