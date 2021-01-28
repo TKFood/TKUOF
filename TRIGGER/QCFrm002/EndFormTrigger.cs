@@ -50,7 +50,10 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlDocument xmlDoc = new XmlDocument();
             //建立根節點
             XmlElement Form = xmlDoc.CreateElement("Form");
-            Form.SetAttribute("formVersionId", "83a22122-9d93-4603-bf70-489bd4e48cfb");
+            //測試的id
+            //Form.SetAttribute("formVersionId", "83a22122-9d93-4603-bf70-489bd4e48cfb");
+            //正式的id
+            Form.SetAttribute("formVersionId", "f0d6bc8d-303e-429b-bb34-e20ba7b99c43");
             Form.SetAttribute("urgentLevel", "2");
             //加入節點底下
             xmlDoc.AppendChild(Form);
@@ -244,10 +247,16 @@ namespace TKUOF.TRIGGER.QCFrm002
                          where xl.Attribute("fieldId").Value == "QCFrm002Abn"
                          select xl
                       ).FirstOrDefault().Attribute("fieldValue").Value;
+            //判斷value是否為NUll
+            string QCFrm002Abn = "";
+            if (!string.IsNullOrEmpty(value.ToString()))
+            {
+                QCFrm002Abn = XElement.Parse(value).Value.ToString();
+            }
 
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002Abn");
-            Cell.SetAttribute("fieldValue", XElement.Parse(value).Value);
+            Cell.SetAttribute("fieldValue", QCFrm002Abn);
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
@@ -257,20 +266,36 @@ namespace TKUOF.TRIGGER.QCFrm002
                      where xl.Attribute("fieldId").Value == "QCFrm002Process"
                      select xl
                      ).FirstOrDefault().Attribute("fieldValue").Value;
+
+            //判斷value是否為NUll
+            string QCFrm002Process = "";
+            if (!string.IsNullOrEmpty(value.ToString()))
+            {
+                QCFrm002Process = XElement.Parse(value).Value.ToString();
+            }
+
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002Process");
-            Cell.SetAttribute("fieldValue", XElement.Parse(value).Value);
+            Cell.SetAttribute("fieldValue", QCFrm002Process);
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
             Row.AppendChild(Cell);
+
             value = (from xl in xe.Elements("FormFieldValue").Elements("FieldItem")
                      where xl.Attribute("fieldId").Value == "QCFrm002PR"
                      select xl
                   ).FirstOrDefault().Attribute("fieldValue").Value;
+
+            //判斷value是否為NUll
+            string QCFrm002PR = "";
+            if (!string.IsNullOrEmpty(value.ToString()))
+            {
+                QCFrm002PR = XElement.Parse(value).Value.ToString();
+            }
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002PR");
-            Cell.SetAttribute("fieldValue", XElement.Parse(value).Value);
+            Cell.SetAttribute("fieldValue", QCFrm002PR);
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
@@ -301,9 +326,15 @@ namespace TKUOF.TRIGGER.QCFrm002
                      where xl.Attribute("fieldId").Value == "QCFrm002RCA"
                      select xl
                    ).FirstOrDefault().Attribute("fieldValue").Value;
+            //判斷value是否為NUll
+            string QCFrm002RCA = "";
+            if (!string.IsNullOrEmpty(value.ToString()))
+            {
+                QCFrm002RCA = XElement.Parse(value).Value.ToString();
+            }
             Cell = xmlDoc.CreateElement("Cell");
             Cell.SetAttribute("fieldId", "QCFrm002RCA");
-            Cell.SetAttribute("fieldValue", XElement.Parse(value).Value);
+            Cell.SetAttribute("fieldValue", QCFrm002RCA);
             Cell.SetAttribute("realValue", "");
             Cell.SetAttribute("customValue", "");
             Cell.SetAttribute("enableSearch", "True");
