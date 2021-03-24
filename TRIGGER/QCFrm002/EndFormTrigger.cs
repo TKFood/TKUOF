@@ -559,10 +559,10 @@ namespace TKUOF.TRIGGER.QCFrm002
             FieldItem.SetAttribute("fillSiteId", "");
             //加入至members節點底下
             FormFieldValue.AppendChild(FieldItem);
-            //建立節點FieldItem
+            //建立節點FieldItem 原因分析填寫人
             FieldItem = xmlDoc.CreateElement("FieldItem");
             FieldItem.SetAttribute("fieldId", "QCFrm001RCAU");
-            FieldItem.SetAttribute("fieldValue", "");
+            FieldItem.SetAttribute("fieldValue", applyTask.Task.Applicant.UserName.ToString());
             FieldItem.SetAttribute("realValue", "");
             FieldItem.SetAttribute("enableSearch", "True");
             FieldItem.SetAttribute("fillerName", "");
