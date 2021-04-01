@@ -76,6 +76,7 @@
     <Compile Include="TRIGGER\AB\ATOB.cs" />
     <Compile Include="TRIGGER\COPMA\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\GAFrm\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\GMOFrm\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\HREngFrm001\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PROLOSAL\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTAB\EndFormTrigger.cs" />

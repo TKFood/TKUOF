@@ -54,9 +54,10 @@ namespace TKUOF.TRIGGER.QCFrm002
             //建立根節點
             XmlElement Form = xmlDoc.CreateElement("Form");
             //測試的id
-            Form.SetAttribute("formVersionId", "56ea12d6-ba6b-4e2b-8ae0-9e82f47298e0");
+            //Form.SetAttribute("formVersionId", "56ea12d6-ba6b-4e2b-8ae0-9e82f47298e0");
             //正式的id
-            //Form.SetAttribute("formVersionId", "6a6dff6e-184a-4f34-846f-8dac406351cd");
+            
+            Form.SetAttribute("formVersionId", "1cc71c35-0a2c-490c-b733-f887b7975b17");
             Form.SetAttribute("urgentLevel", "2");
             //加入節點底下
             xmlDoc.AppendChild(Form);
@@ -270,16 +271,18 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             StringBuilder queryString = new StringBuilder();
 
-            //UOFTEST
-            queryString.AppendFormat(@" INSERT INTO [UOFTEST].dbo.TB_WKF_EXTERNAL_TASK
-                                         (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
-                                        VALUES (NEWID(),@XML,2)
-                                        ");
-            //UOF 
-            //queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+            ////UOFTEST
+            ///
+            //queryString.AppendFormat(@" INSERT INTO [UOFTEST].dbo.TB_WKF_EXTERNAL_TASK
             //                             (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
             //                            VALUES (NEWID(),@XML,2)
             //                            ");
+            //UOF
+            //
+            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                         (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
+                                        VALUES (NEWID(),@XML,2)
+                                        ");
 
             try
             {
