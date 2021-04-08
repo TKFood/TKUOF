@@ -77,7 +77,7 @@ namespace TKUOF.TRIGGER.GMOFrm
             //建立節點Row，把rowscounts+1
             //Row	
             XmlElement Row = xmlDoc.CreateElement("Row");
-            Row.SetAttribute("order", (rowscounts+1).ToString());
+            Row.SetAttribute("order", (rowscounts).ToString());
 
             //建立節點Row
             //Row	GMOFrm001BF1
@@ -153,7 +153,25 @@ namespace TKUOF.TRIGGER.GMOFrm
             XmlNode DataGrid=xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001BSC']/DataGrid");
             DataGrid.AppendChild(Row);
 
-          
+
+            //GMOFrm001SC1=null
+            XmlElement FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC1']");          
+            FieldItem.SetAttribute("fieldValue", null);
+            //GMOFrm001SC2=null
+            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC2']");
+            FieldItem.SetAttribute("fieldValue", null);
+            //GMOFrm001SC3=null
+            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC3']");
+            FieldItem.SetAttribute("fieldValue", null);
+            //GMOFrm001SC4=null
+            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC4']");
+            FieldItem.SetAttribute("fieldValue", null);
+            //GMOFrm001SC5=null
+            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC5']");
+            FieldItem.SetAttribute("fieldValue", null);
+            //GMOFrm001SCU=null
+            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SCU']");
+            FieldItem.SetAttribute("fieldValue", null);
 
 
             //UPDATE_TB_WKF_TASK
