@@ -28,7 +28,8 @@ namespace TKUOF.TRIGGER.GMOFrm
 
         public string GetFormResult(ApplyTask applyTask)
         {
-            if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
+            //每次簽核時，簽準過後
+            if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
             {
                 UPDATE_TB_WKF_TASK(applyTask);
             }
@@ -65,6 +66,11 @@ namespace TKUOF.TRIGGER.GMOFrm
             //    </FieldItem>
             //  </FormFieldValue>
             //</Form>
+
+            //針對不同的簽核站點做判斷
+            //要在表單設計的簽核卡設定SiteCode
+            if (applyTask.SiteCode != "X")
+            { }
 
             //建立根節點
             XmlDocument xmlDoc = new XmlDocument();
