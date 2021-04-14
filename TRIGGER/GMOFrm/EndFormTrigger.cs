@@ -69,158 +69,161 @@ namespace TKUOF.TRIGGER.GMOFrm
 
             //針對不同的簽核站點做判斷
             //要在表單設計的簽核卡設定SiteCode
-            if (applyTask.SiteCode != "X")
-            { }
-
-            //建立根節點
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(applyTask.CurrentDocXML);
-
-            //計算Row有幾筆
-            XmlElement xmlElem = xmlDoc.DocumentElement;//獲取根節點
-            int rowscounts = xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001BSC']/DataGrid/Row").Count;
-
-            //建立節點Row，把rowscounts+1
-            //Row	
-            XmlElement Row = xmlDoc.CreateElement("Row");
-            Row.SetAttribute("order", (rowscounts).ToString());
-
-            //建立節點Row
-            //Row	GMOFrm001BF1
-            XmlElement Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001BF1");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC1"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-            //Row	GMOFrm001CB
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001CB");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC2"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-            //Row	GMOFrm001RG
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001RG");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC3"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-            //Row	GMOFrm001CR
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001CR");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC4"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-            //Row	GMOFrm001SF
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001SF");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC5"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //Row	GMOFrm001TO
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001TO");
-            Cell.SetAttribute("fieldValue", (Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC1"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC2"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC3"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC4"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC5"].FieldValue.ToString().Trim())).ToString());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-            //Row	GMOFrm001PU
-            Cell = xmlDoc.CreateElement("Cell");
-            Cell.SetAttribute("fieldId", "GMOFrm001PU");
-            Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SCU"].FieldValue.ToString().Trim());
-            Cell.SetAttribute("realValue", "");
-            Cell.SetAttribute("customValue", "");
-            Cell.SetAttribute("enableSearch", "True");
-            //Row
-            Row.AppendChild(Cell);
-            //建立節點Row
-
-            XmlNode DataGrid=xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001BSC']/DataGrid");
-            DataGrid.AppendChild(Row);
-
-
-            //GMOFrm001SC1=null
-            XmlElement FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC1']");          
-            FieldItem.SetAttribute("fieldValue", null);
-            //GMOFrm001SC2=null
-            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC2']");
-            FieldItem.SetAttribute("fieldValue", null);
-            //GMOFrm001SC3=null
-            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC3']");
-            FieldItem.SetAttribute("fieldValue", null);
-            //GMOFrm001SC4=null
-            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC4']");
-            FieldItem.SetAttribute("fieldValue", null);
-            //GMOFrm001SC5=null
-            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC5']");
-            FieldItem.SetAttribute("fieldValue", null);
-            //GMOFrm001SCU=null
-            FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SCU']");
-            FieldItem.SetAttribute("fieldValue", null);
-
-
-            //UPDATE_TB_WKF_TASK
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
-
-            StringBuilder queryString = new StringBuilder();
-
-            //UOFTEST
-            queryString.AppendFormat(@" UPDATE [UOFTEST].dbo.TB_WKF_TASK
-                                        SET CURRENT_DOC=@XML
-                                        WHERE TASK_ID='4eee190c-8f45-476e-bb3b-581cfa81a470'
-                                        ");
-            //UOF 
-            //queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
-            //                             (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
-            //                            VALUES (NEWID(),@XML,2)
-            //                            ");
-
-            try
+            if (applyTask.SiteCode != "FINAL")
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                //建立根節點
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(applyTask.CurrentDocXML);
+
+                //計算Row有幾筆
+                XmlElement xmlElem = xmlDoc.DocumentElement;//獲取根節點
+                int rowscounts = xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001BSC']/DataGrid/Row").Count;
+
+                //建立節點Row，把rowscounts+1
+                //Row	
+                XmlElement Row = xmlDoc.CreateElement("Row");
+                Row.SetAttribute("order", (rowscounts).ToString());
+
+                //建立節點Row
+                //Row	GMOFrm001BF1
+                XmlElement Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001BF1");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC1"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+                //Row	GMOFrm001CB
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001CB");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC2"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+                //Row	GMOFrm001RG
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001RG");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC3"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+                //Row	GMOFrm001CR
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001CR");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC4"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+                //Row	GMOFrm001SF
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001SF");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SC5"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //Row	GMOFrm001TO
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001TO");
+                Cell.SetAttribute("fieldValue", (Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC1"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC2"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC3"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC4"].FieldValue.ToString().Trim()) + Convert.ToInt32(applyTask.Task.CurrentDocument.Fields["GMOFrm001SC5"].FieldValue.ToString().Trim())).ToString());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+                //Row	GMOFrm001PU
+                Cell = xmlDoc.CreateElement("Cell");
+                Cell.SetAttribute("fieldId", "GMOFrm001PU");
+                Cell.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["GMOFrm001SCU"].FieldValue.ToString().Trim());
+                Cell.SetAttribute("realValue", "");
+                Cell.SetAttribute("customValue", "");
+                Cell.SetAttribute("enableSearch", "True");
+                //Row
+                Row.AppendChild(Cell);
+                //建立節點Row
+
+                XmlNode DataGrid = xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001BSC']/DataGrid");
+                DataGrid.AppendChild(Row);
+
+
+                //GMOFrm001SC1=null
+                XmlElement FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC1']");
+                FieldItem.SetAttribute("fieldValue", null);
+                //GMOFrm001SC2=null
+                FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC2']");
+                FieldItem.SetAttribute("fieldValue", null);
+                //GMOFrm001SC3=null
+                FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC3']");
+                FieldItem.SetAttribute("fieldValue", null);
+                //GMOFrm001SC4=null
+                FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC4']");
+                FieldItem.SetAttribute("fieldValue", null);
+                //GMOFrm001SC5=null
+                FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SC5']");
+                FieldItem.SetAttribute("fieldValue", null);
+                //GMOFrm001SCU=null
+                FieldItem = (XmlElement)xmlDoc.SelectSingleNode("./Form/FormFieldValue/FieldItem[@fieldId='GMOFrm001SCU']");
+                FieldItem.SetAttribute("fieldValue", null);
+
+
+                //UPDATE_TB_WKF_TASK
+                string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+
+                StringBuilder queryString = new StringBuilder();
+
+                ////UOFTEST
+                //queryString.AppendFormat(@" UPDATE [UOFTEST].dbo.TB_WKF_TASK
+                //                        SET CURRENT_DOC=@XML
+                //                        WHERE TASK_ID=@TASK_ID
+                //                        ");
+                //UOF 
+                queryString.AppendFormat(@" UPDATE [UOF].dbo.TB_WKF_TASK
+                                        SET CURRENT_DOC=@XML
+                                        WHERE TASK_ID=@TASK_ID
+                                        ");
+
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+
+                        SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                        command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = xmlDoc.OuterXml;
+                        command.Parameters.Add("@TASK_ID", SqlDbType.NVarChar).Value = applyTask.TaskId;
+
+                        command.Connection.Open();
+
+                        int count = command.ExecuteNonQuery();
+
+                        connection.Close();
+                        connection.Dispose();
+
+                    }
+                }
+                catch
                 {
 
-                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-                    command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = xmlDoc.OuterXml;
-
-                    command.Connection.Open();
-
-                    int count = command.ExecuteNonQuery();
-
-                    connection.Close();
-                    connection.Dispose();
+                }
+                finally
+                {
 
                 }
             }
-            catch
-            {
 
-            }
-            finally
-            {
-
-            }
+           
 
 
         }
