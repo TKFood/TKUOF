@@ -128,12 +128,14 @@ namespace TKUOF.TRIGGER.HREngFrm001
             //queryString.AppendFormat(@" (COMPANY,MA001,MA002)");
             //queryString.AppendFormat(@" VALUES (@MA001,@MA001,@MA002)");
 
-            queryString.AppendFormat(@" INSERT INTO  [TKGAFFAIRS].[dbo].[HREngFrm001]");
-            queryString.AppendFormat(@" ([TaskId],[HREngFrm001SN],[HREngFrm001Date],[HREngFrm001PIR],[HREngFrm001User],[HREngFrm001UsrDpt],[HREngFrm001Rank],[HREngFrm001OutDate],[HREngFrm001Location],[HREngFrm001Agent],[HREngFrm001Transp],[HREngFrm001LicPlate],[HREngFrm001Cause],[HREngFrm001DefOutTime],[HREngFrm001FF],[HREngFrm001OutTime],[HREngFrm001DefBakTime],[HREngFrm001CH],[HREngFrm001BakTime],[CRADNO])");
-            queryString.AppendFormat(@" VALUES");
-            queryString.AppendFormat(@" (@TaskId,@HREngFrm001SN,@HREngFrm001Date,@HREngFrm001PIR,@HREngFrm001User,@HREngFrm001UsrDpt,@HREngFrm001Rank,@HREngFrm001OutDate,@HREngFrm001Location,@HREngFrm001Agent,@HREngFrm001Transp,@HREngFrm001LicPlate,@HREngFrm001Cause,@HREngFrm001DefOutTime,@HREngFrm001FF,@HREngFrm001OutTime,@HREngFrm001DefBakTime,@HREngFrm001CH,@HREngFrm001BakTime,@CRADNO)");
-            queryString.AppendFormat(@" ");
-            queryString.AppendFormat(@" ");
+
+            queryString.AppendFormat(@" 
+                                     INSERT INTO  [TKGAFFAIRS].[dbo].[HREngFrm001]
+                                     ([TaskId],[HREngFrm001SN],[HREngFrm001Date],[HREngFrm001PIR],[HREngFrm001User],[HREngFrm001UsrDpt],[HREngFrm001Rank],[HREngFrm001OutDate],[HREngFrm001Location],[HREngFrm001Agent],[HREngFrm001Transp],[HREngFrm001LicPlate],[HREngFrm001Cause],[HREngFrm001DefOutTime],[HREngFrm001FF],[HREngFrm001OutTime],[HREngFrm001DefBakTime],[HREngFrm001CH],[HREngFrm001BakTime],[CRADNO])
+                                     VALUES
+                                     (@TaskId,@HREngFrm001SN,@HREngFrm001Date,@HREngFrm001PIR,@HREngFrm001User,@HREngFrm001UsrDpt,@HREngFrm001Rank,@HREngFrm001OutDate,@HREngFrm001Location,@HREngFrm001Agent,@HREngFrm001Transp,@HREngFrm001LicPlate,@HREngFrm001Cause,@HREngFrm001DefOutTime,@HREngFrm001FF,@HREngFrm001OutTime,@HREngFrm001DefBakTime,@HREngFrm001CH,@HREngFrm001BakTime,@CRADNO)
+    
+                                     ");
 
             try
             {
