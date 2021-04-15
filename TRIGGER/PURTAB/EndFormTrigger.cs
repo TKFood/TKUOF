@@ -30,8 +30,8 @@ namespace TKUOF.TRIGGER.PURTAB
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
-            TA001 = applyTask.Task.CurrentDocument.Fields["PURTATA001"].FieldValue.ToString().Trim();
-            TA002 = applyTask.Task.CurrentDocument.Fields["PURTATA002"].FieldValue.ToString().Trim();
+            TA001 = applyTask.Task.CurrentDocument.Fields["TA001"].FieldValue.ToString().Trim();
+            TA002 = applyTask.Task.CurrentDocument.Fields["TA002"].FieldValue.ToString().Trim();
 
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
@@ -54,7 +54,11 @@ namespace TKUOF.TRIGGER.PURTAB
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
-            queryString.AppendFormat(@"UPDATE [TK].dbo.PURTA SET TA007='Y' WHERE TA001=@TA001 AND TA002=@TA002 ");
+            queryString.AppendFormat(@"
+                                        UPDATE [TK].dbo.PURTA SET TA007='Y' WHERE TA001=@TA001 AND TA002=@TA002 
+                                        UPDATE [TK].dbo.PURTB SET TB025='Y' WHERE TB001=@TA001 AND TB002=@TA002 
+
+                                        ");
 
             try
             {
