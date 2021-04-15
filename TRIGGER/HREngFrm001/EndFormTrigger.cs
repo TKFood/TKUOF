@@ -101,8 +101,6 @@ namespace TKUOF.TRIGGER.HREngFrm001
             }
            
 
-
-
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 if (!string.IsNullOrEmpty(HREngFrm001.TaskId))
