@@ -55,9 +55,9 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlElement Form = xmlDoc.CreateElement("Form");
             //測試的id
             //Form.SetAttribute("formVersionId", "56ea12d6-ba6b-4e2b-8ae0-9e82f47298e0");
-            //正式的id
-            
+            //正式的id            
             Form.SetAttribute("formVersionId", "1cc71c35-0a2c-490c-b733-f887b7975b17");
+
             Form.SetAttribute("urgentLevel", "2");
             //加入節點底下
             xmlDoc.AppendChild(Form);
@@ -265,6 +265,7 @@ namespace TKUOF.TRIGGER.QCFrm002
             FieldItem.SetAttribute("fillSiteId", "");
             //加入至members節點底下
             FormFieldValue.AppendChild(FieldItem);
+
 
             //ADD TO DB
             string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
