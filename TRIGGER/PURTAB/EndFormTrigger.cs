@@ -33,6 +33,7 @@ namespace TKUOF.TRIGGER.PURTAB
             TA001 = applyTask.Task.CurrentDocument.Fields["TA001"].FieldValue.ToString().Trim();
             TA002 = applyTask.Task.CurrentDocument.Fields["TA002"].FieldValue.ToString().Trim();
 
+            ///核準
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
@@ -40,7 +41,23 @@ namespace TKUOF.TRIGGER.PURTAB
                     UPDATEPURTAB(TA001, TA002);
                 }
             }
-           
+            //取消
+            else if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Cancel)
+            {
+                if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
+                {
+                    UPDATEPURTABCANCEL(TA001, TA002);
+                }
+            }
+            //作廢
+            else if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Reject)
+            {
+                if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
+                {
+                    UPDATEPURTAB(TA001, TA002);
+                }
+            }
+
             return "";
         }
 
@@ -57,6 +74,7 @@ namespace TKUOF.TRIGGER.PURTAB
             queryString.AppendFormat(@"
                                         UPDATE [TK].dbo.PURTA SET TA007='Y' WHERE TA001=@TA001 AND TA002=@TA002 
                                         UPDATE [TK].dbo.PURTB SET TB025='Y' WHERE TB001=@TA001 AND TB002=@TA002 
+                                        UPDATE [TK].dbo.PURTA SET TA016='3' WHERE TA001=@TA001 AND TA002=@TA002 
 
                                         ");
 
@@ -87,6 +105,84 @@ namespace TKUOF.TRIGGER.PURTAB
                
             }
                 
+        }
+
+        public void UPDATEPURTABCANCEL(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@"                                       
+                                        UPDATE [TK].dbo.PURTA SET TA016='0' WHERE TA001=@TA001 AND TA002=@TA002 
+
+                                        ");
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
+                    command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+        }
+
+        public void UPDATEPURTABREJECT(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@"                                      
+                                        UPDATE [TK].dbo.PURTA SET TA016='0' WHERE TA001=@TA001 AND TA002=@TA002 
+
+                                        ");
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
+                    command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
         }
     }
 }
