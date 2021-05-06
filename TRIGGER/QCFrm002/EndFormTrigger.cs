@@ -64,9 +64,14 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             ////建立節點Applicant
             XmlElement Applicant = xmlDoc.CreateElement("Applicant");
+
             Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
             Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
             Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
+
+            //Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
+            //Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
+            //Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
             //加入節點底下
             Form.AppendChild(Applicant);
 
