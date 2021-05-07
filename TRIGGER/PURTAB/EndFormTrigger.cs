@@ -85,7 +85,7 @@ namespace TKUOF.TRIGGER.PURTAB
                                         UPDATE [TK].dbo.PURTA SET TA007='Y' WHERE TA001=@TA001 AND TA002=@TA002 
                                         UPDATE [TK].dbo.PURTB SET TB025='Y' WHERE TB001=@TA001 AND TB002=@TA002 
                                         UPDATE [TK].dbo.PURTA SET TA016='3' WHERE TA001=@TA001 AND TA002=@TA002 
-                                        UPDATE [TK].dbo.PURTA SET UDF02={0} WHERE TA001=@TA001 AND TA002=@TA002 
+                                        UPDATE [TK].dbo.PURTA SET UDF02='{0}' WHERE TA001=@TA001 AND TA002=@TA002 
                                         ", FORMID);
 
             try
