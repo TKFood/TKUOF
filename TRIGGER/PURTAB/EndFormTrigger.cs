@@ -16,6 +16,8 @@ using System.Xml;
 
 namespace TKUOF.TRIGGER.PURTAB
 {
+    //請購單的核準
+
     class EndFormTrigger : ICallbackTriggerPlugin
     {
         public void Finally()
