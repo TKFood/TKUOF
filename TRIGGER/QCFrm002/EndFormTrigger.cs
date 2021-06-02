@@ -25,6 +25,7 @@ namespace TKUOF.TRIGGER.QCFrm002
         //要記得改成正式-1 
         //要記得改成正式-2
         //要記得改成正式-3
+        //要記得改成正式-4
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
 
@@ -423,6 +424,8 @@ namespace TKUOF.TRIGGER.QCFrm002
             string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
+
+            //要記得改成正式-4
             queryString.AppendFormat(@"
                                         UPDATE [UOFTEST].dbo.TB_WKF_TASK
                                         SET ATTACH_ID='{1}'
