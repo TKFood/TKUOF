@@ -43,6 +43,10 @@
     <Reference Include="Ede.Uof.Utility.Data">
       <HintPath>..\UOF18\bin\Ede.Uof.Utility.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Ede.Uof.Utility.FileCenter, Version=20.0.7668.28799, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UOF18\bin\Ede.Uof.Utility.FileCenter.dll</HintPath>
+    </Reference>
     <Reference Include="Ede.Uof.Utility.Log">
       <HintPath>..\UOF18\bin\Ede.Uof.Utility.Log.dll</HintPath>
     </Reference>
