@@ -14,6 +14,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using System.Xml.Linq;
+using Ede.Uof.Utility.Log;
 
 namespace TKUOF.TRIGGER.QCFrm002
 {
@@ -47,18 +48,25 @@ namespace TKUOF.TRIGGER.QCFrm002
 
         public void ADDTB_WKF_EXTERNAL_TASK(ApplyTask applyTask)
         {
+            //要記得改成正式-1 
+            //要記得改成正式-2
+
             //將applyTask轉成xml再取值，只取到文字的部份，不包含字型
             XElement xe = XElement.Parse(applyTask.CurrentDocXML);
 
             XmlDocument xmlDoc = new XmlDocument();
             //建立根節點
             XmlElement Form = xmlDoc.CreateElement("Form");
-            //測試的id
-            //Form.SetAttribute("formVersionId", "56ea12d6-ba6b-4e2b-8ae0-9e82f47298e0");
-            //正式的id            
-            Form.SetAttribute("formVersionId", "1cc71c35-0a2c-490c-b733-f887b7975b17");
 
+            //要記得改成正式-1 
+            //測試的id
+            Form.SetAttribute("formVersionId", "80a70ec7-3fa6-4b6c-9d5a-2711a6563164");
             Form.SetAttribute("urgentLevel", "2");
+
+            //正式的id            
+            //Form.SetAttribute("formVersionId", "1cc71c35-0a2c-490c-b733-f887b7975b17");
+            //Form.SetAttribute("urgentLevel", "2");
+
             //加入節點底下
             xmlDoc.AppendChild(Form);
 
@@ -69,9 +77,6 @@ namespace TKUOF.TRIGGER.QCFrm002
             Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
             Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
 
-            //Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
-            //Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
-            //Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
             //加入節點底下
             Form.AppendChild(Applicant);
 
@@ -96,7 +101,7 @@ namespace TKUOF.TRIGGER.QCFrm002
             FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
             FieldItem.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
             FieldItem.SetAttribute("fillerAccount", applyTask.Task.Applicant.Account);
-            FieldItem.SetAttribute("fillSiteId", "");      
+            FieldItem.SetAttribute("fillSiteId", "");
 
             //加入至members節點底下
             FormFieldValue.AppendChild(FieldItem);
@@ -271,52 +276,87 @@ namespace TKUOF.TRIGGER.QCFrm002
             //加入至members節點底下
             FormFieldValue.AppendChild(FieldItem);
 
+            //用ADDTACK，直接啟動起單
+            ADDTACK(Form);
 
-            //ADD TO DB
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            ////ADD TO DB
+            //string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
 
-            StringBuilder queryString = new StringBuilder();
+            //StringBuilder queryString = new StringBuilder();
 
+            ////要記得改成正式-2
             ////UOFTEST
-            ///
+            ////
             //queryString.AppendFormat(@" INSERT INTO [UOFTEST].dbo.TB_WKF_EXTERNAL_TASK
             //                             (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
             //                            VALUES (NEWID(),@XML,2)
             //                            ");
-            //UOF
-            //
-            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
-                                         (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
-                                        VALUES (NEWID(),@XML,2)
-                                        ");
+            //////UOF
+            //////
+            ////queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+            ////                             (EXTERNAL_TASK_ID,FORM_INFO,STATUS)
+            ////                            VALUES (NEWID(),@XML,2)
+            ////                            ");
 
-            try
+            //try
+            //{
+            //    using (SqlConnection connection = new SqlConnection(connectionString))
+            //    {
+
+            //        SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+            //        command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = Form.OuterXml;
+
+            //        command.Connection.Open();
+
+            //        int count = command.ExecuteNonQuery();
+
+            //        connection.Close();
+            //        connection.Dispose();
+
+            //    }
+            //}
+            //catch
+            //{
+
+            //}
+            //finally
+            //{
+
+            //}
+
+
+        }
+
+        public void ADDTACK(XmlElement Form)
+        {
+            Ede.Uof.WKF.Utility.TaskUtilityUCO taskUCO = new Ede.Uof.WKF.Utility.TaskUtilityUCO();
+
+            string result = taskUCO.WebService_CreateTask(Form.OuterXml);
+
+            XElement resultXE = XElement.Parse(result);
+
+            string status = "";
+            string formNBR = "";
+            string error = "";
+
+            if (resultXE.Element("Status").Value == "1")
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
+                status = "起單成功!";
+                formNBR = resultXE.Element("FormNumber").Value;
 
-                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-                    command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = Form.OuterXml;
+                Logger.Write("TEST", status + formNBR);
 
-                    command.Connection.Open();
-
-                    int count = command.ExecuteNonQuery();
-
-                    connection.Close();
-                    connection.Dispose();
-
-                }
             }
-            catch
+            else
             {
+                status = "起單失敗!";
+                error = resultXE.Element("Exception").Element("Message").Value;
+
+                Logger.Write("TEST", status + error + "\r\n" + Form.OuterXml);
+
+                throw new Exception(status + error + "\r\n" + Form.OuterXml);
 
             }
-            finally
-            {
-
-            }
-
-
         }
 
     //    public void ADD()
