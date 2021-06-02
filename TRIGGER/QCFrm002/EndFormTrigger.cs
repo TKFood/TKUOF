@@ -51,6 +51,11 @@ namespace TKUOF.TRIGGER.QCFrm002
             //要記得改成正式-1 
             //要記得改成正式-2
 
+            //要記得改成正式-1
+            //測試ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+            //正式ID="1cc71c35-0a2c-490c-b733-f887b7975b17"
+            string ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+
             //將applyTask轉成xml再取值，只取到文字的部份，不包含字型
             XElement xe = XElement.Parse(applyTask.CurrentDocXML);
 
@@ -58,14 +63,11 @@ namespace TKUOF.TRIGGER.QCFrm002
             //建立根節點
             XmlElement Form = xmlDoc.CreateElement("Form");
 
-            //要記得改成正式-1 
-            //測試的id
-            Form.SetAttribute("formVersionId", "80a70ec7-3fa6-4b6c-9d5a-2711a6563164");
+            //formVersionId
+            Form.SetAttribute("formVersionId", ID);
+            //urgentLevel
             Form.SetAttribute("urgentLevel", "2");
-
-            //正式的id            
-            //Form.SetAttribute("formVersionId", "1cc71c35-0a2c-490c-b733-f887b7975b17");
-            //Form.SetAttribute("urgentLevel", "2");
+                       
 
             //加入節點底下
             xmlDoc.AppendChild(Form);

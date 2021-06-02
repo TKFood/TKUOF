@@ -92,4 +92,3 @@ C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\System.Numerics.Vectors.xml
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\System.Memory.xml
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\System.Buffers.xml
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
-C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csprojAssemblyReference.cache
