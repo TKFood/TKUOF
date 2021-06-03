@@ -27,6 +27,13 @@ namespace TKUOF.TRIGGER.QCFrm002
         //要記得改成正式-3
         //要記得改成正式-4
 
+        //測試ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+        //正式ID ="1cc71c35-0a2c-490c-b733-f887b7975b17"
+        //測試DB DBNAME = "UOFTEST";
+        //正式DB DBNAME = "UOF";
+        string ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+        string DBNAME = "UOFTEST";
+
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
 
         string OLDTASK_ID = null;
@@ -72,9 +79,9 @@ namespace TKUOF.TRIGGER.QCFrm002
             //要記得改成正式-3
             queryString.AppendFormat(@" 
                                     SELECT ATTACH_ID
-                                    FROM [UOFTEST].[dbo].[TB_WKF_TASK]
-                                    WHERE TASK_ID='{0}'
-                                    ", OLDTASK_ID);
+                                    FROM [{0}].[dbo].[TB_WKF_TASK]
+                                    WHERE TASK_ID='{1}'
+                                    ", DBNAME, OLDTASK_ID);
 
             adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
             sqlCmdBuilder = new SqlCommandBuilder(adapter);
@@ -106,9 +113,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
 
             //要記得改成正式-1
-            //測試ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
-            //正式ID="1cc71c35-0a2c-490c-b733-f887b7975b17"
-            string ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+
 
             //將applyTask轉成xml再取值，只取到文字的部份，不包含字型
             XElement xe = XElement.Parse(applyTask.CurrentDocXML);
@@ -427,10 +432,10 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             //要記得改成正式-4
             queryString.AppendFormat(@"
-                                        UPDATE [UOFTEST].dbo.TB_WKF_TASK
-                                        SET ATTACH_ID='{1}'
-                                        WHERE DOC_NBR='{0}'
-                                        ", NEWTASK_ID, newID.ToString());
+                                        UPDATE [{0}].dbo.TB_WKF_TASK
+                                        SET ATTACH_ID='{2}'
+                                        WHERE DOC_NBR='{1}'
+                                        ", DBNAME, NEWTASK_ID, newID.ToString());
 
             try
             {
