@@ -28,11 +28,11 @@ namespace TKUOF.TRIGGER.QCFrm002
         //要記得改成正式-4
 
         //測試ID = "f04d8109-9aef-42c2-8542-d91cb6f9776d";
-        //正式ID ="1cc71c35-0a2c-490c-b733-f887b7975b17"
+        //正式ID = "59d8af9d-734f-4bb4-91a1-11d3b7c2ea3d"
         //測試DB DBNAME = "UOFTEST";
         //正式DB DBNAME = "UOF";
-        string ID = "f04d8109-9aef-42c2-8542-d91cb6f9776d";
-        string DBNAME = "UOFTEST";
+        string ID = "59d8af9d-734f-4bb4-91a1-11d3b7c2ea3d";
+        string DBNAME = "UOF";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
 
