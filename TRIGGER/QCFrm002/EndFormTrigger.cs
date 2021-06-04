@@ -27,11 +27,11 @@ namespace TKUOF.TRIGGER.QCFrm002
         //要記得改成正式-3
         //要記得改成正式-4
 
-        //測試ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+        //測試ID = "f04d8109-9aef-42c2-8542-d91cb6f9776d";
         //正式ID ="1cc71c35-0a2c-490c-b733-f887b7975b17"
         //測試DB DBNAME = "UOFTEST";
         //正式DB DBNAME = "UOF";
-        string ID = "80a70ec7-3fa6-4b6c-9d5a-2711a6563164";
+        string ID = "f04d8109-9aef-42c2-8542-d91cb6f9776d";
         string DBNAME = "UOFTEST";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
@@ -183,7 +183,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             //申請者 QCFrm002User> QCFrmB001User
             FieldItem = xmlDoc.CreateElement("FieldItem");
-            FieldItem.SetAttribute("fieldId", "QCFrmB001User");
+            FieldItem.SetAttribute("fieldId", "QCFrm001User");
             FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002User"].FieldValue.ToString().Trim());
             FieldItem.SetAttribute("realValue", "");
             FieldItem.SetAttribute("enableSearch", "True");
@@ -313,7 +313,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             //原因分析 QCFrm002Cmf> QCFrm001RCA
             FieldItem = xmlDoc.CreateElement("FieldItem");
-            FieldItem.SetAttribute("fieldId", "QCFrm001RCA");
+            FieldItem.SetAttribute("fieldId", "QCFrm002Cmf");
             FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Cmf"].FieldValue.ToString().Trim());
             FieldItem.SetAttribute("realValue", "");
             FieldItem.SetAttribute("enableSearch", "True");
@@ -324,10 +324,23 @@ namespace TKUOF.TRIGGER.QCFrm002
             //加入至members節點底下
             FormFieldValue.AppendChild(FieldItem);
 
-            //原因分析填寫人 QCFrm002RCAU > QCFrm001RCAU
+            //原因分析 QCFrm002Abn > QCFrm002Abn
             FieldItem = xmlDoc.CreateElement("FieldItem");
-            FieldItem.SetAttribute("fieldId", "QCFrm001RCAU");
-            FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002RCAU"].FieldValue.ToString().Trim());
+            FieldItem.SetAttribute("fieldId", "QCFrm002Abn");
+            FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abn"].FieldValue.ToString().Trim());
+            FieldItem.SetAttribute("realValue", "");
+            FieldItem.SetAttribute("enableSearch", "True");
+            FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
+            FieldItem.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
+            FieldItem.SetAttribute("fillerAccount", applyTask.Task.Applicant.Account);
+            FieldItem.SetAttribute("fillSiteId", "");
+            //加入至members節點底下
+            FormFieldValue.AppendChild(FieldItem);
+
+            //原因 QCFrm002Abns
+            FieldItem = xmlDoc.CreateElement("FieldItem");
+            FieldItem.SetAttribute("fieldId", "QCFrm002Abns");
+            FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abns"].FieldValue.ToString().Trim());
             FieldItem.SetAttribute("realValue", "");
             FieldItem.SetAttribute("enableSearch", "True");
             FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
