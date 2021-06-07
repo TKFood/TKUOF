@@ -48,11 +48,18 @@ namespace TKUOF.AUTONO
             if(dt.Rows.Count>=1)
             {
                 string MAXNO= TRACK_ID + DateTime.Now.ToString("yyyy")+ DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")+ GETMAXNO(dt.Rows[0]["CURRENT_NO"].ToString());
+
+                UPDATETK_WKF_AUTONO(MAXNO);
+
                 return MAXNO;
             }
             else 
             {
-                return TRACK_ID + DateTime.Now.ToString("yyyy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd") + "0001";
+                string MAXNO = TRACK_ID + DateTime.Now.ToString("yyyy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd") + "0001";
+
+                INSERTTK_WKF_AUTONO(MAXNO);
+
+                return MAXNO;
             }
             
             //throw new NotImplementedException();
@@ -82,6 +89,85 @@ namespace TKUOF.AUTONO
             else
             {
                 return "0001";
+            }
+        }
+
+        public void UPDATETK_WKF_AUTONO(string MAXNO)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@"
+                                        UPDATE [UOF].[dbo].[TK_WKF_AUTONO]
+                                        SET [CURRENT_NO]=@MAXNO
+                                        WHERE [TRACK_ID]='{0}' AND [AUTO_YEAR]='{1}' AND [AUTO_MONTH]='{2}' AND [AUTO_DAY]='{3}'
+                                        ", TRACK_ID, DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"), DateTime.Now.ToString("dd"));
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@MAXNO", SqlDbType.NVarChar).Value = MAXNO;
+          
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void INSERTTK_WKF_AUTONO(string MAXNO)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.AppendFormat(@"
+                                        INSERT INTO  [UOF].[dbo].[TK_WKF_AUTONO]
+                                        ([TRACK_ID],[AUTO_YEAR],[AUTO_MONTH],[AUTO_DAY],[CURRENT_NO])
+                                        VALUES
+                                        ('{0}','{1}','{2}','{3}',@MAXNO)
+                                      ", TRACK_ID, DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"), DateTime.Now.ToString("dd"));
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@MAXNO", SqlDbType.NVarChar).Value = MAXNO;
+                 
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
             }
         }
     }
