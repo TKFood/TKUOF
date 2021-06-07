@@ -170,6 +170,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             //建立節點FieldItem
             //QCFrm001ASN 表單編號	
+            FieldItem = xmlDoc.CreateElement("FieldItem");
             FieldItem.SetAttribute("fieldId", "QCFrm001ASN");
             FieldItem.SetAttribute("fieldValue", applyTask.Task.FormNumber);
             FieldItem.SetAttribute("realValue", "");
