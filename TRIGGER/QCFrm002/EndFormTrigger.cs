@@ -28,10 +28,10 @@ namespace TKUOF.TRIGGER.QCFrm002
         //要記得改成正式-4
 
         //測試ID = "f04d8109-9aef-42c2-8542-d91cb6f9776d";
-        //正式ID = "bcf8b9f6-73d5-4c3a-8990-414044881fa2"
+        //正式ID = "a50c06ad-dc41-484e-9908-08626c6fd483"
         //測試DB DBNAME = "UOFTEST";
         //正式DB DBNAME = "UOF";
-        string ID = "bcf8b9f6-73d5-4c3a-8990-414044881fa2";
+        string ID = "a50c06ad-dc41-484e-9908-08626c6fd483";
         string DBNAME = "UOF";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
@@ -157,6 +157,21 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlElement FieldItem = xmlDoc.CreateElement("FieldItem");
             FieldItem.SetAttribute("fieldId", "QCFrm001SN");
             FieldItem.SetAttribute("fieldValue", "");
+            FieldItem.SetAttribute("realValue", "");
+            FieldItem.SetAttribute("enableSearch", "True");
+            FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
+            FieldItem.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
+            FieldItem.SetAttribute("fillerAccount", applyTask.Task.Applicant.Account);
+            FieldItem.SetAttribute("fillSiteId", "");
+
+            //加入至members節點底下
+            FormFieldValue.AppendChild(FieldItem);
+
+
+            //建立節點FieldItem
+            //QCFrm001ASN 表單編號	
+            FieldItem.SetAttribute("fieldId", "QCFrm001ASN");
+            FieldItem.SetAttribute("fieldValue", applyTask.Task.FormNumber);
             FieldItem.SetAttribute("realValue", "");
             FieldItem.SetAttribute("enableSearch", "True");
             FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
