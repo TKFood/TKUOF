@@ -100,12 +100,12 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
 
                     if (!string.IsNullOrEmpty(FORMID) && !string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
                     {
-                        ADDSQL = ADDSQL+SETPURTABUOFCHANGE(FORMID, TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012);
+                        ADDSQL = ADDSQL+ SETPURTATBUOFCHANGE(FORMID, TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012);
                         ADDSQL = ADDSQL + " ";
                     }
                 }
 
-                ADDPURTABUOFCHANGE(FORMID,TA001,TA002, ADDSQL);
+                ADDPURTATBUOFCHANGE(FORMID,TA001,TA002, ADDSQL);
             }
        
 
@@ -117,11 +117,11 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             
         }
 
-        public string SETPURTABUOFCHANGE(string FORMID, string TA001, string TA002, string TA006, string TB003, string TB004, string TB009, string TB011, string TB012)
+        public string SETPURTATBUOFCHANGE(string FORMID, string TA001, string TA002, string TA006, string TB003, string TB004, string TB009, string TB011, string TB012)
         {
             StringBuilder SQL = new StringBuilder();
             SQL.AppendFormat(@" 
-                                INSERT INTO [TKPUR].[dbo].[PURTABUOFCHANGE]
+                                INSERT INTO [TKPUR].[dbo].[PURTATBUOFCHANGE]
                                 ([FORMID],[TA001],[TA002],[TA006],[TB003],[TB004],[TB009],[TB011],[TB012])
                                 VALUES
                                 (@FORMID,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
@@ -131,7 +131,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             return SQL.ToString();
         }
 
-        public void ADDPURTABUOFCHANGE(string FORMID,string TA001,string TA002,string ADDSQL)
+        public void ADDPURTATBUOFCHANGE(string FORMID,string TA001,string TA002,string ADDSQL)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
@@ -176,23 +176,23 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                         UPDATE [TK].[dbo].[PURTA]
-                                        SET [PURTA].[TA006]=[PURTABUOFCHANGE].[TA006]
-                                        FROM [TKPUR].[dbo].[PURTABUOFCHANGE]
+                                        SET [PURTA].[TA006]=[PURTATBUOFCHANGE].[TA006]
+                                        FROM [TKPUR].[dbo].[PURTATBUOFCHANGE]
                                         WHERE [PURTA].TA001=@TA001 AND [PURTA].TA002=@TA002
-                                        AND [PURTABUOFCHANGE].FORMID=@FORMID
+                                        AND [PURTATBUOFCHANGE].FORMID=@FORMID
 
                                         UPDATE [TK].[dbo].[PURTB]
-                                        SET [PURTB].[TB004]=[PURTABUOFCHANGE].[TB004],[PURTB].[TB009]=[PURTABUOFCHANGE].[TB009],[PURTB].[TB011]=[PURTABUOFCHANGE].[TB011],[PURTB].[TB012]=[PURTABUOFCHANGE].[TB012]
+                                        SET [PURTB].[TB004]=[PURTATBUOFCHANGE].[TB004],[PURTB].[TB009]=[PURTATBUOFCHANGE].[TB009],[PURTB].[TB011]=[PURTATBUOFCHANGE].[TB011],[PURTB].[TB012]=[PURTATBUOFCHANGE].[TB012]
                                         ,[PURTB].[TB005]=INVMB.MB002
                                         ,[PURTB].[TB006]=INVMB.MB003
                                         ,[PURTB].[TB007]=INVMB.MB004
                                         ,[PURTB].[TB017]=INVMB.MB050 
-                                        ,[PURTB].[TB018]=(MB050*[PURTABUOFCHANGE].[TB009]) 
-                                        FROM [TKPUR].[dbo].[PURTABUOFCHANGE],[TK].dbo.INVMB
-                                        WHERE [PURTABUOFCHANGE].TB004=INVMB.MB001
-                                        AND [PURTB].TB003=[PURTABUOFCHANGE].TB003
+                                        ,[PURTB].[TB018]=(MB050*[PURTATBUOFCHANGE].[TB009]) 
+                                        FROM [TKPUR].[dbo].[PURTATBUOFCHANGE],[TK].dbo.INVMB
+                                        WHERE [PURTATBUOFCHANGE].TB004=INVMB.MB001
+                                        AND [PURTB].TB003=[PURTATBUOFCHANGE].TB003
                                         AND [PURTB].TB001=@TA001 AND [PURTB].TB002=@TA002
-                                        AND [PURTABUOFCHANGE].FORMID=@FORMID
+                                        AND [PURTATBUOFCHANGE].FORMID=@FORMID
 
                                         INSERT INTO [TK].[dbo].[PURTB]
                                         (
@@ -210,8 +210,8 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                         ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]
                                         )
                                         SELECT [PURTB].[COMPANY],[PURTB].[CREATOR],[PURTB].[USR_GROUP],[PURTB].[CREATE_DATE],[PURTB].[MODIFIER],[PURTB].[MODI_DATE],[PURTB].[FLAG],[PURTB].[CREATE_TIME],[PURTB].[MODI_TIME],[PURTB].[TRANS_TYPE],[PURTB].[TRANS_NAME],[PURTB].[sync_date],[PURTB].[sync_time],[PURTB].[sync_mark],[PURTB].[sync_count],[PURTB].[DataUser],[PURTB].[DataGroup]
-                                        ,[TB001],[TB002],[PURTABUOFCHANGE].[TB003] TB003,[PURTABUOFCHANGE].[TB004] TB004,INVMB.MB002 [TB005],INVMB.MB003 [TB006],INVMB.MB004 [TB007],[TB008],[PURTABUOFCHANGE].[TB009] TB009,MB032 [TB010]
-                                        ,[PURTABUOFCHANGE].[TB011] TB011,[PURTABUOFCHANGE].[TB012] TB012,[TB013],[TB014],[TB015],[TB016],MB050 [TB017],(MB050*[PURTABUOFCHANGE].[TB009]) [TB018], [TB019],[TB020]
+                                        ,[TB001],[TB002],[PURTATBUOFCHANGE].[TB003] TB003,[PURTATBUOFCHANGE].[TB004] TB004,INVMB.MB002 [TB005],INVMB.MB003 [TB006],INVMB.MB004 [TB007],[TB008],[PURTATBUOFCHANGE].[TB009] TB009,MB032 [TB010]
+                                        ,[PURTATBUOFCHANGE].[TB011] TB011,[PURTATBUOFCHANGE].[TB012] TB012,[TB013],[TB014],[TB015],[TB016],MB050 [TB017],(MB050*[PURTATBUOFCHANGE].[TB009]) [TB018], [TB019],[TB020]
                                         ,[TB021],[TB022],[TB023],[TB024],'Y' [TB025],[TB026],[TB027],[TB028],[TB029],[TB030]
                                         ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]
                                         ,[TB041],[TB042],[TB043],[TB044],[TB045],[TB046],[TB047],[TB048],[TB049],[TB050]
@@ -221,12 +221,12 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                         ,[TB081],[TB082],[TB083],[TB084],[TB085],[TB086],[TB087],[TB088],[TB089],[TB090]
                                         ,[TB091],[TB092],[TB093],[TB094],[TB095],[TB096],[TB097],[TB098],[TB099]
                                         ,[PURTB].[UDF01],[PURTB].[UDF02],[PURTB].[UDF03],[PURTB].[UDF04],[PURTB].[UDF05],[PURTB].[UDF06],[PURTB].[UDF07],[PURTB].[UDF08],[PURTB].[UDF09],[PURTB].[UDF10]
-                                        FROM [TK].[dbo].[PURTB],[TKPUR].[dbo].[PURTABUOFCHANGE],[TK].dbo.INVMB
-                                        WHERE [PURTABUOFCHANGE].TA001=[PURTB].TB001 AND [PURTABUOFCHANGE].TA002=[PURTB].TB002 
-                                        AND [PURTABUOFCHANGE].TB004=INVMB.MB001
-                                        AND [PURTABUOFCHANGE].TB003 NOT IN (SELECT TB003 FROM [TK].[dbo].[PURTB] WHERE TB001=@TA001 AND TB002=@TA002)
+                                        FROM [TK].[dbo].[PURTB],[TKPUR].[dbo].[PURTATBUOFCHANGE],[TK].dbo.INVMB
+                                        WHERE [PURTATBUOFCHANGE].TA001=[PURTB].TB001 AND [PURTATBUOFCHANGE].TA002=[PURTB].TB002  AND [PURTB].TB003=(SELECT TOP 1 TB003 FROM [TK].[dbo].[PURTB] WHERE  [PURTB].TB001=@TA001 AND [PURTB].TB002=@TA002)
+                                        AND [PURTATBUOFCHANGE].TB004=INVMB.MB001
+                                        AND [PURTATBUOFCHANGE].TB003 NOT IN (SELECT TB003 FROM [TK].[dbo].[PURTB] WHERE TB001=@TA001 AND TB002=@TA002)
                                         AND [PURTB].TB001=@TA001 AND [PURTB].TB002=@TA002
-                                        AND [PURTABUOFCHANGE].FORMID=@FORMID
+                                        AND [PURTATBUOFCHANGE].FORMID=@FORMID
 
                                         ");
 
