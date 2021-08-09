@@ -31,7 +31,9 @@ namespace TKUOF.TRIGGER.QCFrm002
         //正式ID = "a50c06ad-dc41-484e-9908-08626c6fd483"
         //測試DB DBNAME = "UOFTEST";
         //正式DB DBNAME = "UOF";
-        string ID = "a50c06ad-dc41-484e-9908-08626c6fd483";
+        
+        //品保的1002單轉成10001
+        string ID = "84913a78-0d84-4914-90f5-a00a3a2c7d89";
         string DBNAME = "UOF";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
