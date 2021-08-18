@@ -176,7 +176,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                         UPDATE [TK].[dbo].[PURTA]
-                                        SET [PURTA].[TA006]=[PURTATBUOFCHANGE].[TA006]
+                                        SET [PURTA].[TA006]=[PURTATBUOFCHANGE].[TA006], [PURTA].[UDF04]=@FORMID
                                         FROM [TKPUR].[dbo].[PURTATBUOFCHANGE]
                                         WHERE [PURTA].TA001=@TA001 AND [PURTA].TA002=@TA002
                                         AND [PURTATBUOFCHANGE].FORMID=@FORMID
