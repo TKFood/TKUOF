@@ -31,20 +31,24 @@ namespace TKUOF.TRIGGER.COPTCD
             string TC002 = null;
             string FORMID= null;
             string MODIFIER = null;
+            string MOC = null;
+            string PUR = null;
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
             TC001 = applyTask.Task.CurrentDocument.Fields["TC001"].FieldValue.ToString().Trim();
             TC002 = applyTask.Task.CurrentDocument.Fields["TC002"].FieldValue.ToString().Trim();
+            MOC = applyTask.Task.CurrentDocument.Fields["MOC"].FieldValue.ToString().Trim();
+            PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
             MODIFIER = applyTask.Task.Applicant.Account;
 
-            ///核準
-            if (applyTask.SignResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
+            ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
+            if (applyTask.SignResult== Ede.Uof.WKF.Engine.SignResult.Approve)
             {
                 if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
                 {
-                    UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER);
+                    UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR);
                 }
             }
            
@@ -57,7 +61,7 @@ namespace TKUOF.TRIGGER.COPTCD
             
         }
 
-        public void UPDATECOPTCD(string TC001, string TC002, string FORMID, string MODIFIER)
+        public void UPDATECOPTCD(string TC001, string TC002, string FORMID, string MODIFIER,string MOC,string PUR)
         {
             string TC027 = "Y";
             string TC048 = "N";
@@ -73,6 +77,7 @@ namespace TKUOF.TRIGGER.COPTCD
                                     UPDATE [TK].dbo.COPTC
                                     SET TC027=@TC027,TC048=@TC048, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
                                     ,UDF03=@FORMID
+                                    ,UDF05=@MOC+' '+@MOC
                                     WHERE TC001=@TC001 AND TC002=@TC002
 
                                     UPDATE [TK].dbo.COPTD 
@@ -86,8 +91,8 @@ namespace TKUOF.TRIGGER.COPTCD
                 {
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-                    command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TC001;
-                    command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TC002;
+                    command.Parameters.Add("@TC001", SqlDbType.NVarChar).Value = TC001;
+                    command.Parameters.Add("@TC002", SqlDbType.NVarChar).Value = TC002;
                     command.Parameters.Add("@FORMID", SqlDbType.NVarChar).Value = FORMID;
                     command.Parameters.Add("@TC027", SqlDbType.NVarChar).Value = TC027;
                     command.Parameters.Add("@TC048", SqlDbType.NVarChar).Value = TC048;
@@ -96,6 +101,8 @@ namespace TKUOF.TRIGGER.COPTCD
                     command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = MODIFIER;
                     command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = MODI_DATE;
                     command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = MODI_TIME;
+                    command.Parameters.Add("@MOC", SqlDbType.NVarChar).Value = MOC;
+                    command.Parameters.Add("@PUR", SqlDbType.NVarChar).Value = PUR;
 
                     command.Connection.Open();
 
