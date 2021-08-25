@@ -38,8 +38,8 @@ namespace TKUOF.TRIGGER.COPTEF
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
             TE001 = applyTask.Task.CurrentDocument.Fields["TE001"].FieldValue.ToString().Trim();
-            TE003 = applyTask.Task.CurrentDocument.Fields["TE002"].FieldValue.ToString().Trim();
-            TE002 = applyTask.Task.CurrentDocument.Fields["TE003"].FieldValue.ToString().Trim();
+            TE002 = applyTask.Task.CurrentDocument.Fields["TE002"].FieldValue.ToString().Trim();
+            TE003 = applyTask.Task.CurrentDocument.Fields["TE003"].FieldValue.ToString().Trim();
             MOC = applyTask.Task.CurrentDocument.Fields["MOC"].FieldValue.ToString().Trim();
             PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
@@ -186,6 +186,7 @@ namespace TKUOF.TRIGGER.COPTEF
                                     WHERE TD001+TD002=TE001+TE002
                                     AND TE005='Y'
                                     WHERE TE001=@TE001 AND TE002=@TE002
+
                                         ");
 
             try
@@ -202,6 +203,9 @@ namespace TKUOF.TRIGGER.COPTEF
                     command.Parameters.Add("@TF001", SqlDbType.NVarChar).Value = TE001;
                     command.Parameters.Add("@TF002", SqlDbType.NVarChar).Value = TE002;
                     command.Parameters.Add("@TF003", SqlDbType.NVarChar).Value = TE003;
+                    command.Parameters.Add("@TE029", SqlDbType.NVarChar).Value = TE029;
+                    command.Parameters.Add("@TE044", SqlDbType.NVarChar).Value = TE044;
+                    command.Parameters.Add("@TF019", SqlDbType.NVarChar).Value = TF019;
                     command.Parameters.Add("@FORMID", SqlDbType.NVarChar).Value = FORMID;                    
                     command.Parameters.Add("@COMPANY", SqlDbType.NVarChar).Value = COMPANY;
                     command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = MODIFIER;
