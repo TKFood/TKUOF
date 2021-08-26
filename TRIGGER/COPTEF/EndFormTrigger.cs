@@ -133,11 +133,11 @@ namespace TKUOF.TRIGGER.COPTEF
 
                                     UPDATE [TK].dbo.COPTE
                                     SET TE029=@TE029,TE044=@TE044, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
-                                    AND TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
+                                    WHERE TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
 
                                     UPDATE [TK].dbo.COPTF 
                                     SET TF019=@TF019, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
-                                    AND TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
+                                    WHERE TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
 
                                     --更新COPTC的未稅、稅額、總金額
                                     UPDATE [TK].dbo.COPTC
@@ -180,13 +180,25 @@ namespace TKUOF.TRIGGER.COPTEF
                                     ,TC044=(SELECT ISNULL(SUM(TD031),0) FROM [TK].dbo.COPTD WHERE TD001+TD002=TC001+TC002)
                                     WHERE TC001=@TE001 AND TC002=@TE002
 
+                                    --如果變更單指定結案，原訂單也指定結案
                                     UPDATE [TK].dbo.COPTD
                                     SET TD016='y'
                                     FROM [TK].dbo.COPTE
                                     WHERE TD001+TD002=TE001+TE002
                                     AND TE005='Y'
-                                    WHERE TE001=@TE001 AND TE002=@TE002
+                                    AND TE001=@TE001 AND TE002=@TE002   AND TE003=@TE003
 
+                                    --更新變單表單的編號到COPTD、COPTE
+                                    --更新PUR、MOC備註到COPTD、COPTE
+
+                                    UPDATE [TK].dbo.COPTD
+                                    SET UDF04=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    WHERE TD001=@TD001 AND TD002=@TD002
+ 
+                                    UPDATE [TK].dbo.COPTE
+                                    SET UDF02=@FORMID,UDF03=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    WHERE TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
+                    
                                         ");
 
             try

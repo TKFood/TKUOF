@@ -77,7 +77,7 @@ namespace TKUOF.TRIGGER.COPTCD
                                     UPDATE [TK].dbo.COPTC
                                     SET TC027=@TC027,TC048=@TC048, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
                                     ,UDF03=@FORMID
-                                    ,UDF05=@MOC+' '+@MOC
+                                    ,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
                                     WHERE TC001=@TC001 AND TC002=@TC002
 
                                     UPDATE [TK].dbo.COPTD 
