@@ -191,12 +191,12 @@ namespace TKUOF.TRIGGER.COPTEF
                                     --更新變單表單的編號到COPTD、COPTE
                                     --更新PUR、MOC備註到COPTD、COPTE
 
-                                    UPDATE [TK].dbo.COPTD
+                                    UPDATE [TK].dbo.COPTC
                                     SET UDF04=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
-                                    WHERE TD001=@TD001 AND TD002=@TD002
+                                    WHERE TC001=@TC001 AND TC002=@TC002
  
                                     UPDATE [TK].dbo.COPTE
-                                    SET UDF02=@FORMID,UDF03=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    SET UDF02=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
                                     WHERE TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
                     
                                         ");
@@ -207,6 +207,8 @@ namespace TKUOF.TRIGGER.COPTEF
                 {
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@TC001", SqlDbType.NVarChar).Value = TE001;
+                    command.Parameters.Add("@TC002", SqlDbType.NVarChar).Value = TE002;
                     command.Parameters.Add("@TD001", SqlDbType.NVarChar).Value = TE001;
                     command.Parameters.Add("@TD002", SqlDbType.NVarChar).Value = TE002;
                     command.Parameters.Add("@TE001", SqlDbType.NVarChar).Value = TE001;
