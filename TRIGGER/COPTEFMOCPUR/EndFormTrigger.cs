@@ -77,7 +77,7 @@ namespace TKUOF.TRIGGER.COPTEFMOCPUR
                                     --更新PUR、MOC備註到COPTD、COPTE
 
                                     UPDATE [TK].dbo.COPTC
-                                    SET UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    SET UDF05=SUBSTRING((UDF05+' '+@MOC+' '+@PUR),1,250)
                                     WHERE TC001=@TC001 AND TC002=@TC002
  
                                     UPDATE [TK].dbo.COPTE
