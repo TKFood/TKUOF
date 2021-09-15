@@ -52,15 +52,20 @@ namespace TKUOF.TRIGGER.QCFrm002
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 //ADD();
-                OLDTASK_ID = applyTask.TaskId;
-                ATTACH_ID = SEARCHATTACH_ID(OLDTASK_ID);
-
-                ADDTB_WKF_EXTERNAL_TASK(applyTask);
-
-                if(!string.IsNullOrEmpty(NEWTASK_ID)&& !string.IsNullOrEmpty(ATTACH_ID))
+                if(applyTask.Task.CurrentDocument.Fields["QCFrm002QCC"].FieldValue.ToString().Trim().Equals("成立"))
                 {
-                    ADDATTACH_IDTONEWTASK_ID(NEWTASK_ID, ATTACH_ID);
+
+                    OLDTASK_ID = applyTask.TaskId;
+                    ATTACH_ID = SEARCHATTACH_ID(OLDTASK_ID);
+
+                    ADDTB_WKF_EXTERNAL_TASK(applyTask);
+
+                    if (!string.IsNullOrEmpty(NEWTASK_ID) && !string.IsNullOrEmpty(ATTACH_ID))
+                    {
+                        ADDATTACH_IDTONEWTASK_ID(NEWTASK_ID, ATTACH_ID);
+                    }
                 }
+
             }
                
 
