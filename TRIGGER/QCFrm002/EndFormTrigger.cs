@@ -52,7 +52,8 @@ namespace TKUOF.TRIGGER.QCFrm002
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 //ADD();
-                if(applyTask.Task.CurrentDocument.Fields["QCFrm002QCC"].FieldValue.ToString().Trim().Equals("成立"))
+                //20210915 品保-1001品質異常單，需判斷1002客訴異常單的品保判定(QCFrmQCC)，若品保判斷異常成立才要追踨生產
+                if (applyTask.Task.CurrentDocument.Fields["QCFrm002QCC"].FieldValue.ToString().Trim().Equals("成立"))
                 {
 
                     OLDTASK_ID = applyTask.TaskId;
