@@ -72,6 +72,16 @@ namespace TKUOF.TRIGGER.COPTEF
             string MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             string MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
 
+
+            if (!string.IsNullOrEmpty(MOC))
+            {
+                MOC = DateTime.Now.ToString("MM/dd") + ":" + MOC + " ";
+            }
+            if (!string.IsNullOrEmpty(PUR))
+            {
+                PUR = DateTime.Now.ToString("MM/dd") + ":" + PUR + " ";
+            }
+
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
@@ -192,7 +202,7 @@ namespace TKUOF.TRIGGER.COPTEF
                                     --更新PUR、MOC備註到COPTD、COPTE
 
                                     UPDATE [TK].dbo.COPTC
-                                    SET UDF04=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    SET UDF04=@FORMID,UDF05=SUBSTRING((UDF05+' '+@MOC+' '+@PUR+' '),1,250)
                                     WHERE TC001=@TC001 AND TC002=@TC002
  
                                     UPDATE [TK].dbo.COPTE

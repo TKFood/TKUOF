@@ -71,13 +71,22 @@ namespace TKUOF.TRIGGER.COPTEFMOCPUR
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
+            if(!string.IsNullOrEmpty(MOC))
+            {
+                MOC = DateTime.Now.ToString("MM/dd") + ":" + MOC + " ";
+            }
+            if (!string.IsNullOrEmpty(PUR))
+            {
+                PUR = DateTime.Now.ToString("MM/dd") + ":" + PUR+" ";
+            }
+
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                     --更新變單表單的編號到COPTD、COPTE
                                     --更新PUR、MOC備註到COPTD、COPTE
 
                                     UPDATE [TK].dbo.COPTC
-                                    SET UDF05=SUBSTRING((UDF05+' '+@MOC+' '+@PUR),1,250)
+                                    SET UDF05=SUBSTRING((UDF05+' '+@MOC+' '+@PUR+' '),1,250)
                                     WHERE TC001=@TC001 AND TC002=@TC002
  
                                     UPDATE [TK].dbo.COPTE

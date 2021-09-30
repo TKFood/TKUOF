@@ -72,12 +72,22 @@ namespace TKUOF.TRIGGER.COPTCD
 
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
+
+            if (!string.IsNullOrEmpty(MOC))
+            {
+                MOC = DateTime.Now.ToString("MM/dd") + ":" + MOC + " ";
+            }
+            if (!string.IsNullOrEmpty(PUR))
+            {
+                PUR = DateTime.Now.ToString("MM/dd") + ":" + PUR + " ";
+            }
+
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                     UPDATE [TK].dbo.COPTC
                                     SET TC027=@TC027,TC048=@TC048, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
                                     ,UDF03=@FORMID
-                                    ,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
+                                    ,UDF05=SUBSTRING((UDF05+' '+@MOC+' '+@PUR+' '),1,250)
                                     WHERE TC001=@TC001 AND TC002=@TC002
 
                                     UPDATE [TK].dbo.COPTD 
