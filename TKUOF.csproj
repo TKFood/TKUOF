@@ -85,6 +85,7 @@
     <Compile Include="TRIGGER\COPTCD\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTEFMOCPUR\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTEF\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\DEVSAMPLE\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\GAFrm\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\GMOFrm\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\HREngFrm001\EndFormTrigger.cs" />
