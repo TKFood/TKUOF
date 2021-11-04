@@ -365,7 +365,8 @@ namespace TKUOF.TRIGGER.QCFrm002
             FieldItem = xmlDoc.CreateElement("FieldItem");
             FieldItem.SetAttribute("fieldId", "QCFrm002Abns");
             FieldItem.SetAttribute("fieldValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abns"].FieldValue.ToString().Trim());
-            FieldItem.SetAttribute("realValue", "");
+            FieldItem.SetAttribute("realValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abns"].RealValue.ToString().Trim());
+            FieldItem.SetAttribute("CustomValue", applyTask.Task.CurrentDocument.Fields["QCFrm002Abns"].CustomValue.ToString().Trim());
             FieldItem.SetAttribute("enableSearch", "True");
             FieldItem.SetAttribute("fillerName", applyTask.Task.Applicant.UserName);
             FieldItem.SetAttribute("fillerUserGuid", applyTask.Task.Applicant.UserGUID);
