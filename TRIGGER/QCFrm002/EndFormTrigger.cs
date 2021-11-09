@@ -33,6 +33,9 @@ namespace TKUOF.TRIGGER.QCFrm002
         //正式DB DBNAME = "UOF";
 
         //品保的1002單轉成10001
+
+        //20211109 是在測試版，之後上正式前，要把ID、DBNAME改成正式的正式ID、UOF
+
         string ID = "4e05b38e-fc76-43fa-846a-ac222f3f47f8";
         string DBNAME = "UOFTEST";
 
