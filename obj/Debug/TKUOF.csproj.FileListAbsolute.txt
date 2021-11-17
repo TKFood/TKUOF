@@ -92,4 +92,3 @@ C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csproj.CoreCompileInputs.cache
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csproj.CopyComplete
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.dll
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.pdb
-C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csprojAssemblyReference.cache
