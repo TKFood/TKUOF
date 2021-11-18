@@ -39,7 +39,7 @@ namespace TKUOF.TRIGGER.QCFrm003
 
         //20211109 是在測試版，之後上正式前，要把ID、DBNAME改成正式的正式ID、UOF
 
-        string ID = "860582f0-2a5e-44c2-8420-a4e0dbe397fc";
+        string ID = "56e6c52e-439f-4bd2-b394-74ba63786eb3";
         string DBNAME = "UOFTEST";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
@@ -57,21 +57,24 @@ namespace TKUOF.TRIGGER.QCFrm003
         {
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
-                //ADD();
-                //20210915 品保-1001品質異常單，需判斷1002客訴異常單的品保判定(QCFrmQCC)，若品保判斷異常成立才要追踨生產
-                if (applyTask.Task.CurrentDocument.Fields["QCFrm003CC"].FieldValue.ToString().Trim().Equals("異常成立-品質異常相關。轉1002.客訴異常處理單 追蹤"))
-                {
 
-                    OLDTASK_ID = applyTask.TaskId;
-                    ATTACH_ID = SEARCHATTACH_ID(OLDTASK_ID);
+                ADDTB_WKF_EXTERNAL_TASK(applyTask);
 
-                    ADDTB_WKF_EXTERNAL_TASK(applyTask);
+                ////ADD();
+                ////20210915 品保-1001品質異常單，需判斷1002客訴異常單的品保判定(QCFrmQCC)，若品保判斷異常成立才要追踨生產
+                //if (applyTask.Task.CurrentDocument.Fields["QCFrm003CC"].FieldValue.ToString().Trim().Equals("異常成立-品質異常相關。轉1002.客訴異常處理單 追蹤"))
+                //{
 
-                    if (!string.IsNullOrEmpty(NEWTASK_ID) && !string.IsNullOrEmpty(ATTACH_ID))
-                    {
-                        ADDATTACH_IDTONEWTASK_ID(NEWTASK_ID, ATTACH_ID);
-                    }
-                }
+                //    OLDTASK_ID = applyTask.TaskId;
+                //    ATTACH_ID = SEARCHATTACH_ID(OLDTASK_ID);
+
+                //    ADDTB_WKF_EXTERNAL_TASK(applyTask);
+
+                //    if (!string.IsNullOrEmpty(NEWTASK_ID) && !string.IsNullOrEmpty(ATTACH_ID))
+                //    {
+                //        ADDATTACH_IDTONEWTASK_ID(NEWTASK_ID, ATTACH_ID);
+                //    }
+                //}
 
             }
 
