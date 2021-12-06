@@ -18,6 +18,7 @@ using Ede.Uof.Utility.Log;
 using Ede.Uof.Utility.FileCenter;
 using Ede.Uof.Utility.FileCenter.V3;
 
+
 namespace TKUOF.TRIGGER.QCFrm002
 {
     class EndFormTrigger : ICallbackTriggerPlugin
@@ -36,8 +37,8 @@ namespace TKUOF.TRIGGER.QCFrm002
 
         //20211109 是在測試版，之後上正式前，要把ID、DBNAME改成正式的正式ID、UOF
 
-        string ID = "4e05b38e-fc76-43fa-846a-ac222f3f47f8";
-        string DBNAME = "UOFTEST";
+        string ID = "84913a78-0d84-4914-90f5-a00a3a2c7d89";
+        string DBNAME = "UOF";
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
 
@@ -87,29 +88,48 @@ namespace TKUOF.TRIGGER.QCFrm002
             StringBuilder queryString = new StringBuilder();
             DataSet ds = new DataSet();
 
-            //要記得改成正式-3
-            queryString.AppendFormat(@" 
-                                    SELECT ATTACH_ID
-                                    FROM [{0}].[dbo].[TB_WKF_TASK]
-                                    WHERE TASK_ID='{1}'
-                                    ", DBNAME, OLDTASK_ID);
-
-            adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
-            sqlCmdBuilder = new SqlCommandBuilder(adapter);
-            sqlConn.Open();
-            ds.Clear();
-            adapter.Fill(ds, "TEMPds1");
-            sqlConn.Close();
-
-
-            if (ds.Tables["TEMPds1"].Rows.Count >= 0)
+            try
             {
-                return ds.Tables["TEMPds1"].Rows[0]["ATTACH_ID"].ToString();
+                //要記得改成正式-3
+                queryString.AppendFormat(@" 
+                                        SELECT ISNULL(ATTACH_ID,'') ATTACH_ID
+                                        FROM [{0}].[dbo].[TB_WKF_TASK]
+                                        WHERE ISNULL(ATTACH_ID,'')<>'' AND TASK_ID='{1}'
+                                        ", DBNAME, OLDTASK_ID);
+
+                adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                {
+
+                    Ede.Uof.Utility.Log.Logger.Write("Task", "附件有找到TASK_ID:/ ATTACH_ID: "+OLDTASK_ID +"/"+ds.Tables["TEMPds1"].Rows[0]["ATTACH_ID"].ToString());
+
+                    return ds.Tables["TEMPds1"].Rows[0]["ATTACH_ID"].ToString();                   
+                }
+                else
+                {
+
+                    Ede.Uof.Utility.Log.Logger.Write("Task", "沒有附件TASK_ID:"+ OLDTASK_ID);
+                    return "";
+                }
+               
             }
-            else
+            catch
             {
-                return null;
+                Ede.Uof.Utility.Log.Logger.Write("找附件時有錯 TASK_ID:", OLDTASK_ID);
+                return "";
             }
+            finally
+            {
+
+            }
+         
 
         }
 
