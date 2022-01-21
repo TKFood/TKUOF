@@ -22,14 +22,14 @@ namespace TKUOF.TRIGGER.COPTCD
     {
         public void Finally()
         {
-            
+
         }
 
         public string GetFormResult(ApplyTask applyTask)
         {
-            string TC001=null;
+            string TC001 = null;
             string TC002 = null;
-            string FORMID= null;
+            string FORMID = null;
             string MODIFIER = null;
             string MOC = null;
             string PUR = null;
@@ -44,24 +44,24 @@ namespace TKUOF.TRIGGER.COPTCD
             MODIFIER = applyTask.Task.Applicant.Account;
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
-            if (applyTask.SignResult== Ede.Uof.WKF.Engine.SignResult.Approve)
+            if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
             {
                 if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
                 {
                     UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR);
                 }
             }
-           
+
 
             return "";
         }
 
         public void OnError(Exception errorException)
         {
-            
+
         }
 
-        public void UPDATECOPTCD(string TC001, string TC002, string FORMID, string MODIFIER,string MOC,string PUR)
+        public void UPDATECOPTCD(string TC001, string TC002, string FORMID, string MODIFIER, string MOC, string PUR)
         {
             string TC027 = "Y";
             string TC048 = "N";
@@ -129,9 +129,9 @@ namespace TKUOF.TRIGGER.COPTCD
             }
             finally
             {
-               
+
             }
-                
+
 
 
         }
