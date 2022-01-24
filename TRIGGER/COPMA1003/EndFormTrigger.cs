@@ -68,7 +68,7 @@ namespace TKUOF.TRIGGER.COPMA1003
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                     UPDATE [TK].dbo.COPMA
-                                    SET MA033=@MA033, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME                                     
+                                    SET MA033=@MA033, FLAG=FLAG+1 ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME                                     
                                     WHERE MA001=@MA001
 
                                     ");
