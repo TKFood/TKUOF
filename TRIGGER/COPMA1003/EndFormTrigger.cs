@@ -16,7 +16,7 @@ using System.Xml;
 
 namespace TKUOF.TRIGGER.COPMA1003
 {
-    //訂單的核準
+    //訂單
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
