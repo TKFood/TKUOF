@@ -44,7 +44,7 @@ namespace TKUOF.TRIGGER.COPTCDNODEMOC
             MODIFIER = applyTask.Task.Applicant.Account;
 
             //指定簽核站是 生管-MOC
-            if (applyTask.SiteCode != "MOC")
+            if (applyTask.SiteCode.Equals("MOC"))
             {
                 //簽核站簽核後
                 if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
