@@ -82,6 +82,7 @@
     <Compile Include="TRIGGER\AB\ATOB.cs" />
     <Compile Include="TRIGGER\COPMA1003\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPMA\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\COPTCDNODEMOC\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTCDMOCPUR\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTCD\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTEFMOCPUR\EndFormTrigger.cs" />

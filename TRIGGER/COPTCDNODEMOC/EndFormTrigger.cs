@@ -14,7 +14,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 
-namespace TKUOF.TRIGGER.COPTCDNODEMOC
+namespace TKUOF.TRIGGER.COPTCD
 {
     //訂單的核準
 
@@ -43,27 +43,14 @@ namespace TKUOF.TRIGGER.COPTCDNODEMOC
             FORMID = applyTask.FormNumber;
             MODIFIER = applyTask.Task.Applicant.Account;
 
-            //指定簽核站是 生管-MOC
-            if (applyTask.SiteCode != "FINAL")
+            ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
+            if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
             {
-                //簽核站簽核後
-                if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
+                if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
                 {
-                    if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
-                    {
-                        UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR);
-                    }
+                    UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR);
                 }
             }
-
-            /////核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
-            //if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
-            //{
-            //    if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
-            //    {
-            //        UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR);
-            //    }
-            //}
 
 
             return "";
