@@ -678,35 +678,47 @@ namespace TKUOF.TRIGGER.QCFrm003
 
         public void ADDATTACH_IDTONEWTASK_ID(string NEWTASK_ID, string ATTACH_ID)
         {
-            var newID = FileCenter.Clone(ATTACH_ID, Module.WKF);
+            try
+            {
+                var newID = FileCenter.Clone(ATTACH_ID, Module.WKF);
 
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+                string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
 
-            StringBuilder queryString = new StringBuilder();
+                StringBuilder queryString = new StringBuilder();
 
-            //要記得改成正式-4
-            queryString.AppendFormat(@"
+                //要記得改成正式-4
+                queryString.AppendFormat(@"
                                         UPDATE [{0}].dbo.TB_WKF_TASK
                                         SET ATTACH_ID='{2}'
                                         WHERE DOC_NBR='{1}'
                                         ", DBNAME, NEWTASK_ID, newID.ToString());
 
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+
+                        SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+
+                        command.Connection.Open();
+
+                        int count = command.ExecuteNonQuery();
+
+                        connection.Close();
+                        connection.Dispose();
+
+                    }
+                }
+                catch
                 {
 
-                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-
-                    command.Connection.Open();
-
-                    int count = command.ExecuteNonQuery();
-
-                    connection.Close();
-                    connection.Dispose();
+                }
+                finally
+                {
 
                 }
             }
+
             catch
             {
 
@@ -715,6 +727,7 @@ namespace TKUOF.TRIGGER.QCFrm003
             {
 
             }
+               
         }
 
     }
