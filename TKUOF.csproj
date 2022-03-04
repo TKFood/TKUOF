@@ -98,6 +98,7 @@
     <Compile Include="TRIGGER\QCFrm002\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QCFrm003\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QC\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\STOREFrm\EndFormTrigger.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
