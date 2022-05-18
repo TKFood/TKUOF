@@ -17,7 +17,7 @@ using System.Xml.Linq;
 using Ede.Uof.Utility.Log;
 using Ede.Uof.Utility.FileCenter;
 using Ede.Uof.Utility.FileCenter.V3;
-
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.QCFrm002
 {
@@ -37,8 +37,18 @@ namespace TKUOF.TRIGGER.QCFrm002
 
         //20211109 是在測試版，之後上正式前，要把ID、DBNAME改成正式的正式ID、UOF
 
-        string ID = "0dc787cc-68a4-4af2-9c96-8dccc2397969";
+
+        //正式的id
+        //string ID = "0dc787cc-68a4-4af2-9c96-8dccc2397969";
+        string ID = "";     
         string DBNAME = "UOF";
+
+        //簽核人
+        string account = Current.User.Account;
+        string groupId = Current.User.GroupID;
+        string jobTitleId = Current.User.JobTitleID;
+
+
 
         //TKUOF.TRIGGER.QCFrm002.EndFormTrigger
 
@@ -77,6 +87,54 @@ namespace TKUOF.TRIGGER.QCFrm002
             return "";
 
             //throw new NotImplementedException();
+        }
+
+        public string SEARCHFORM_VERSION_ID(string FORM_NAME)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            SqlConnection sqlConn = new SqlConnection(connectionString);
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            StringBuilder queryString = new StringBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //要記得改成正式-3
+                queryString.AppendFormat(@" 
+                                            SELECT 
+                                            RTRIM(LTRIM([FORM_VERSION_ID])) AS FORM_VERSION_ID
+                                            ,[FORM_NAME]
+                                            FROM [TKIT].[dbo].[UOF_FORM_VERSION_ID]
+                                            WHERE [FORM_NAME]='{0}'
+                                            ", FORM_NAME);
+
+                adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                {
+                    return ds.Tables["TEMPds1"].Rows[0]["FORM_VERSION_ID"].ToString();
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+
+            }
         }
 
         public string SEARCHATTACH_ID(string OLDTASK_ID)
@@ -154,6 +212,7 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlElement Form = xmlDoc.CreateElement("Form");
 
             //formVersionId
+            ID = SEARCHFORM_VERSION_ID("1001.客訴品質異常處理單");
             Form.SetAttribute("formVersionId", ID);
             //urgentLevel
             Form.SetAttribute("urgentLevel", "2");
@@ -165,9 +224,15 @@ namespace TKUOF.TRIGGER.QCFrm002
             ////建立節點Applicant
             XmlElement Applicant = xmlDoc.CreateElement("Applicant");
 
+            //表單建立者為原單申請人
             Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
             Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
             Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
+
+            //表單建立者為原單最後核準人
+            Applicant.SetAttribute("account", account);
+            Applicant.SetAttribute("groupId", groupId);
+            Applicant.SetAttribute("jobTitleId", jobTitleId);
 
             //加入節點底下
             Form.AppendChild(Applicant);
