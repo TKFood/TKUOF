@@ -91,7 +91,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
         public string SEARCHFORM_VERSION_ID(string FORM_NAME)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
             SqlConnection sqlConn = new SqlConnection(connectionString);
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -225,9 +225,9 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlElement Applicant = xmlDoc.CreateElement("Applicant");
 
             //表單建立者為原單申請人
-            Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
-            Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
-            Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
+            //Applicant.SetAttribute("account", applyTask.Task.Applicant.Account);
+            //Applicant.SetAttribute("groupId", applyTask.Task.Applicant.GroupId);
+            //Applicant.SetAttribute("jobTitleId", applyTask.Task.Applicant.JobTitleId);
 
             //表單建立者為原單最後核準人
             Applicant.SetAttribute("account", account);
