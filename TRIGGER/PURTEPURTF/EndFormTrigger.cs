@@ -82,6 +82,8 @@ namespace TKUOF.TRIGGER.PURTEPURTF
 
         public void UPDATEPURTEPURTF(string TE001, string TE002, string TE003, string FORMID)
         {
+            string TD001 = TE001;
+            string TD002 = TE002; 
             string COMPANY = "TK";
             string MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             string MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
@@ -93,15 +95,162 @@ namespace TKUOF.TRIGGER.PURTEPURTF
             queryString.AppendFormat(@"
                                         --INSERT PURTD
 
+                                        INSERT INTO [TK].dbo.PURTD
+                                        (
+                                        COMPANY,CREATOR,USR_GROUP,CREATE_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME,DataGroup
+                                        ,TD001
+                                        ,TD002
+                                        ,TD003
+                                        ,TD004
+                                        ,TD005
+                                        ,TD006
+                                        ,TD007
+                                        ,TD008
+                                        ,TD009
+                                        ,TD010
+                                        ,TD011
+                                        ,TD012
+                                        ,TD013
+                                        ,TD014
+                                        ,TD015
+                                        ,TD016
+                                        ,TD017
+                                        ,TD018
+                                        ,TD019
+                                        ,TD020
+                                        ,TD022
+                                        ,TD025
+                                        )
+
+                                        SELECT 
+                                        COMPANY,CREATOR,USR_GROUP,CREATE_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME,DataGroup
+                                        ,TF001
+                                        ,TF002
+                                        ,TF104
+                                        ,TF005
+                                        ,TF006
+                                        ,TF007
+                                        ,TF008
+                                        ,TF009
+                                        ,TF010
+                                        ,TF011
+                                        ,TF012
+                                        ,TF013
+                                        ,TF015
+                                        ,TF030
+                                        ,TF015
+                                        ,'N'
+                                        ,TF022
+                                        ,'Y'
+                                        ,TF018
+                                        ,TF019
+                                        ,TF020
+                                        ,TF021
+                                        FROM [TK].dbo.PURTF
+                                        WHERE TF001='A338' AND TF002='20220607001' AND TF003='0001'
+                                        AND TF001+TF002+TF104 NOT IN (SELECT TD001+TD002+TD003  FROM [TK].dbo.PURTD WHERE TD001='A338' AND TD002='20220607001')
+
                                         --UPDATE PURTD
+
+                                        UPDATE [TK].dbo.PURTD
+                                        SET 
+                                        TD004=TF005
+                                        ,TD005=TF006
+                                        ,TD006=TF007
+                                        ,TD007=TF008
+                                        ,TD008=TF009
+                                        ,TD009=TF010
+                                        ,TD010=TF011
+                                        ,TD011=TF012
+                                        ,TD012=TF013
+                                        ,TD014=TF030
+                                        ,TD015=TF015
+                                        ,TD017=TF022
+                                        ,TD019=TF018
+                                        ,TD020=TF019
+                                        ,TD022=TF020
+                                        ,TD025=TF021
+                                        FROM [TK].dbo.PURTF
+                                        WHERE TF001=TD001 AND TF002=TD002 AND TF104=TD003
+                                        AND TF001='A338' AND TF002='20220607001' AND TF003='0001'
+
 
                                         --UPDATE PURTC
 
+                                        UPDATE [TK].dbo.PURTC
+                                        SET 
+                                        TC004=TE005
+                                        ,TC005=TE007
+                                        ,TC006=TE008
+                                        ,TC007=TE009
+                                        ,TC008=TE010
+                                        ,TC015=TE013
+                                        ,TC016=TE014
+                                        ,TC017=TE015
+                                        ,TC018=TE018
+                                        ,TC021=TE019
+                                        ,TC022=TE020
+                                        ,TC026=TE022
+                                        ,TC027=TE023
+                                        ,TC028=TE024
+                                        ,TC009=TE027
+                                        ,TC035=TE029
+                                        ,TC011=TE037
+                                        ,TC047=TE039
+                                        ,TC048=TE040
+                                        ,TC050=TE041
+                                        ,TC036=TE043
+                                        ,TC037=TE045
+                                        ,TC038=TE046
+                                        ,TC039=TE047
+                                        ,TC040=TE048
+                                        FROM [TK].dbo.PURTE
+                                        WHERE TE001=TC001 AND TE002=TC002
+                                        AND TE001='A338' AND TE002='20220607001' AND TE003='0001'
+
                                         --更新PURTC的未稅、稅額、總金額、數量
+                                        UPDATE [TK].dbo.PURTC
+                                        SET TC019=(CASE WHEN TC018='1' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='2' THEN (SELECT (ISNULL(SUM(TD011),0)+ISNULL(ROUND(SUM(TD011)*TC026,0),0)) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='3' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='4' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='9' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002)  
+                                                                            END
+                                                                            END
+                                                                            END 
+                                                                            END
+                                                                            END)
+                                        ,TC020=(CASE WHEN TC018='1' THEN (SELECT (ISNULL(SUM(TD011),0)-ISNULL(ROUND(SUM(TD011)/(1+TC026),0),0)) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='2' THEN (SELECT ISNULL(ROUND(SUM(TD011)*TC026,0),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='3' THEN 0 
+                                                                            ELSE CASE WHEN TC018='4' THEN 0
+                                                                            ELSE CASE WHEN TC018='9' THEN 0 
+                                                                            END
+                                                                            END
+                                                                            END 
+                                                                            END
+                                                                            END)
+                                        ,TC023=(SELECT ISNULL(SUM(TD008),0) FROM [TK].dbo.PURTD WHERE TD001=TC001 AND TD002=TC002)
+                                        WHERE TC001='A338' AND TC002='20220607001'
+
 
                                         --如果變更單整理指定結案，原PURTC也指定結案
+                                        UPDATE [TK].dbo.PURTD
+                                        SET TD016='y'
+                                        FROM [TK].dbo.PURTE
+                                        WHERE TE001=TD001 AND TE002=TD002
+                                        AND TE012='Y'
+                                        AND TD001='A338' AND TD002='20220607001'
+                                        AND TE001='A338' AND TE002='20220607001' AND TE003='0001'
 
                                         --如果變更單單身指定結案，原PURTD也指定結案
+                                        UPDATE [TK].dbo.PURTD
+                                        SET TD016='y'
+                                        FROM [TK].dbo.PURTF
+                                        WHERE TF001=TF001 AND TF002=TD002 AND TF104=TD003
+                                        AND TF014='Y'
+                                        AND TD001='A338' AND TD002='20220607001'
+                                        AND TF001='A338' AND TF002='20220607001' AND TF104='0001'
                                       
                                         ", FORMID);
 
