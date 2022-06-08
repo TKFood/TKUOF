@@ -258,7 +258,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         --更新PURTE
                                         UPDATE [TK].dbo.PURTE
                                         SET TE017='Y'
-                                        ,UDF01=@UDF01
+                                        ,UDF02=@UDF02
                                         WHERE TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
 
                                         --更新PURTF
@@ -290,7 +290,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                     command.Parameters.Add("@TF001", SqlDbType.NVarChar).Value = TF001;
                     command.Parameters.Add("@TF002", SqlDbType.NVarChar).Value = TF002;
                     command.Parameters.Add("@TF003", SqlDbType.NVarChar).Value = TF003;
-                    command.Parameters.Add("@UDF01", SqlDbType.NVarChar).Value = FORMID;
+                    command.Parameters.Add("@UDF02", SqlDbType.NVarChar).Value = FORMID;
                     command.Parameters.Add("@UDF03", SqlDbType.NVarChar).Value = FORMID;
 
                     command.Connection.Open();
