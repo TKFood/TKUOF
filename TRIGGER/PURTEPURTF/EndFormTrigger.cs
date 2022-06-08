@@ -169,7 +169,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         ,TD022=TF020
                                         ,TD025=TF021
                                         FROM [TK].dbo.PURTF
-                                        WHERE TF001='A338' AND TF002='20220607001' AND TF104=TD003
+                                        WHERE TD001='A338' AND TD002='20220607001' AND TD003=TF104
                                         AND TF001='A338' AND TF002='20220607001' AND TF003='0001'
 
 
@@ -203,7 +203,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         ,TC039=TE047
                                         ,TC040=TE048
                                         FROM [TK].dbo.PURTE
-                                        WHERE TE001='A338' AND TE002='20220607001'
+                                        WHERE TC001='A338' AND TC002='20220607001'
                                         AND TE001='A338' AND TE002='20220607001' AND TE003='0001'
 
                                         --更新PURTC的未稅、稅額、總金額、數量
