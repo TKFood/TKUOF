@@ -268,7 +268,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
 
                                         --更新PURTC
                                         UPDATE [TK].dbo.PURTC
-                                        SET UDF02=@UDF02
+                                        SET UDF03=@UDF03
                                         WHERE TC001=@TC001 AND TC002=@TC002
                                       
                                         ", FORMID);
@@ -291,7 +291,7 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                     command.Parameters.Add("@TF002", SqlDbType.NVarChar).Value = TF002;
                     command.Parameters.Add("@TF003", SqlDbType.NVarChar).Value = TF003;
                     command.Parameters.Add("@UDF01", SqlDbType.NVarChar).Value = FORMID;
-                    command.Parameters.Add("@UDF02", SqlDbType.NVarChar).Value = FORMID;
+                    command.Parameters.Add("@UDF03", SqlDbType.NVarChar).Value = FORMID;
 
                     command.Connection.Open();
 
