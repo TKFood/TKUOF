@@ -82,8 +82,14 @@ namespace TKUOF.TRIGGER.PURTEPURTF
 
         public void UPDATEPURTEPURTF(string TE001, string TE002, string TE003, string FORMID)
         {
+            string TC001 = TE001;
+            string TC002 = TE002;
             string TD001 = TE001;
-            string TD002 = TE002; 
+            string TD002 = TE002;          
+            string TF001 = TE001;
+            string TF002 = TE002;
+            string TF003 = TE003;
+
             string COMPANY = "TK";
             string MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             string MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
@@ -145,8 +151,8 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         ,TF020
                                         ,TF021
                                         FROM [TK].dbo.PURTF
-                                        WHERE TF001='A338' AND TF002='20220607001' AND TF003='0001'
-                                        AND TF001+TF002+TF104 NOT IN (SELECT TD001+TD002+TD003  FROM [TK].dbo.PURTD WHERE TD001='A338' AND TD002='20220607001')
+                                        WHERE TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
+                                        AND TF001+TF002+TF104 NOT IN (SELECT TD001+TD002+TD003  FROM [TK].dbo.PURTD WHERE TD001=@TD001 AND TD002=@TD002)
 
                                         --UPDATE PURTD
 
@@ -169,8 +175,8 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         ,TD022=TF020
                                         ,TD025=TF021
                                         FROM [TK].dbo.PURTF
-                                        WHERE TD001='A338' AND TD002='20220607001' AND TD003=TF104
-                                        AND TF001='A338' AND TF002='20220607001' AND TF003='0001'
+                                        WHERE TD001=@TD001 AND TD002=@TD002 AND TD003=TF104
+                                        AND TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
 
 
                                         --UPDATE PURTC
@@ -203,8 +209,8 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                         ,TC039=TE047
                                         ,TC040=TE048
                                         FROM [TK].dbo.PURTE
-                                        WHERE TC001='A338' AND TC002='20220607001'
-                                        AND TE001='A338' AND TE002='20220607001' AND TE003='0001'
+                                        WHERE TC001=@TC001 AND TC002=@TC002
+                                        AND TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
 
                                         --更新PURTC的未稅、稅額、總金額、數量
                                         UPDATE [TK].dbo.PURTC
@@ -229,26 +235,41 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                                                                             END
                                                                             END)
                                         ,TC023=(SELECT ISNULL(SUM(TD008),0) FROM [TK].dbo.PURTD WHERE TD001=TC001 AND TD002=TC002)
-                                        WHERE TC001='A338' AND TC002='20220607001'
-
+                                        WHERE TC001=@TC001 AND TC002=@TC002
 
                                         --如果變更單整理指定結案，原PURTC也指定結案
+
                                         UPDATE [TK].dbo.PURTD
                                         SET TD016='y'
                                         FROM [TK].dbo.PURTE
-                                        WHERE TE001=TD001 AND TE002=TD002
-                                        AND TE012='Y'
-                                        AND TD001='A338' AND TD002='20220607001'
-                                        AND TE001='A338' AND TE002='20220607001' AND TE003='0001'
+                                        WHERE TD001=@TD001 AND TD002=@TD002
+                                        AND TE012='Y'                                    
+                                        AND TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
 
                                         --如果變更單單身指定結案，原PURTD也指定結案
                                         UPDATE [TK].dbo.PURTD
                                         SET TD016='y'
                                         FROM [TK].dbo.PURTF
-                                        WHERE TF001=TF001 AND TF002=TD002 AND TF104=TD003
-                                        AND TF014='Y'
-                                        AND TD001='A338' AND TD002='20220607001'
-                                        AND TF001='A338' AND TF002='20220607001' AND TF104='0001'
+                                        WHERE   TD001=@TD001 AND TD002=@TD002
+                                        AND TF001=TD001 AND TF002=TD002 AND TF104=TD003
+                                        AND TF014='Y'                                       
+                                        AND TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
+
+                                        --更新PURTE
+                                        UPDATE [TK].dbo.PURTE
+                                        SET TE017='Y'
+                                        ,UDF01=@UDF01
+                                        WHERE TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
+
+                                        --更新PURTF
+                                        UPDATE [TK].dbo.PURTF
+                                        SET TF016='Y'
+                                        WHERE TF001=@TF001 AND TF002=@TF002 AND TF003=@TF003
+
+                                        --更新PURTC
+                                        UPDATE [TK].dbo.PURTC
+                                        SET UDF02=@UDF02
+                                        WHERE TC001=@TC001 AND TC002=@TC002
                                       
                                         ", FORMID);
 
@@ -258,9 +279,19 @@ namespace TKUOF.TRIGGER.PURTEPURTF
                 {
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+
+                    command.Parameters.Add("@TC001", SqlDbType.NVarChar).Value = TC001;
+                    command.Parameters.Add("@TC002", SqlDbType.NVarChar).Value = TC002;
+                    command.Parameters.Add("@TD001", SqlDbType.NVarChar).Value = TD001;
+                    command.Parameters.Add("@TD002", SqlDbType.NVarChar).Value = TD002;
                     command.Parameters.Add("@TE001", SqlDbType.NVarChar).Value = TE001;
                     command.Parameters.Add("@TE002", SqlDbType.NVarChar).Value = TE002;
                     command.Parameters.Add("@TE003", SqlDbType.NVarChar).Value = TE003;
+                    command.Parameters.Add("@TF001", SqlDbType.NVarChar).Value = TF001;
+                    command.Parameters.Add("@TF002", SqlDbType.NVarChar).Value = TF002;
+                    command.Parameters.Add("@TF003", SqlDbType.NVarChar).Value = TF003;
+                    command.Parameters.Add("@UDF01", SqlDbType.NVarChar).Value = FORMID;
+                    command.Parameters.Add("@UDF02", SqlDbType.NVarChar).Value = FORMID;
 
                     command.Connection.Open();
 
