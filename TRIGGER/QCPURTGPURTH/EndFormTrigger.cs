@@ -49,25 +49,29 @@ namespace TKUOF.TRIGGER.QCPURTGPURTH
             //記錄TH003,TH015,CHECK
             if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
             {
-                if (!string.IsNullOrEmpty(TG001) && !string.IsNullOrEmpty(TG002))
+                if (applyTask.SiteCode.Equals("QCCHECK"))
                 {
-                    foreach (XmlNode node in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTH']/DataGrid/Row"))
+                    if (!string.IsNullOrEmpty(TG001) && !string.IsNullOrEmpty(TG002))
                     {
-                        string TH003 = node.SelectSingleNode("./Cell[@fieldId='TH003']").Attributes["fieldValue"].Value;
-                        string TH015 = node.SelectSingleNode("./Cell[@fieldId='TH015']").Attributes["fieldValue"].Value;
-                        string CHECK = node.SelectSingleNode("./Cell[@fieldId='CHECK']").Attributes["fieldValue"].Value;
+                        foreach (XmlNode node in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='PURTH']/DataGrid/Row"))
+                        {
+                            string TH003 = node.SelectSingleNode("./Cell[@fieldId='TH003']").Attributes["fieldValue"].Value;
+                            string TH015 = node.SelectSingleNode("./Cell[@fieldId='TH015']").Attributes["fieldValue"].Value;
+                            string CHECK = node.SelectSingleNode("./Cell[@fieldId='CHECK']").Attributes["fieldValue"].Value;
 
-                        DataRow dr = dt.NewRow();
-                        dr["TH003"] = TH003;
-                        dr["TH015"] = TH015;
-                        dr["CHECK"] = CHECK;
-                        dt.Rows.Add(dr);
-                    }
+                            DataRow dr = dt.NewRow();
+                            dr["TH003"] = TH003;
+                            dr["TH015"] = TH015;
+                            dr["CHECK"] = CHECK;
+                            dt.Rows.Add(dr);
+                        }
 
-                    if(dt.Rows.Count>0)
-                    {
-                        UPDATEPURTGPURTH(TG001, TG002, FORMID, QCMAN, dt);
+                        if (dt.Rows.Count > 0)
+                        {
+                            UPDATEPURTGPURTH(TG001, TG002, FORMID, QCMAN, dt);
+                        }
                     }
+                    
 
                 }
 
