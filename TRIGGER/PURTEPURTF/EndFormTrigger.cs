@@ -16,7 +16,7 @@ using System.Xml;
 
 namespace TKUOF.TRIGGER.PURTEPURTF
 {
-    //請購單的核準
+    //採購變更的核準
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
@@ -214,8 +214,8 @@ namespace TKUOF.TRIGGER.PURTEPURTF
 
                                         --更新PURTC的未稅、稅額、總金額、數量
                                         UPDATE [TK].dbo.PURTC
-                                        SET TC019=(CASE WHEN TC018='1' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
-                                                                            ELSE CASE WHEN TC018='2' THEN (SELECT (ISNULL(SUM(TD011),0)+ISNULL(ROUND(SUM(TD011)*TC026,0),0)) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                        SET TC019=(CASE WHEN TC018='1' THEN (SELECT ISNULL(ISNULL(ROUND(SUM(TD011)/(1+TC026),0),0),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
+                                                                            ELSE CASE WHEN TC018='2' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
                                                                             ELSE CASE WHEN TC018='3' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
                                                                             ELSE CASE WHEN TC018='4' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002) 
                                                                             ELSE CASE WHEN TC018='9' THEN (SELECT ISNULL(SUM(TD011),0) FROM [TK].dbo.PURTD WHERE TD001+TD002=TC001+TC002)  
