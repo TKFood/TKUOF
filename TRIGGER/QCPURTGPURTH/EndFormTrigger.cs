@@ -42,7 +42,10 @@ namespace TKUOF.TRIGGER.QCPURTGPURTH
             TG001 = applyTask.Task.CurrentDocument.Fields["TG001"].FieldValue.ToString().Trim();
             TG002 = applyTask.Task.CurrentDocument.Fields["TG002"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
-            QCMAN= applyTask.Task.Applicant.UserName;
+            //QCMAN= applyTask.Task.Applicant.UserName;
+
+            //取得簽核人員
+            QCMAN = applyTask.Task.CurrentSigner.UserName;
 
             //品保人員簽核就啟動，不用等整張表單簽完
             //核準
