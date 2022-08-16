@@ -124,11 +124,26 @@ namespace TKUOF.TRIGGER.QCPURTGPURTH
             {
                 foreach(DataRow dr in dt.Rows)
                 {
+
+                    //設定TH028 檢驗狀態
+                    //TH028='1' 待驗
+                    //TH028='2' 合格
+                    //TH028='3' 不良
+                    string TH028 = "1";
+
+                    if (dr["CHECK"].ToString().Equals("Y"))
+                    {
+                        TH028 = "2";
+                    }
+                    else
+                    {
+                        TH028 = "3";
+                    }
                     queryString.AppendFormat(@"
                                             UPDATE [TK].dbo.PURTH
-                                            SET TH015={1},UDF01='{2}',TH016={3},TH017=TH007-{4}
+                                            SET TH015={1},UDF01='{2}',TH016={3},TH017=TH007-{4},TH028='{5}'
                                             WHERE TH001=@TG001 AND TH002=@TG002 AND TH003='{0}'
-                                         ",  dr["TH003"].ToString(), Convert.ToDecimal(dr["TH015"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TH015"].ToString()), Convert.ToDecimal(dr["TH015"].ToString()));
+                                         ",  dr["TH003"].ToString(), Convert.ToDecimal(dr["TH015"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TH015"].ToString()), Convert.ToDecimal(dr["TH015"].ToString()), TH028);
                 }
                
             }
