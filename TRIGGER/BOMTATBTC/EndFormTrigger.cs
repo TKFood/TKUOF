@@ -223,11 +223,22 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             AND BOMMD.MD001='{2}'
 
 
+
                                         ", DRDATA["TA001"].ToString(), DRDATA["TA002"].ToString(), DRDATA["TB004"].ToString());
             }
 
-           
-            
+
+            queryString.AppendFormat(@"
+
+                                        UPDATE [test0923].dbo.BOMTA
+                                        SET TA007='Y'
+                                        WHERE TA001='{0}' AND  TA002='{1}'
+
+                                        UPDATE [test0923].dbo.BOMTB
+                                        SET TB012='Y'
+                                        WHERE TB001='{0}' AND  TB002='{1}'
+
+                                        ", TA001, TA002);
 
             try
             {
