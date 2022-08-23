@@ -99,7 +99,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
             {
                 queryString.AppendFormat(@"
 
-                                            UPDATE [test0923].dbo.BOMMC
+                                            UPDATE [TK].dbo.BOMMC
                                             SET MC001=TB004
                                             ,MC002=TB005
                                             ,MC003=TB006
@@ -122,7 +122,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             SELECT BOMTA.COMPANY,BOMTA.MODIFIER,BOMTA.MODI_TIME,TA001,TA002,TA003,TA005,TA006
                                             ,TB001,TB002,TB003,TB004,TB005,TB006,TB007,TB008,TB009,TB010,TB104
                                             ,MB002,MB003
-                                            FROM [test0923].dbo.BOMTA,[test0923].dbo.BOMTB,[test0923].dbo.INVMB
+                                            FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB,[TK].dbo.INVMB
                                             WHERE TA001=TB001 AND TA002=TB002 
                                             AND TB004=MB001
                                             AND TA001='{0}' AND TA002='{1}'
@@ -132,7 +132,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             AND MC001='{2}'
 
                                            
-                                            INSERT INTO [test0923].dbo.BOMMD 
+                                            INSERT INTO [TK].dbo.BOMMD 
                                             (MD001,MD002,MD003,MD004,MD005,MD006,MD007,MD008,MD009,MD010 
                                             ,MD011,MD012,MD013,MD014,MD015,MD016,MD017,MD018,MD019,MD020
                                             ,MD021,MD022,MD023,MD029,MD035,MD036
@@ -144,16 +144,16 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             ,TC023 MD021,TC024 MD022,TC025 MD023,TC032 MD029,MB002 MD035,MB003 MD036
                                             ,BOMTA.COMPANY ,BOMTA.CREATOR ,BOMTA.USR_GROUP ,BOMTA.CREATE_DATE ,BOMTA.FLAG, BOMTA.CREATE_TIME, BOMTA.MODI_TIME, 'P004' TRANS_TYPE, 'BOMI04' TRANS_NAME 
 
-                                            FROM [test0923].dbo.BOMTA,[test0923].dbo.BOMTB,[test0923].dbo.BOMTC
-                                            LEFT JOIN [test0923].dbo.INVMB ON TC005=MB001
+                                            FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB,[TK].dbo.BOMTC
+                                            LEFT JOIN [TK].dbo.INVMB ON TC005=MB001
                                             WHERE TA001=TB001 AND TA002=TB002 AND TA001=TC001 AND TA002=TC002 AND TB003=TC003
                                             AND TA001='{0}' AND TA002='{1}'
                                             AND TB004='{2}'
-                                            AND TC004 NOT IN (SELECT MD002 FROM [test0923].dbo.BOMMD WHERE  MD001='{2}')
+                                            AND TC004 NOT IN (SELECT MD002 FROM [TK].dbo.BOMMD WHERE  MD001='{2}')
 
 
                                         
-                                            UPDATE [test0923].dbo.BOMMD  
+                                            UPDATE [TK].dbo.BOMMD  
                                             SET MD001=TB004 
                                             ,MD002=TC004 
                                             ,MD003=TC005
@@ -194,8 +194,8 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             ,TC021,TC022,TC023,TC024,TC025,TC032
                                             ,TC104,TC105
                                             ,MB002,MB003
-                                            FROM [test0923].dbo.BOMMD,[test0923].dbo.BOMTA,[test0923].dbo.BOMTB,[test0923].dbo.BOMTC
-                                            LEFT JOIN [test0923].dbo.INVMB ON TC005=MB001
+                                            FROM [TK].dbo.BOMMD,[TK].dbo.BOMTA,[TK].dbo.BOMTB,[TK].dbo.BOMTC
+                                            LEFT JOIN [TK].dbo.INVMB ON TC005=MB001
                                             WHERE TA001=TB001 AND TA002=TB002 AND TA001=TC001 AND TA002=TC002 AND TB003=TC003
                                             AND MD001=TB004 AND MD002=TC004
                                             AND ISNULL(TC005,'')<>''
@@ -207,11 +207,11 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             AND MD001='{2}'
 
                                        
-                                            DELETE [test0923].dbo.BOMMD
+                                            DELETE [TK].dbo.BOMMD
                                             FROM (
                                             SELECT TB004,TC004
-                                            FROM [test0923].dbo.BOMMD,[test0923].dbo.BOMTA,[test0923].dbo.BOMTB,[test0923].dbo.BOMTC
-                                            LEFT JOIN [test0923].dbo.INVMB ON TC005=MB001
+                                            FROM [TK].dbo.BOMMD,[TK].dbo.BOMTA,[TK].dbo.BOMTB,[TK].dbo.BOMTC
+                                            LEFT JOIN [TK].dbo.INVMB ON TC005=MB001
                                             WHERE TA001=TB001 AND TA002=TB002 AND TA001=TC001 AND TA002=TC002 AND TB003=TC003
                                             AND MD001=TB004 AND MD002=TC004
                                             AND ISNULL(TC005,'')=''
@@ -230,15 +230,15 @@ namespace TKUOF.TRIGGER.BOMTATBTC
 
             queryString.AppendFormat(@"
 
-                                        UPDATE [test0923].dbo.BOMTA
-                                        SET TA007='Y'
+                                        UPDATE [TK].dbo.BOMTA
+                                        SET TA007='Y',UDF02='{2}'
                                         WHERE TA001='{0}' AND  TA002='{1}'
 
-                                        UPDATE [test0923].dbo.BOMTB
+                                        UPDATE [TK].dbo.BOMTB
                                         SET TB012='Y'
                                         WHERE TB001='{0}' AND  TB002='{1}'
 
-                                        ", TA001, TA002);
+                                        ", TA001, TA002, FORMID);
 
             try
             {
@@ -280,7 +280,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                             SELECT TA001,TA002,TA003,TA005,TA006
                             ,TB001,TB002,TB003,TB004,TB005,TB006,TB007,TB008,TB009,TB010,TB104
                             ,MB002,MB003
-                            FROM [test0923].dbo.BOMTA,[test0923].dbo.BOMTB,[test0923].dbo.INVMB
+                            FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB,[TK].dbo.INVMB
                             WHERE TA001=TB001 AND TA002=TB002 
                             AND TB004=MB001
                             AND TA001=@TA001 AND TA002=@TA002
