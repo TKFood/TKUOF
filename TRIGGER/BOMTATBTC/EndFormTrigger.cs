@@ -39,12 +39,15 @@ namespace TKUOF.TRIGGER.BOMTATBTC
            
             FORMID = applyTask.FormNumber;
 
+            //取得簽核人員
+            string TA010 = applyTask.Task.CurrentSigner.Account;
+
             ///核準
             if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002) )
                 {
-                    UPDATEBOMMCBOMMD(TA001, TA002, FORMID);
+                    UPDATEBOMMCBOMMD(TA001, TA002, FORMID, TA010);
                 }
             }
             //作廢
@@ -80,7 +83,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
             
         }
 
-        public void UPDATEBOMMCBOMMD(string TA001, string TA002, string FORMID)
+        public void UPDATEBOMMCBOMMD(string TA001, string TA002, string FORMID,string TA010)
         {
             DataTable dt = SEARCHBOMTABOMTBBOMTC(TA001, TA002);
 
@@ -243,14 +246,14 @@ namespace TKUOF.TRIGGER.BOMTATBTC
             queryString.AppendFormat(@"
 
                                         UPDATE [TK].dbo.BOMTA
-                                        SET TA007='Y',UDF02='{2}'
+                                        SET TA007='Y',UDF02='{2}',TA010='{3}'
                                         WHERE TA001='{0}' AND  TA002='{1}'
 
                                         UPDATE [TK].dbo.BOMTB
                                         SET TB012='Y'
                                         WHERE TB001='{0}' AND  TB002='{1}'
 
-                                        ", TA001, TA002, FORMID);
+                                        ", TA001, TA002, FORMID, TA010);
 
             try
             {
