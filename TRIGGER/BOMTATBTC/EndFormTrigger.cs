@@ -226,17 +226,18 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             AND BOMMD.MD001='{2}'
 
                                             UPDATE [TK].dbo.BOMMC
-                                            SET MC004=SUMMC004
+                                            SET MC004=TEMP.UDF06
                                             FROM (
-                                            SELECT MD001,SUM(CONVERT(decimal(16,1),MD006/MD007*(1+MD008))) AS SUMMC004
-                                            FROM [TK].dbo.BOMMD
-                                            WHERE  MD003 LIKE '1%'
-                                            AND MD001='{2}'
-                                            GROUP BY MD001
+                                            SELECT TB001,TB002,TB004,UDF06
+                                            FROM [TK].dbo.BOMTB
+                                            WHERE TB001='{0}' AND TB002='{1}'
+                                            AND TB004='{2}'
                                             )
                                             AS TEMP
-                                            WHERE TEMP.MD001=MC001
-                                            AND TEMP.MD001='{2}'
+                                            WHERE 1=1
+                                            AND TEMP.TB004=MC001
+                                            AND TEMP.TB001='{0}' AND TB002='{1}'
+                                            AND TEMP.TB004='{2}'
 
 
                                         ", DRDATA["TA001"].ToString(), DRDATA["TA002"].ToString(), DRDATA["TB004"].ToString());
