@@ -225,19 +225,7 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                             AND BOMMD.MD002=TEMP.TC004
                                             AND BOMMD.MD001='{2}'
 
-                                            UPDATE [TK].dbo.BOMMC
-                                            SET MC004=TEMP.UDF06
-                                            FROM (
-                                            SELECT TB001,TB002,TB004,UDF06
-                                            FROM [TK].dbo.BOMTB
-                                            WHERE TB001='{0}' AND TB002='{1}'
-                                            AND TB004='{2}'
-                                            )
-                                            AS TEMP
-                                            WHERE 1=1
-                                            AND TEMP.TB004=MC001
-                                            AND TEMP.TB001='{0}' AND TB002='{1}'
-                                            AND TEMP.TB004='{2}'
+                                          
 
 
                                         ", DRDATA["TA001"].ToString(), DRDATA["TA002"].ToString(), DRDATA["TB004"].ToString());
