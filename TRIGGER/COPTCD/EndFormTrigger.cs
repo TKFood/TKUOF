@@ -13,6 +13,7 @@ using System.Data.OleDb;
 using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
+using Ede.Uof.EIP.Organization.Util;
 
 namespace TKUOF.TRIGGER.COPTCD
 {
@@ -34,6 +35,7 @@ namespace TKUOF.TRIGGER.COPTCD
             string MOC = null;
             string PUR = null;
             string TC040 = null;
+            UserUCO userUCO = new UserUCO();
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
@@ -42,8 +44,15 @@ namespace TKUOF.TRIGGER.COPTCD
             MOC = applyTask.Task.CurrentDocument.Fields["MOC"].FieldValue.ToString().Trim();
             PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
-            MODIFIER = applyTask.Task.Applicant.Account;
-            TC040 = applyTask.Task.CurrentSigner.Account;
+            //MODIFIER = applyTask.Task.Applicant.Account;
+      
+            //取得簽核人工號
+            EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);
+            TC040 = ebUser.Account;
+            MODIFIER = ebUser.Account;
+
+
+
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
             if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
