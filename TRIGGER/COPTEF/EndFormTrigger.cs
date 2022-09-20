@@ -34,6 +34,7 @@ namespace TKUOF.TRIGGER.COPTEF
             string MODIFIER = null;
             string MOC = null;
             string PUR = null;
+            string TE039 = null;
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
@@ -44,13 +45,14 @@ namespace TKUOF.TRIGGER.COPTEF
             PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
             MODIFIER = applyTask.Task.Applicant.Account;
+            TE039 = applyTask.Task.Applicant.Account;
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
             if (applyTask.SignResult== Ede.Uof.WKF.Engine.SignResult.Approve)
             {
                 if (!string.IsNullOrEmpty(TE001) && !string.IsNullOrEmpty(TE002) && !string.IsNullOrEmpty(TE003))
                 {
-                    UPDATECOPTEF(TE001, TE002, TE003, FORMID, MODIFIER, MOC, PUR);
+                    UPDATECOPTEF(TE001, TE002, TE003, FORMID, MODIFIER, MOC, PUR, TE039);
                 }
             }
            
@@ -63,7 +65,7 @@ namespace TKUOF.TRIGGER.COPTEF
             
         }
 
-        public void UPDATECOPTEF(string TE001, string TE002, string TE003, string FORMID, string MODIFIER,string MOC,string PUR)
+        public void UPDATECOPTEF(string TE001, string TE002, string TE003, string FORMID, string MODIFIER,string MOC,string PUR,string TE039)
         {
             string TE029 = "Y";
             string TE044 = "N";
@@ -143,6 +145,7 @@ namespace TKUOF.TRIGGER.COPTEF
 
                                     UPDATE [TK].dbo.COPTE
                                     SET TE029=@TE029,TE044=@TE044, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
+                                    ,TE039=@TE039
                                     WHERE TE001=@TE001 AND TE002=@TE002 AND TE003=@TE003
 
                                     UPDATE [TK].dbo.COPTF 
@@ -237,6 +240,7 @@ namespace TKUOF.TRIGGER.COPTEF
                     command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = MODI_TIME;
                     command.Parameters.Add("@MOC", SqlDbType.NVarChar).Value = MOC;
                     command.Parameters.Add("@PUR", SqlDbType.NVarChar).Value = PUR;
+                    command.Parameters.Add("@TE039", SqlDbType.NVarChar).Value = TE039;
 
                     command.Connection.Open();
 
