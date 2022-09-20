@@ -43,7 +43,7 @@ namespace TKUOF.TRIGGER.COPTCD
             PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
             MODIFIER = applyTask.Task.Applicant.Account;
-            TC040 = applyTask.Task.Applicant.Account;
+            TC040 = applyTask.Task.CurrentSigner.Account;
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
             if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
