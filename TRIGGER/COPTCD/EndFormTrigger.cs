@@ -106,6 +106,14 @@ namespace TKUOF.TRIGGER.COPTCD
                                     UPDATE [TK].dbo.COPTD 
                                     SET TD021=@TD021, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
                                     WHERE TD001=@TC001 AND TD002=@TC002
+
+
+                                    UPDATE [TK].dbo.COPTC
+                                    SET TC040=[ACCOUNT]
+                                    FROM [TKIT].[dbo].[UOFACCOUNTS]
+                                    WHERE [FORMNAME]='訂單'
+                                    AND TC001=@TC001 AND TC002=@TC002
+
                                         ");
 
             try

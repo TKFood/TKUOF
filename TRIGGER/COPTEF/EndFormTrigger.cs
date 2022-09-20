@@ -219,6 +219,12 @@ namespace TKUOF.TRIGGER.COPTEF
                                     SET UDF02=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
                                     WHERE TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
                     
+                                    UPDATE [TK].dbo.COPTE
+                                    SET TE039=[ACCOUNT]
+                                    FROM [TKIT].[dbo].[UOFACCOUNTS]
+                                    WHERE [FORMNAME]='訂單變更'
+                                    AND TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
+
                                         ");
 
             try
