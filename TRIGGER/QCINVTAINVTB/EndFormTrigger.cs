@@ -16,7 +16,7 @@ using System.Xml;
 
 namespace TKUOF.TRIGGER.QCINVTAINVTB
 {
-    //品保檢驗進貨單明細
+    //品保檢驗客供明細
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
