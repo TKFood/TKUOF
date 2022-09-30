@@ -139,9 +139,9 @@ namespace TKUOF.TRIGGER.QCINVTAINVTB
                     }
                     queryString.AppendFormat(@"
                                             UPDATE [TK].dbo.INVTB
-                                            SET TH015={1},UDF01='{2}'
+                                            SET TB007={1},UDF01='{2}'
                                             WHERE TB001=@TA001 AND TB002=@TA002 AND TB003='{0}'
-                                         ",  dr["TH003"].ToString(), Convert.ToDecimal(dr["TH015"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TH015"].ToString()));
+                                         ",  dr["TB003"].ToString(), Convert.ToDecimal(dr["TH015"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TH015"].ToString()));
                 }
                
             }
