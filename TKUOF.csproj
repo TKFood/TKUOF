@@ -83,6 +83,7 @@
     <Compile Include="TRIGGER\BOMTATBTC\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPMA1003\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPMA\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\COPTAB\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTCD\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTCDMOCPUR\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COPTCDNODEMOC\EndFormTrigger.cs" />
