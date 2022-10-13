@@ -14,6 +14,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COPTAB
 {
@@ -43,9 +44,9 @@ namespace TKUOF.TRIGGER.COPTAB
             //MODIFIER = applyTask.Task.Applicant.Account;
 
             //取得簽核人工號
-            //EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);          
-            //MODIFIER = ebUser.Account;
-            MODIFIER = "160115";
+            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);          
+            MODIFIER = ebUser.Account;
+            //MODIFIER = "160115";
 
 
 
