@@ -41,10 +41,11 @@ namespace TKUOF.TRIGGER.COPTAB
             TA002 = applyTask.Task.CurrentDocument.Fields["TA002"].FieldValue.ToString().Trim();         
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
-      
+
             //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);          
-            MODIFIER = ebUser.Account;
+            //EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);          
+            //MODIFIER = ebUser.Account;
+            MODIFIER = "160115";
 
 
 
