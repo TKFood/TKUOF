@@ -31,6 +31,7 @@ namespace TKUOF.TRIGGER.COPTAB
         {
             string TA001 = null;
             string TA002 = null;
+            string MB009 = null;
             string FORMID = null;
             string MODIFIER = null;
      
@@ -39,7 +40,8 @@ namespace TKUOF.TRIGGER.COPTAB
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
             TA001 = applyTask.Task.CurrentDocument.Fields["TA001"].FieldValue.ToString().Trim();
-            TA002 = applyTask.Task.CurrentDocument.Fields["TA002"].FieldValue.ToString().Trim();         
+            TA002 = applyTask.Task.CurrentDocument.Fields["TA002"].FieldValue.ToString().Trim();
+            MB009 = applyTask.Task.CurrentDocument.Fields["TA003"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
 
@@ -56,7 +58,7 @@ namespace TKUOF.TRIGGER.COPTAB
             {
                 if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
                 {
-                    UPDATECOPTAB(TA001, TA002, FORMID, MODIFIER);
+                    UPDATECOPTAB(TA001, TA002, FORMID, MODIFIER,MB009);
                 }
             }
 
@@ -69,7 +71,7 @@ namespace TKUOF.TRIGGER.COPTAB
 
         }
 
-        public void UPDATECOPTAB(string TA001, string TA002, string FORMID, string MODIFIER)
+        public void UPDATECOPTAB(string TA001, string TA002, string FORMID, string MODIFIER,string MB009)
         {
             string TC027 = "Y";
             string TC048 = "N";
@@ -77,6 +79,7 @@ namespace TKUOF.TRIGGER.COPTAB
             string COMPANY = "TK";
             string MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             string MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            string MB012 = "報價單"+ TA001 + '-' + TA002;
 
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
@@ -104,6 +107,23 @@ namespace TKUOF.TRIGGER.COPTAB
                                         AND TA001=TB001 AND TA002=TB002
                                         AND MV001=TA005
                                         AND TA001=@TA001 AND TA002=@TA002
+                                        AND TA004+TB004+TB008+TA007+TB016 NOT IN 
+                                        (
+                                        SELECT LTRIM(RTRIM(MB001))+LTRIM(RTRIM(MB002))+LTRIM(RTRIM(MB003))+LTRIM(RTRIM(MB004))+LTRIM(RTRIM(MB017))
+                                        FROM [TK].dbo.COPMB
+                                        )
+
+                                        UPDATE [TK].dbo.COPMB
+                                        SET MB009=@MB009,MB012=@MB012
+                                        WHERE LTRIM(RTRIM(MB001))+LTRIM(RTRIM(MB002))+LTRIM(RTRIM(MB003))+LTRIM(RTRIM(MB004))+LTRIM(RTRIM(MB017)) IN 
+                                        (
+                                        SELECT TA004+TB004+TB008+TA007+TB016
+                                        FROM [TK].dbo.COPTA,[TK].dbo.COPTB,[TK].dbo.CMSMV
+                                        WHERE 1=1
+                                        AND TA001=TB001 AND TA002=TB002
+                                        AND MV001=TA005
+                                        AND TA001=@TA001 AND TA002=@TA002
+                                        )
 
                                         INSERT INTO [TK].dbo.COPMC
                                         (MC001, MC002, MC003, MC004, MC005, MC006, MC007, MC008, MC009,  COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG) 
@@ -114,6 +134,11 @@ namespace TKUOF.TRIGGER.COPTAB
                                         AND MV001=TA005
                                         AND TK001=TB001 AND TK002=TB002 AND TK003=TB003
                                         AND TA001=@TA001 AND TA002=@TA002
+                                        AND TA004+TB004+TB008+TA007+TK004+TK006+TB016  NOT IN 
+                                        (
+                                        SELECT LTRIM(RTRIM(MC001))+LTRIM(RTRIM(MC002))+LTRIM(RTRIM(MC003))+LTRIM(RTRIM(MC004))+LTRIM(RTRIM(MC005))+LTRIM(RTRIM(MC009))
+                                        FROM [TK].dbo.COPMC
+                                        )
 
                                         ");
 
@@ -131,6 +156,8 @@ namespace TKUOF.TRIGGER.COPTAB
                     command.Parameters.Add("@TA016", SqlDbType.NVarChar).Value = "Y";
                     command.Parameters.Add("@TA019", SqlDbType.NVarChar).Value = "Y";
                     command.Parameters.Add("@TA029", SqlDbType.NVarChar).Value = "N";
+                    command.Parameters.Add("@MB009", SqlDbType.NVarChar).Value = MB009;
+                    command.Parameters.Add("@MB012", SqlDbType.NVarChar).Value = MB012;
                     command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = MODIFIER;
                     command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DateTime.Now.ToString("yyyyMMdd");
                     command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DateTime.Now.ToString("HH:mm:ss");
