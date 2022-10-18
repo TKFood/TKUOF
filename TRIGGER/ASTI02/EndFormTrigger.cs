@@ -14,6 +14,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.ASTI02
 {
@@ -29,6 +30,7 @@ namespace TKUOF.TRIGGER.ASTI02
         public string GetFormResult(ApplyTask applyTask)
         {
             string MB001 = null;
+            string MB016 = null;
             string MB042 = "AC01";
             string MB043 = null;
             string FORMID = null;
@@ -41,21 +43,24 @@ namespace TKUOF.TRIGGER.ASTI02
           
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
-      
+
             //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);     
+            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
             MODIFIER = ebUser.Account;
 
-            //取得MB042的單號
-            MB043 = GETMAXNO(MB042,DateTime.Now.ToString("yyyyMMdd"));
+            //SEARCHASTMB
+            DataTable DTSEARCHASTMB = SEARCHASTMB(MB001);
+            MB016 = DTSEARCHASTMB.Rows[0]["MB016"].ToString();
 
+            //取得MB042的單號
+            MB043 = GETMAXNO(MB042,MB016);
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
             if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
             {
-                if (!string.IsNullOrEmpty(MB001) && !string.IsNullOrEmpty(MB042) && !string.IsNullOrEmpty(MB043))
+                if (!string.IsNullOrEmpty(MB001) && !string.IsNullOrEmpty(MB042) && !string.IsNullOrEmpty(MB043) && !string.IsNullOrEmpty(MB016))
                 {
-                    UPDATEASTMBASTMC(MB001, FORMID, MODIFIER, MB042, MB043);
+                    UPDATEASTMBASTMC(MB001, FORMID, MODIFIER, MB042, MB043, MB016);
                 }
             }
 
@@ -68,7 +73,7 @@ namespace TKUOF.TRIGGER.ASTI02
 
         }
 
-        public void UPDATEASTMBASTMC(string MB001, string FORMID, string MODIFIER, string MB042, string MB043)
+        public void UPDATEASTMBASTMC(string MB001, string FORMID, string MODIFIER, string MB042, string MB043,string MB016)
         {
             string TC027 = "Y";
             string TC048 = "N";
@@ -88,6 +93,7 @@ namespace TKUOF.TRIGGER.ASTI02
                                         ,MB042=@MB042,MB043=@MB043
                                         ,MB039=@MB039,MB050=@MB050
                                         ,FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER,MODI_DATE=@MODI_DATE,MODI_TIME=@MODI_TIME
+                                        ,UDF02=@UDF02
                                         WHERE MB001=@MB001
 
 
@@ -112,6 +118,7 @@ namespace TKUOF.TRIGGER.ASTI02
                     command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = MODIFIER;
                     command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DateTime.Now.ToString("yyyyMMdd");
                     command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DateTime.Now.ToString("HH:mm:ss");
+                    command.Parameters.Add("@UDF02", SqlDbType.NVarChar).Value =FORMID;
 
 
 
@@ -140,7 +147,7 @@ namespace TKUOF.TRIGGER.ASTI02
 
         public string GETMAXNO(string TC001,string TC003)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["CHIYUconnectionstring"].ToString();
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
 
             string cmdTxt = @" 
@@ -159,7 +166,7 @@ namespace TKUOF.TRIGGER.ASTI02
 
             if (dt.Rows.Count > 0)
             {
-                string TA002 = SETTA002(dt.Rows[0]["TA002"].ToString());
+                string TA002 = SETTA002(dt.Rows[0]["TA002"].ToString(), TC003);
                 return TA002;
             }
             else
@@ -168,13 +175,11 @@ namespace TKUOF.TRIGGER.ASTI02
             }
         }
 
-        public string SETTA002(string TA002)
+        public string SETTA002(string TA002,string DATESTRING)
         {
-            DateTime dt = DateTime.Now;
-
             if (TA002.Equals("00000000000"))
             {
-                return dt.ToString("yyyyMMdd") + "001";
+                return DATESTRING + "001";
             }
 
             else
@@ -183,9 +188,37 @@ namespace TKUOF.TRIGGER.ASTI02
                 serno = serno + 1;
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
-                return dt.ToString("yyyyMMdd") + temp.ToString();
+                return DATESTRING + temp.ToString();
             }
 
+        }
+
+        public DataTable SEARCHASTMB(string MB001)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+            string cmdTxt = @" 
+                             SELECT MB016
+                            FROM [TK].dbo.ASTMB
+                            WHERE MB001=@MB001
+                             ";
+
+            m_db.AddParameter("@MB001", MB001);
+        
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt));
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
