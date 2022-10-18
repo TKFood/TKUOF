@@ -29,7 +29,7 @@ namespace TKUOF.TRIGGER.ASTI02
         public string GetFormResult(ApplyTask applyTask)
         {
             string MB001 = null;
-            string MB042 = null;
+            string MB042 = "AC01";
             string MB043 = null;
             string FORMID = null;
             string MODIFIER = null;
@@ -37,8 +37,7 @@ namespace TKUOF.TRIGGER.ASTI02
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
-            MB001 = applyTask.Task.CurrentDocument.Fields["MB001"].FieldValue.ToString().Trim();
-         
+            MB001 = applyTask.Task.CurrentDocument.Fields["MB001"].FieldValue.ToString().Trim();     
           
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
@@ -47,7 +46,8 @@ namespace TKUOF.TRIGGER.ASTI02
             EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);     
             MODIFIER = ebUser.Account;
 
-
+            //取得MB042的單號
+            MB043 = GETMAXNO(MB042,DateTime.Now.ToString("yyyyMMdd"));
 
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
@@ -82,8 +82,16 @@ namespace TKUOF.TRIGGER.ASTI02
 
 
             StringBuilder queryString = new StringBuilder();
-            queryString.AppendFormat(@"
-                                   
+            queryString.AppendFormat(@"                                   
+                                        UPDATE [TK].dbo.ASTMB
+                                        SET MB047=@MB047,MB048=@MB048
+                                        ,MB042=@MB042,MB043=@MB043
+                                        ,MB039=@MB039,MB050=@MB050
+                                        ,FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER,MODI_DATE=@MODI_DATE,MODI_TIME=@MODI_TIME
+                                        WHERE MB001=@MB001
+
+
+
 
                                         ");
 
@@ -94,7 +102,18 @@ namespace TKUOF.TRIGGER.ASTI02
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
                     command.Parameters.Add("@MB001", SqlDbType.NVarChar).Value = MB001;
-                 
+                    command.Parameters.Add("@MB047", SqlDbType.NVarChar).Value = DateTime.Now.ToString("yyyyMMdd");
+                    command.Parameters.Add("@MB048", SqlDbType.NVarChar).Value = MODIFIER;
+                    command.Parameters.Add("@MB042", SqlDbType.NVarChar).Value = MB042;
+                    command.Parameters.Add("@MB043", SqlDbType.NVarChar).Value = MB043;
+                    command.Parameters.Add("@MB039", SqlDbType.NVarChar).Value = "Y";
+                    command.Parameters.Add("@MB050", SqlDbType.NVarChar).Value = "N";
+                    command.Parameters.Add("@COMPANY", SqlDbType.NVarChar).Value = "TK";
+                    command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = MODIFIER;
+                    command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DateTime.Now.ToString("yyyyMMdd");
+                    command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DateTime.Now.ToString("HH:mm:ss");
+
+
 
                     command.Connection.Open();
 
