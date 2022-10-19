@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="AUTONO\PURTABCHANGEAUTONO.cs" />
     <Compile Include="AUTONO\PURTABAUTONO.cs" />
+    <Compile Include="CDS\ADDUSERSITES.cs" />
     <Compile Include="CDS\EXTRAEFDLL.cs" />
     <Compile Include="CDS\EXTRATHREEEFDLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
