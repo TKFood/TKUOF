@@ -3,6 +3,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.CustomExternal;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -67,8 +68,18 @@ namespace TKUOF.CDS
             site1.SignType = Lib.WKF.SignType.And;
             Lib.WKF.ExternalDllSite site2 = new Lib.WKF.ExternalDllSite();
 
-            site1.Signers.Add("ITENG");
-            site2.Signers.Add("ITENG");
+            //SEARCHDEPSITES
+            DataTable DTSITES = SEARCHDEPSITES(ebUser.Account);
+            
+            if(DTSITES.Rows.Count>=1)
+            {
+                site1.Signers.Add(DTSITES.Rows[0]["UOFFLOWSDEPMANAGERS_ACCOUNT"].ToString());
+            }
+            if (DTSITES.Rows.Count >= 2)
+            {
+                site2.Signers.Add(DTSITES.Rows[1]["UOFFLOWSDEPMANAGERS_ACCOUNT"].ToString());
+            }
+
 
             //site1 有找到簽核人員才新增簽核
             if (site1.Signers.Count > 0)
@@ -83,6 +94,45 @@ namespace TKUOF.CDS
             }
 
 
+        }
+
+        public DataTable SEARCHDEPSITES(string ACCOUNT)
+        {
+
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+            string cmdTxt = @"                             
+                             SELECT 
+                            [UOFFLOWSUSERS].[ACCOUNT] UOFFLOWSUSERS_ACCOUNT
+                            ,[UOFFLOWSUSERS].[NAMES] UOFFLOWSUSERS_NAMES
+                            ,[UOFFLOWSUSERS].[DEPNAME] UOFFLOWSUSERS_DEPNAME
+                            ,[UOFFLOWSDEPMANAGERS].[ACCOUNT] UOFFLOWSDEPMANAGERS_ACCOUNT
+                            ,[UOFFLOWSDEPMANAGERS].[NAMES] UOFFLOWSDEPMANAGERS_NAMES
+                            ,[UOFFLOWSDEPMANAGERS].[DEPNAME] UOFFLOWSDEPMANAGERS_DEPNAME
+                            ,[UOFFLOWSDEPMANAGERS].[ISMANAGER] UOFFLOWSDEPMANAGERS_ISMANAGER
+                            ,[UOFFLOWSDEPMANAGERS].[FLOWSSEQ] UOFFLOWSDEPMANAGERS_FLOWSSEQ
+                            FROM [TKIT].[dbo].[UOFFLOWSUSERS]
+                            LEFT JOIN [TKIT].[dbo].[UOFFLOWSDEPMANAGERS] ON [UOFFLOWSDEPMANAGERS].DEPNAME=[UOFFLOWSUSERS].DEPNAME AND [UOFFLOWSDEPMANAGERS].[ISMANAGER]='Y'
+                            WHERE [UOFFLOWSUSERS].ACCOUNT=@ACCOUNT
+                            ORDER BY [UOFFLOWSDEPMANAGERS].[FLOWSSEQ]
+                             ";
+
+            m_db.AddParameter("@ACCOUNT", ACCOUNT);
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt));
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         //public string GetExternalDllSites(string formInfo)
