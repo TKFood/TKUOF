@@ -95,6 +95,7 @@
     <Compile Include="TRIGGER\GAFrm\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\GMOFrm\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\HREngFrm001\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\MOCI02\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PROLOSAL\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTABCHANGE\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTAB\EndFormTrigger.cs" />
