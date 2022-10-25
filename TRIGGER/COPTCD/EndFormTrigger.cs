@@ -14,6 +14,8 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COPTCD
 {
@@ -45,23 +47,29 @@ namespace TKUOF.TRIGGER.COPTCD
             PUR = applyTask.Task.CurrentDocument.Fields["PUR"].FieldValue.ToString().Trim();
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
-      
+
             //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);
+            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
+            MODIFIER = ebUser.Account;
+
             TC040 = ebUser.Account;
             MODIFIER = ebUser.Account;
 
 
 
-
-            ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
-            if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
+            //指定簽核站是主管
+            if (applyTask.SiteCode.Equals("COP"))
             {
-                if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+                ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
+                if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
                 {
-                    UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR, TC040);
+                    if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+                    {
+                        UPDATECOPTCD(TC001, TC002, FORMID, MODIFIER, MOC, PUR, TC040);
+                    }
                 }
             }
+
 
 
             return "";
@@ -106,13 +114,6 @@ namespace TKUOF.TRIGGER.COPTCD
                                     UPDATE [TK].dbo.COPTD 
                                     SET TD021=@TD021, FLAG=FLAG+1,COMPANY=@COMPANY,MODIFIER=@MODIFIER ,MODI_DATE=@MODI_DATE, MODI_TIME=@MODI_TIME 
                                     WHERE TD001=@TC001 AND TD002=@TC002
-
-
-                                    UPDATE [TK].dbo.COPTC
-                                    SET TC040=[ACCOUNT]
-                                    FROM [TKIT].[dbo].[UOFACCOUNTS]
-                                    WHERE [FORMNAME]='訂單'
-                                    AND TC001=@TC001 AND TC002=@TC002
 
                                         ");
 

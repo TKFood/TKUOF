@@ -14,6 +14,7 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COPTEF
 {
@@ -50,18 +51,27 @@ namespace TKUOF.TRIGGER.COPTEF
             //TE039 = applyTask.Task.CurrentSite.CurrentNode.ActualSignerId;
 
             //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(applyTask.Task.CurrentSite.CurrentNode.ActualSignerId);
-            TE039 = ebUser.Account;
+            //取得簽核人工號
+            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
             MODIFIER = ebUser.Account;
 
-            ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
-            if (applyTask.SignResult== Ede.Uof.WKF.Engine.SignResult.Approve)
+            TE039 = ebUser.Account;
+
+            //指定簽核站是主管
+            if (applyTask.SiteCode.Equals("COP"))
             {
-                if (!string.IsNullOrEmpty(TE001) && !string.IsNullOrEmpty(TE002) && !string.IsNullOrEmpty(TE003))
+                if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
                 {
-                    UPDATECOPTEF(TE001, TE002, TE003, FORMID, MODIFIER, MOC, PUR, TE039);
+                    if (!string.IsNullOrEmpty(TE001) && !string.IsNullOrEmpty(TE002) && !string.IsNullOrEmpty(TE003))
+                    {
+                        UPDATECOPTEF(TE001, TE002, TE003, FORMID, MODIFIER, MOC, PUR, TE039);
+                    }
                 }
             }
+
+
+                ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
+                
            
 
             return "";
@@ -219,11 +229,7 @@ namespace TKUOF.TRIGGER.COPTEF
                                     SET UDF02=@FORMID,UDF05=SUBSTRING((@MOC+' '+@PUR),1,250)
                                     WHERE TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
                     
-                                    UPDATE [TK].dbo.COPTE
-                                    SET TE039=[ACCOUNT]
-                                    FROM [TKIT].[dbo].[UOFACCOUNTS]
-                                    WHERE [FORMNAME]='訂單變更'
-                                    AND TE001=@TE001 AND TE002=@TE002  AND TE003=@TE003
+                               
 
                                         ");
 
