@@ -91,7 +91,7 @@ namespace TKUOF.TRIGGER.QCFrm002
 
         public string SEARCHFORM_UOF_VERSION_ID(string FORM_NAME)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstringUOF"].ToString();
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
             SqlConnection sqlConn = new SqlConnection(connectionString);
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
