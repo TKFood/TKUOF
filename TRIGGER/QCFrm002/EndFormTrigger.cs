@@ -89,9 +89,9 @@ namespace TKUOF.TRIGGER.QCFrm002
             //throw new NotImplementedException();
         }
 
-        public string SEARCHFORM_VERSION_ID(string FORM_NAME)
+        public string SEARCHFORM_UOF_VERSION_ID(string FORM_NAME)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstringUOF"].ToString();
             SqlConnection sqlConn = new SqlConnection(connectionString);
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -102,12 +102,17 @@ namespace TKUOF.TRIGGER.QCFrm002
             {
                 //要記得改成正式-3
                 queryString.AppendFormat(@" 
-                                            SELECT 
-                                            RTRIM(LTRIM([FORM_VERSION_ID])) AS FORM_VERSION_ID
-                                            ,[FORM_NAME]
-                                            FROM [TKIT].[dbo].[UOF_FORM_VERSION_ID]
-                                            WHERE [FORM_NAME]='{0}'
-                                            ", FORM_NAME);
+                                                
+                                        SELECT TOP 1 RTRIM(LTRIM(TB_WKF_FORM_VERSION.FORM_VERSION_ID)) FORM_VERSION_ID,TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION,TB_WKF_FORM_VERSION.ISSUE_CTL
+                                        ,TB_WKF_FORM.FORM_NAME
+                                        FROM [UOF].dbo.TB_WKF_FORM_VERSION,[UOF].dbo.TB_WKF_FORM
+                                        WHERE 1=1
+                                        AND TB_WKF_FORM_VERSION.FORM_ID=TB_WKF_FORM.FORM_ID
+                                        AND TB_WKF_FORM_VERSION.ISSUE_CTL=1
+                                        AND FORM_NAME='{0}'
+                                        ORDER BY TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION DESC
+
+                                                ", FORM_NAME);
 
                 adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);
@@ -136,6 +141,54 @@ namespace TKUOF.TRIGGER.QCFrm002
 
             }
         }
+
+        //public string SEARCHFORM_VERSION_ID(string FORM_NAME)
+        //{
+        //    string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+        //    SqlConnection sqlConn = new SqlConnection(connectionString);
+        //    SqlDataAdapter adapter = new SqlDataAdapter();
+        //    SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+        //    StringBuilder queryString = new StringBuilder();
+        //    DataSet ds = new DataSet();
+
+        //    try
+        //    {
+        //        //要記得改成正式-3
+        //        queryString.AppendFormat(@" 
+        //                                    SELECT 
+        //                                    RTRIM(LTRIM([FORM_VERSION_ID])) AS FORM_VERSION_ID
+        //                                    ,[FORM_NAME]
+        //                                    FROM [TKIT].[dbo].[UOF_FORM_VERSION_ID]
+        //                                    WHERE [FORM_NAME]='{0}'
+        //                                    ", FORM_NAME);
+
+        //        adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
+        //        sqlCmdBuilder = new SqlCommandBuilder(adapter);
+        //        sqlConn.Open();
+        //        ds.Clear();
+        //        adapter.Fill(ds, "TEMPds1");
+        //        sqlConn.Close();
+
+
+        //        if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+        //        {
+        //            return ds.Tables["TEMPds1"].Rows[0]["FORM_VERSION_ID"].ToString();
+        //        }
+        //        else
+        //        {
+        //            return "";
+        //        }
+
+        //    }
+        //    catch
+        //    {
+        //        return "";
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //}
 
         public string SEARCHATTACH_ID(string OLDTASK_ID)
         {
@@ -212,7 +265,7 @@ namespace TKUOF.TRIGGER.QCFrm002
             XmlElement Form = xmlDoc.CreateElement("Form");
 
             //formVersionId
-            ID = SEARCHFORM_VERSION_ID("1001.客訴品質異常處理單");
+            ID = SEARCHFORM_UOF_VERSION_ID("1001.客訴品質異常處理單");
             Form.SetAttribute("formVersionId", ID);
             //urgentLevel
             Form.SetAttribute("urgentLevel", "2");
