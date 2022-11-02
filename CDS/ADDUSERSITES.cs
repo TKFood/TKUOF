@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,9 @@ namespace TKUOF.CDS
         string CompanyTopAccount;
         string DEPNAME;
         string SpecialGroupName = "N";
+        string FORM_VERSION_ID;
+        string UOF_FORM_NAME;
+        int RANKS;
 
         public void Finally()
         {
@@ -41,11 +45,19 @@ namespace TKUOF.CDS
             UserUCO userUCO = new UserUCO();
             DataSet GroupName = new DataSet();
 
+            //找出表單申請人、申請部門
             formXmlDoc.LoadXml(formInfo);
             account = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["account"].Value;
             userGuid = userUCO.GetGUID(account);
             EBUser ebUser = userUCO.GetEBUser(userGuid);
             DEPNAME = ebUser.GroupName;
+
+            //找出表單 FORM_VERSION_ID、UOF_FORM_NAME
+            FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
+            UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
+
+            //用UOF_FORM_NAME，找出表單最高簽核人
+            RANKS = Convert.ToInt32(SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME));
 
             //找出所有簽核人員，包含主管
             FINDALLSINGER(userGuid);
@@ -133,6 +145,106 @@ namespace TKUOF.CDS
             else
             {
                 return null;
+            }
+        }
+
+        public string SEARCHFORM_UOF_FORM_NAME(string FORM_VERSION_ID)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            SqlConnection sqlConn = new SqlConnection(connectionString);
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            StringBuilder queryString = new StringBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //要記得改成正式-3
+                queryString.AppendFormat(@" 
+                                                
+                                        SELECT TOP 1 RTRIM(LTRIM(TB_WKF_FORM_VERSION.FORM_VERSION_ID)) FORM_VERSION_ID,TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION,TB_WKF_FORM_VERSION.ISSUE_CTL
+                                        ,TB_WKF_FORM.FORM_NAME
+                                        FROM [UOF].dbo.TB_WKF_FORM_VERSION,[UOF].dbo.TB_WKF_FORM
+                                        WHERE 1=1
+                                        AND TB_WKF_FORM_VERSION.FORM_ID=TB_WKF_FORM.FORM_ID
+                                        AND TB_WKF_FORM_VERSION.ISSUE_CTL=1
+                                        AND FORM_VERSION_ID='{0}'
+                                        ORDER BY TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION DESC
+
+                                          ", FORM_VERSION_ID);
+
+                adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                {
+                    return ds.Tables["TEMPds1"].Rows[0]["FORM_VERFORM_NAMESION_ID"].ToString();
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+
+            }
+        }
+
+        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            SqlConnection sqlConn = new SqlConnection(connectionString);
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            StringBuilder queryString = new StringBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //要記得改成正式-3
+                queryString.AppendFormat(@"                                                 
+                                        SELECT TOP 1 [UOF_FORM_NAME],[RANKS]
+                                        FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
+                                        WHERE [UOF_FORM_NAME]='{0}'
+
+                                          ", UOF_FORM_NAME);
+
+                adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                {
+                    return ds.Tables["TEMPds1"].Rows[0]["RANKS"].ToString();
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+
             }
         }
 
