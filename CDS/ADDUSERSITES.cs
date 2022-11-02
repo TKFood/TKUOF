@@ -29,7 +29,8 @@ namespace TKUOF.CDS
         string SpecialGroupName = "N";
         string FORM_VERSION_ID;
         string UOF_FORM_NAME;
-        int RANKS;
+        string RANKS;
+        string GROUP_ID;
 
         public void Finally()
         {
@@ -51,16 +52,21 @@ namespace TKUOF.CDS
             userGuid = userUCO.GetGUID(account);
             EBUser ebUser = userUCO.GetEBUser(userGuid);
             DEPNAME = ebUser.GroupName;
+            GROUP_ID = ebUser.GroupID;
 
             //找出表單 FORM_VERSION_ID、UOF_FORM_NAME
             FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
             UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
 
-            //用UOF_FORM_NAME，找出表單最高簽核人
-            RANKS = Convert.ToInt32(SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME));
+            //用UOF_FORM_NAME，找出表單最高簽核人層級
+            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME);
+
+            //找出部門簽核人員 依職級順序
+            GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
+            FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
 
             //找出所有簽核人員，包含主管
-            FINDALLSINGER(userGuid);
+            //FINDALLSINGER(userGuid);
 
             return sites.ConvertToXML();
         }
@@ -68,6 +74,128 @@ namespace TKUOF.CDS
         public void OnError(Exception errorException)
         {
 
+        }
+
+        public void FIND_FORM_FLOW_SINGER(string GROUP_ID, string RANKS)
+        {
+            UserUCO userUCO = new UserUCO();
+            EBUser ebUser = userUCO.GetEBUser(userGuid);
+            EBUser ebUserHasJobFunction = userUCO.GetEBUser(userGuid);
+
+            Lib.WKF.ExternalDllSite site1 = new Lib.WKF.ExternalDllSite();
+            site1.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site2 = new Lib.WKF.ExternalDllSite();
+            site2.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site3= new Lib.WKF.ExternalDllSite();
+            site3.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site4 = new Lib.WKF.ExternalDllSite();
+
+            //SEARCHDEPSITES
+            DataTable DTSITES = SEARCH_FORM_FLOW_SITES(GROUP_ID, RANKS);
+
+            if (DTSITES.Rows.Count >= 1)
+            {
+                site1.Signers.Add(DTSITES.Rows[0]["ACCOUNT"].ToString());
+            }
+            if (DTSITES.Rows.Count >= 2)
+            {
+                site2.Signers.Add(DTSITES.Rows[1]["ACCOUNT"].ToString());
+            }
+            if (DTSITES.Rows.Count >= 3)
+            {
+                site3.Signers.Add(DTSITES.Rows[2]["ACCOUNT"].ToString());
+            }
+            if (DTSITES.Rows.Count >= 4)
+            {
+                site4.Signers.Add(DTSITES.Rows[3]["ACCOUNT"].ToString());
+            }
+
+
+            //site1 有找到簽核人員才新增簽核
+            if (site1.Signers.Count > 0)
+            {
+                sites.Sites.Add(site1);
+            }
+            //site2 有找到簽核人員才新增簽核
+            if (site2.Signers.Count > 0)
+            {
+                sites.Sites.Add(site2);
+            }
+            //site3 有找到簽核人員才新增簽核
+            if (site3.Signers.Count > 0)
+            {
+                sites.Sites.Add(site3);
+            }
+            //site4 有找到簽核人員才新增簽核
+            if (site4.Signers.Count > 0)
+            {
+                sites.Sites.Add(site4);
+            }
+
+
+
+        }
+
+        public DataTable SEARCH_FORM_FLOW_SITES(string GROUP_ID,string RANKS)
+        {
+
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+            StringBuilder cmdTxt = new StringBuilder();
+
+            cmdTxt.AppendFormat( @" 
+                            WITH CTE_TB_EB_GROUP AS 
+                            (
+                            SELECT 
+                            GROUP_NAME, GROUP_ID, PARENT_GROUP_ID, LEV, 1 AS LEVELS
+                            FROM [UOF].dbo.TB_EB_GROUP
+                            WHERE (GROUP_ID = '{0}')
+                            UNION ALL
+                            SELECT A.GROUP_NAME, A.GROUP_ID, A.PARENT_GROUP_ID, A.LEV, 
+                            B.LEVELS + 1 AS Expr1
+                            FROM [UOF].dbo.TB_EB_GROUP AS A INNER JOIN
+                            CTE_TB_EB_GROUP AS B ON B.PARENT_GROUP_ID = A.GROUP_ID
+
+                            )
+
+                            SELECT CTE_TB_EB_GROUP.GROUP_NAME, CTE_TB_EB_GROUP.GROUP_ID, CTE_TB_EB_GROUP.PARENT_GROUP_ID, CTE_TB_EB_GROUP.LEV, LEVELS
+                            ,TB_EB_EMPL_FUNC.*
+                            ,TB_EB_JOB_FUNC.*
+                            ,TB_EB_USER.ACCOUNT
+                            ,TB_EB_USER.NAME
+                            ,TB_EB_EMPL_DEP.*
+                            ,TB_EB_JOB_TITLE.*
+                            FROM  CTE_TB_EB_GROUP,[UOF].dbo.TB_EB_EMPL_FUNC, [UOF].dbo.TB_EB_JOB_FUNC ,[UOF].dbo.TB_EB_USER,[UOF].dbo.TB_EB_EMPL_DEP,[UOF].dbo.TB_EB_JOB_TITLE 
+                            WHERE  1=1
+                            AND CTE_TB_EB_GROUP.GROUP_ID=TB_EB_EMPL_FUNC.GROUP_ID
+                            AND TB_EB_EMPL_FUNC.FUNC_ID=TB_EB_JOB_FUNC.FUNC_ID
+                            AND TB_EB_EMPL_FUNC.USER_GUID=TB_EB_USER.USER_GUID
+                            AND TB_EB_EMPL_DEP.USER_GUID=TB_EB_USER.USER_GUID
+                            AND TB_EB_EMPL_DEP.GROUP_ID=CTE_TB_EB_GROUP.GROUP_ID
+                            AND TB_EB_JOB_TITLE.TITLE_ID=TB_EB_EMPL_DEP.TITLE_ID
+                            AND (CTE_TB_EB_GROUP.GROUP_NAME NOT LIKE '%停用%') AND (CTE_TB_EB_GROUP.GROUP_NAME NOT LIKE '%特殊用途%')
+                            AND TB_EB_EMPL_FUNC.FUNC_ID IN ('Signer')
+                            AND TB_EB_USER.IS_SUSPENDED IN ('0')
+                            AND TB_EB_JOB_TITLE.RANK>={1}
+                            ORDER BY  LEV,RANK
+
+                             ", GROUP_ID, RANKS);
+
+            //m_db.AddParameter("@GROUP_ID", GROUP_ID);
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt.ToString()));
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void FINDALLSINGER(string userGuid)
@@ -183,7 +311,7 @@ namespace TKUOF.CDS
 
                 if (ds.Tables["TEMPds1"].Rows.Count >= 1)
                 {
-                    return ds.Tables["TEMPds1"].Rows[0]["FORM_VERFORM_NAMESION_ID"].ToString();
+                    return ds.Tables["TEMPds1"].Rows[0]["FORM_NAME"].ToString();
                 }
                 else
                 {
