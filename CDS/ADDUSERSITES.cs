@@ -68,11 +68,60 @@ namespace TKUOF.CDS
             //找出所有簽核人員，包含主管
             //FINDALLSINGER(userGuid);
 
+            //測試用
+            //FINDTEST();
+
             return sites.ConvertToXML();
         }
 
         public void OnError(Exception errorException)
         {
+
+        }
+
+        public void FINDTEST()
+        {
+            UserUCO userUCO = new UserUCO();
+            EBUser ebUser = userUCO.GetEBUser(userGuid);
+            EBUser ebUserHasJobFunction = userUCO.GetEBUser(userGuid);
+
+            Lib.WKF.ExternalDllSite site1 = new Lib.WKF.ExternalDllSite();
+            site1.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site2 = new Lib.WKF.ExternalDllSite();
+            site2.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site3 = new Lib.WKF.ExternalDllSite();
+            site3.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site4 = new Lib.WKF.ExternalDllSite();
+
+     
+            site1.Signers.Add("120002");
+            site2.Signers.Add("160115");
+            site3.Signers.Add("iteng");
+
+
+
+            //site1 有找到簽核人員才新增簽核
+            if (site1.Signers.Count > 0)
+            {
+                sites.Sites.Add(site1);
+            }
+            //site2 有找到簽核人員才新增簽核
+            if (site2.Signers.Count > 0)
+            {
+                sites.Sites.Add(site2);
+            }
+            //site3 有找到簽核人員才新增簽核
+            if (site3.Signers.Count > 0)
+            {
+                sites.Sites.Add(site3);
+            }
+            //site4 有找到簽核人員才新增簽核
+            if (site4.Signers.Count > 0)
+            {
+                sites.Sites.Add(site4);
+            }
+
+
 
         }
 
