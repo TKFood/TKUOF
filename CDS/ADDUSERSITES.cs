@@ -61,9 +61,10 @@ namespace TKUOF.CDS
             //用UOF_FORM_NAME，找出表單最高簽核人層級
             RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME);
 
-            //找出部門簽核人員 依職級順序
+            //找出部門所有簽核人員 依職級順序           
             GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
             FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+
 
             //找出所有簽核人員，包含主管
             //FINDALLSINGER(userGuid);
@@ -127,6 +128,12 @@ namespace TKUOF.CDS
 
         public void FIND_FORM_FLOW_SINGER(string GROUP_ID, string RANKS)
         {
+            DataTable DTSITESATFERRANKS = new DataTable();
+            DTSITESATFERRANKS.Clear();
+            DTSITESATFERRANKS.Columns.Add("ACCOUNT");
+            string ADDRANK = "Y";
+            int FORMRANKS = 0;
+
             UserUCO userUCO = new UserUCO();
             EBUser ebUser = userUCO.GetEBUser(userGuid);
             EBUser ebUserHasJobFunction = userUCO.GetEBUser(userGuid);
@@ -138,26 +145,111 @@ namespace TKUOF.CDS
             Lib.WKF.ExternalDllSite site3= new Lib.WKF.ExternalDllSite();
             site3.SignType = Lib.WKF.SignType.And;
             Lib.WKF.ExternalDllSite site4 = new Lib.WKF.ExternalDllSite();
+            site4.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site5 = new Lib.WKF.ExternalDllSite();
+            site5.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site6 = new Lib.WKF.ExternalDllSite();
+            site6.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site7 = new Lib.WKF.ExternalDllSite();
+            site7.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site8 = new Lib.WKF.ExternalDllSite();
+            site8.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site9 = new Lib.WKF.ExternalDllSite();
+            site9.SignType = Lib.WKF.SignType.And;
+            Lib.WKF.ExternalDllSite site10 = new Lib.WKF.ExternalDllSite();
 
-            //SEARCHDEPSITES
-            DataTable DTSITES = SEARCH_FORM_FLOW_SITES(GROUP_ID, RANKS);
 
-            if (DTSITES.Rows.Count >= 1)
+            //找出部門糐上層的所有簽核者資料
+            //DataTable DTSITES = SEARCH_FORM_FLOW_SITES(GROUP_ID, RANKS);
+            DataTable DTSITES = SEARCH_FORM_FLOW_SITES_ALL(GROUP_ID);
+
+            //找職級小於/等於的簽核人數
+            foreach(DataRow DR in DTSITES.Rows)
             {
-                site1.Signers.Add(DTSITES.Rows[0]["ACCOUNT"].ToString());
+                if(Convert.ToInt32(RANKS)<= Convert.ToInt32(DR["RANK"].ToString()))
+                {
+                    FORMRANKS = FORMRANKS+1;
+                }
             }
-            if (DTSITES.Rows.Count >= 2)
+            //檢查所有職級是否相符條件的職級，有相同職級就不再找上一層
+            foreach (DataRow DR in DTSITES.Rows)
             {
-                site2.Signers.Add(DTSITES.Rows[1]["ACCOUNT"].ToString());
+                if (Convert.ToInt32(RANKS) == Convert.ToInt32(DR["RANK"].ToString()))
+                {
+                    ADDRANK = "N";
+                }
             }
-            if (DTSITES.Rows.Count >= 3)
+            //檢查所有職級是否相符條件的職級，沒有相同職級就再找上一層
+            if (ADDRANK.Equals("Y"))
             {
-                site3.Signers.Add(DTSITES.Rows[2]["ACCOUNT"].ToString());
+                FORMRANKS = FORMRANKS + 1;
             }
-            if (DTSITES.Rows.Count >= 4)
+
+            for(int i=0;i< FORMRANKS;i++)
             {
-                site4.Signers.Add(DTSITES.Rows[3]["ACCOUNT"].ToString());
+                DataRow NEWDR = DTSITESATFERRANKS.NewRow();
+                NEWDR["ACCOUNT"] = DTSITES.Rows[i]["ACCOUNT"].ToString();
+                DTSITESATFERRANKS.Rows.Add(NEWDR);
             }
+
+            if (DTSITESATFERRANKS.Rows.Count >= 1)
+            {
+                site1.Signers.Add(DTSITESATFERRANKS.Rows[0]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 2)
+            {
+                site2.Signers.Add(DTSITESATFERRANKS.Rows[1]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 3)
+            {
+                site3.Signers.Add(DTSITESATFERRANKS.Rows[2]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 4)
+            {
+                site4.Signers.Add(DTSITESATFERRANKS.Rows[3]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 5)
+            {
+                site5.Signers.Add(DTSITESATFERRANKS.Rows[4]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 6)
+            {
+                site6.Signers.Add(DTSITESATFERRANKS.Rows[5]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 7)
+            {
+                site7.Signers.Add(DTSITESATFERRANKS.Rows[6]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 8)
+            {
+                site8.Signers.Add(DTSITESATFERRANKS.Rows[7]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 9)
+            {
+                site9.Signers.Add(DTSITESATFERRANKS.Rows[8]["ACCOUNT"].ToString());
+            }
+            if (DTSITESATFERRANKS.Rows.Count >= 10)
+            {
+                site10.Signers.Add(DTSITESATFERRANKS.Rows[9]["ACCOUNT"].ToString());
+            }
+          
+
+            //if (DTSITES.Rows.Count >= 1)
+            //{
+            //    site1.Signers.Add(DTSITES.Rows[0]["ACCOUNT"].ToString());
+            //}
+            //if (DTSITES.Rows.Count >= 2)
+            //{
+            //    site2.Signers.Add(DTSITES.Rows[1]["ACCOUNT"].ToString());
+            //}
+            //if (DTSITES.Rows.Count >= 3)
+            //{
+            //    site3.Signers.Add(DTSITES.Rows[2]["ACCOUNT"].ToString());
+            //}
+            //if (DTSITES.Rows.Count >= 4)
+            //{
+            //    site4.Signers.Add(DTSITES.Rows[3]["ACCOUNT"].ToString());
+            //}
 
 
             //site1 有找到簽核人員才新增簽核
@@ -180,9 +272,100 @@ namespace TKUOF.CDS
             {
                 sites.Sites.Add(site4);
             }
+            //site5 有找到簽核人員才新增簽核
+            if (site5.Signers.Count > 0)
+            {
+                sites.Sites.Add(site5);
+            }
+            //site6 有找到簽核人員才新增簽核
+            if (site6.Signers.Count > 0)
+            {
+                sites.Sites.Add(site6);
+            }
+            //site7 有找到簽核人員才新增簽核
+            if (site7.Signers.Count > 0)
+            {
+                sites.Sites.Add(site7);
+            }
+            //site8 有找到簽核人員才新增簽核
+            if (site8.Signers.Count > 0)
+            {
+                sites.Sites.Add(site8);
+            }
+            //site9 有找到簽核人員才新增簽核
+            if (site9.Signers.Count > 0)
+            {
+                sites.Sites.Add(site9);
+            }
+            //site10 有找到簽核人員才新增簽核
+            if (site10.Signers.Count > 0)
+            {
+                sites.Sites.Add(site10);
+            }
 
 
 
+        }
+        public DataTable SEARCH_FORM_FLOW_SITES_ALL(string GROUP_ID)
+        {
+
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+            StringBuilder cmdTxt = new StringBuilder();
+
+            cmdTxt.AppendFormat(@" 
+                            WITH CTE_TB_EB_GROUP AS 
+                            (
+                            SELECT 
+                            GROUP_NAME, GROUP_ID, PARENT_GROUP_ID, LEV, 1 AS LEVELS
+                            FROM [UOF].dbo.TB_EB_GROUP
+                            WHERE (GROUP_ID = '{0}')
+                            UNION ALL
+                            SELECT A.GROUP_NAME, A.GROUP_ID, A.PARENT_GROUP_ID, A.LEV, 
+                            B.LEVELS + 1 AS Expr1
+                            FROM [UOF].dbo.TB_EB_GROUP AS A INNER JOIN
+                            CTE_TB_EB_GROUP AS B ON B.PARENT_GROUP_ID = A.GROUP_ID
+
+                            )
+
+                            SELECT CTE_TB_EB_GROUP.GROUP_NAME, CTE_TB_EB_GROUP.GROUP_ID, CTE_TB_EB_GROUP.PARENT_GROUP_ID, CTE_TB_EB_GROUP.LEV, LEVELS
+                            ,TB_EB_EMPL_FUNC.*
+                            ,TB_EB_JOB_FUNC.*
+                            ,TB_EB_USER.ACCOUNT
+                            ,TB_EB_USER.NAME
+                            ,TB_EB_EMPL_DEP.*
+                            ,TB_EB_JOB_TITLE.*
+                            FROM  CTE_TB_EB_GROUP,[UOF].dbo.TB_EB_EMPL_FUNC, [UOF].dbo.TB_EB_JOB_FUNC ,[UOF].dbo.TB_EB_USER,[UOF].dbo.TB_EB_EMPL_DEP,[UOF].dbo.TB_EB_JOB_TITLE 
+                            WHERE  1=1
+                            AND CTE_TB_EB_GROUP.GROUP_ID=TB_EB_EMPL_FUNC.GROUP_ID
+                            AND TB_EB_EMPL_FUNC.FUNC_ID=TB_EB_JOB_FUNC.FUNC_ID
+                            AND TB_EB_EMPL_FUNC.USER_GUID=TB_EB_USER.USER_GUID
+                            AND TB_EB_EMPL_DEP.USER_GUID=TB_EB_USER.USER_GUID
+                            AND TB_EB_EMPL_DEP.GROUP_ID=CTE_TB_EB_GROUP.GROUP_ID
+                            AND TB_EB_JOB_TITLE.TITLE_ID=TB_EB_EMPL_DEP.TITLE_ID
+                            AND (CTE_TB_EB_GROUP.GROUP_NAME NOT LIKE '%停用%') AND (CTE_TB_EB_GROUP.GROUP_NAME NOT LIKE '%特殊用途%')
+                            AND TB_EB_EMPL_FUNC.FUNC_ID IN ('Signer')
+                            AND TB_EB_USER.IS_SUSPENDED IN ('0')
+                          
+                            ORDER BY  LEV DESC,RANK 
+
+                             ", GROUP_ID);
+
+            //m_db.AddParameter("@GROUP_ID", GROUP_ID);
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt.ToString()));
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public DataTable SEARCH_FORM_FLOW_SITES(string GROUP_ID,string RANKS)
@@ -192,7 +375,7 @@ namespace TKUOF.CDS
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
             StringBuilder cmdTxt = new StringBuilder();
 
-            cmdTxt.AppendFormat( @" 
+            cmdTxt.AppendFormat(@" 
                             WITH CTE_TB_EB_GROUP AS 
                             (
                             SELECT 
@@ -226,7 +409,8 @@ namespace TKUOF.CDS
                             AND TB_EB_EMPL_FUNC.FUNC_ID IN ('Signer')
                             AND TB_EB_USER.IS_SUSPENDED IN ('0')
                             AND TB_EB_JOB_TITLE.RANK>={1}
-                            ORDER BY  LEV,RANK
+
+                            ORDER BY  LEV DESC,RANK 
 
                              ", GROUP_ID, RANKS);
 
