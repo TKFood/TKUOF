@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace TKUOF.CDS
+namespace TKUOF.FORMFLOWS
 {
     class ADDUSERSITES : ICallExternalDllSites
     {
@@ -62,7 +62,7 @@ namespace TKUOF.CDS
             RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME);
 
             //找出部門所有簽核人員 依職級順序           
-            GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
+            //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
             FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
 
 
