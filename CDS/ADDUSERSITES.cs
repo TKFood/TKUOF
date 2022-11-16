@@ -10,11 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Ede.Uof.Utility.Log;
 
 namespace TKUOF.CDS
 {
     class ADDUSERSITES : ICallExternalDllSites
-    {
+    {       
+
         Lib.WKF.ExternalDllSites sites = new Lib.WKF.ExternalDllSites();
         UserUCO UserUCOSuperior = new UserUCO();
         EBUser EBUserSuperior;
@@ -39,6 +41,8 @@ namespace TKUOF.CDS
 
         public string GetExternalDllSites(string formInfo)
         {
+            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 進入GetExternalDllSites " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+
             XmlDocument xmlDoc = new XmlDocument();
             XmlDocument formXmlDoc = new XmlDocument();
             DatabaseHelper DbQueryCompanyTopAccount = new DatabaseHelper();
@@ -99,6 +103,7 @@ namespace TKUOF.CDS
             site2.Signers.Add("160115");
             site3.Signers.Add("iteng");
 
+            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 新增3人簽核 " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
 
 
             //site1 有找到簽核人員才新增簽核
