@@ -102,7 +102,7 @@ namespace TKUOF.CDS
             site1.Signers.Add("120002");
             site2.Signers.Add("160115");
             site3.Signers.Add("iteng");
-
+             
             Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 新增3人簽核 " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
 
 
