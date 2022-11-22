@@ -1105,7 +1105,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                             ,TC038 AS [TE160]
                                             ,TC039 AS [TE161]
                                             ,TC040 AS [TE162]
-                                            ,'' AS [UDF01]
+                                            ,'Y' AS [UDF01]
                                             ,'' AS [UDF02]
                                             ,'' AS [UDF03]
                                             ,'' AS [UDF04]
