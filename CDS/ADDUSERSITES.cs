@@ -62,12 +62,17 @@ namespace TKUOF.CDS
             FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
             UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
 
-            //用UOF_FORM_NAME，找出表單最高簽核人層級
-            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME);
+            //FORM_VERSION_ID，找出表單最高簽核人層級
+            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID);
 
+            //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
             //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
-            FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            if (!string.IsNullOrEmpty(RANKS))
+            {
+                FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            }
+            
 
 
             //找出所有簽核人員，包含主管
@@ -567,7 +572,7 @@ namespace TKUOF.CDS
             }
         }
 
-        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME)
+        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME, string GROUP_ID)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
             SqlConnection sqlConn = new SqlConnection(connectionString);
@@ -580,11 +585,16 @@ namespace TKUOF.CDS
             {
                 //要記得改成正式-3
                 queryString.AppendFormat(@"                                                 
-                                        SELECT TOP 1 [UOF_FORM_NAME],[RANKS]
+                                        SELECT TOP (1) 
+                                        [UOF_FORM_NAME]
+                                        ,[GROUP_ID]
+                                        ,[GROUP_NAME]
+                                        ,[RANKS]
+                                        ,[TITLE_NAME]
                                         FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
-                                        WHERE [UOF_FORM_NAME]='{0}'
+                                        WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}'
 
-                                          ", UOF_FORM_NAME);
+                                          ", UOF_FORM_NAME, GROUP_ID);
 
                 adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);
