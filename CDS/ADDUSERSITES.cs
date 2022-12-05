@@ -57,6 +57,7 @@ namespace TKUOF.CDS
             EBUser ebUser = userUCO.GetEBUser(userGuid);
             DEPNAME = ebUser.GroupName;
             GROUP_ID = ebUser.GroupID;
+            GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
 
             //找出表單 FORM_VERSION_ID、UOF_FORM_NAME
             FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
