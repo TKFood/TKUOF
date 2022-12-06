@@ -45,7 +45,7 @@ namespace TKUOF.TRIGGER.QCINVTAINVTB
             //QCMAN= applyTask.Task.Applicant.UserName;
 
             //取得簽核人員
-            QCMAN = applyTask.Task.CurrentSigner.UserName;
+            //QCMAN = applyTask.Task.CurrentSigner.UserName;
 
             //品保人員簽核就啟動，不用等整張表單簽完
             //核準
@@ -61,6 +61,9 @@ namespace TKUOF.TRIGGER.QCINVTAINVTB
                             string TB003 = node.SelectSingleNode("./Cell[@fieldId='TB003']").Attributes["fieldValue"].Value;
                             string TH015 = node.SelectSingleNode("./Cell[@fieldId='TH015']").Attributes["fieldValue"].Value;
                             string CHECK = node.SelectSingleNode("./Cell[@fieldId='CHECK']").Attributes["fieldValue"].Value;
+
+                            //取得簽核人員
+                            QCMAN = applyTask.Task.CurrentSigner.UserName;
 
                             DataRow dr = dt.NewRow();
                             dr["TB003"] = TB003;
