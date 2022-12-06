@@ -33,6 +33,7 @@ namespace TKUOF.CDS
         string UOF_FORM_NAME;
         string RANKS;
         string GROUP_ID;
+        string APPLY_RANKS;
 
         public void Finally()
         {
@@ -56,6 +57,7 @@ namespace TKUOF.CDS
             userGuid = userUCO.GetGUID(account);
             EBUser ebUser = userUCO.GetEBUser(userGuid);
             DEPNAME = ebUser.GroupName;
+            APPLY_RANKS = ebUser.JobTitleID;
             GROUP_ID = ebUser.GroupID;
             GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
 
@@ -64,7 +66,7 @@ namespace TKUOF.CDS
             UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
 
             //FORM_VERSION_ID，找出表單最高簽核人層級
-            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID);
+            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
             //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
@@ -109,7 +111,7 @@ namespace TKUOF.CDS
             site2.Signers.Add("160115");
             site3.Signers.Add("iteng");
              
-            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 新增3人簽核 " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 新增簽核 " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
 
 
             //site1 有找到簽核人員才新增簽核
@@ -573,7 +575,7 @@ namespace TKUOF.CDS
             }
         }
 
-        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME, string GROUP_ID)
+        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME, string GROUP_ID,string APPLY_RANKS)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
             SqlConnection sqlConn = new SqlConnection(connectionString);
@@ -587,15 +589,20 @@ namespace TKUOF.CDS
                 //要記得改成正式-3
                 queryString.AppendFormat(@"                                                 
                                         SELECT TOP (1) 
-                                        [UOF_FORM_NAME]
+                                        [ID]
+                                        ,[UOF_FORM_NAME]
                                         ,[GROUP_ID]
                                         ,[GROUP_NAME]
                                         ,[RANKS]
                                         ,[TITLE_NAME]
+                                        ,[APPLY_RANKS]
+                                        ,[APPLY_TITLE_NAME]
+                                        ,[PRIORITYS]
                                         FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
-                                        WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}'
+                                        WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2} 
+                                        ORDER BY [PRIORITYS]
 
-                                          ", UOF_FORM_NAME, GROUP_ID);
+                                          ", UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
                 adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);

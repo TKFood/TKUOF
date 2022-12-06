@@ -10,11 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Ede.Uof.Utility.Log;
 
 namespace TKUOF.FORMFLOWS
 {
     class ADDUSERSITES : ICallExternalDllSites
     {
+        string MAINconnectionString = ConfigurationManager.ConnectionStrings["connectionstringUOF"].ToString(); 
+
         Lib.WKF.ExternalDllSites sites = new Lib.WKF.ExternalDllSites();
         UserUCO UserUCOSuperior = new UserUCO();
         EBUser EBUserSuperior;
@@ -22,15 +25,19 @@ namespace TKUOF.FORMFLOWS
 
         Boolean FLAGGO = true;
         DataSet CompanyTopAccountDS = new DataSet();
-        string account;
-        string userGuid; 
+        DataTable DTACCOUNT = null;
+
         string CompanyTopAccount;
-        string DEPNAME;
         string SpecialGroupName = "N";
         string FORM_VERSION_ID;
         string UOF_FORM_NAME;
+        string account;
+        string userGuid;
         string RANKS;
         string GROUP_ID;
+        string GROUP_NAME;
+        string TITLE_NAME;
+        string APPLY_RANKS;
 
         public void Finally()
         {
@@ -39,6 +46,9 @@ namespace TKUOF.FORMFLOWS
 
         public string GetExternalDllSites(string formInfo)
         {
+            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 進入GetExternalDllSites " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+            
+
             XmlDocument xmlDoc = new XmlDocument();
             XmlDocument formXmlDoc = new XmlDocument();
             DatabaseHelper DbQueryCompanyTopAccount = new DatabaseHelper();
@@ -49,28 +59,38 @@ namespace TKUOF.FORMFLOWS
             //找出表單申請人、申請部門
             formXmlDoc.LoadXml(formInfo);
             account = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["account"].Value;
-            userGuid = userUCO.GetGUID(account);
-            EBUser ebUser = userUCO.GetEBUser(userGuid);
-            DEPNAME = ebUser.GroupName;
-            GROUP_ID = ebUser.GroupID;
+
+            DataTable DTACCOUNT = SEARCHACCOUNT(account);
+            userGuid = DTACCOUNT.Rows[0]["USER_GUID"].ToString();
+            GROUP_ID = DTACCOUNT.Rows[0]["GROUP_ID"].ToString();
+            GROUP_NAME = DTACCOUNT.Rows[0]["GROUP_NAME"].ToString();
+            TITLE_NAME = DTACCOUNT.Rows[0]["TITLE_NAME"].ToString();
+            APPLY_RANKS = DTACCOUNT.Rows[0]["RANK"].ToString();
+           
+            //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
 
             //找出表單 FORM_VERSION_ID、UOF_FORM_NAME
             FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
             UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
 
-            //用UOF_FORM_NAME，找出表單最高簽核人層級
-            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME);
+            //FORM_VERSION_ID，找出表單最高簽核人層級
+            RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
+            //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
             //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
-            //FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            if (!string.IsNullOrEmpty(RANKS))
+            {
+                FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            }
+            
 
 
             //找出所有簽核人員，包含主管
             //FINDALLSINGER(userGuid);
 
             //測試用
-            FINDTEST();
+            //FINDTEST();
 
             return sites.ConvertToXML();
         }
@@ -78,6 +98,52 @@ namespace TKUOF.FORMFLOWS
         public void OnError(Exception errorException)
         {
 
+        }
+
+        public DataTable SEARCHACCOUNT(string account)
+        {
+            string connectionString = MAINconnectionString;
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+            StringBuilder cmdTxt = new StringBuilder();
+
+            cmdTxt.AppendFormat(@" 
+                           
+                                SELECT 
+                                [TB_EB_USER].[USER_GUID]
+                                ,[ACCOUNT]
+                                ,[NAME]
+                                ,[TB_EB_GROUP].[GROUP_ID]
+                                ,[GROUP_NAME]
+                                ,[TB_EB_EMPL_DEP].[TITLE_ID]
+                                ,[TITLE_NAME]
+                                ,[RANK]
+                                FROM [UOF].[dbo].[TB_EB_USER],[UOF].[dbo].[TB_EB_EMPL_DEP],[UOF].[dbo].[TB_EB_GROUP],[UOF].[dbo].[TB_EB_JOB_TITLE]
+                                WHERE [TB_EB_USER].USER_GUID=[TB_EB_EMPL_DEP].USER_GUID
+                                AND [TB_EB_GROUP].GROUP_ID=[TB_EB_EMPL_DEP].GROUP_ID
+                                AND [UOF].[dbo].[TB_EB_JOB_TITLE].TITLE_ID=[TB_EB_EMPL_DEP].TITLE_ID
+                                AND [TB_EB_USER].ACCOUNT='{0}'
+
+                                 ", account);
+
+          
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt.ToString()));
+
+         
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
+
+           
         }
 
         public void FINDTEST()
@@ -98,7 +164,8 @@ namespace TKUOF.FORMFLOWS
             site1.Signers.Add("120002");
             site2.Signers.Add("160115");
             site3.Signers.Add("iteng");
-
+             
+            Ede.Uof.Utility.Log.Logger.Write("應用程式站點", "ADDUSERSITES 新增簽核 " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
 
 
             //site1 有找到簽核人員才新增簽核
@@ -309,7 +376,7 @@ namespace TKUOF.FORMFLOWS
         public DataTable SEARCH_FORM_FLOW_SITES_ALL(string GROUP_ID)
         {
 
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            string connectionString = MAINconnectionString;
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
             StringBuilder cmdTxt = new StringBuilder();
 
@@ -371,7 +438,7 @@ namespace TKUOF.FORMFLOWS
         public DataTable SEARCH_FORM_FLOW_SITES(string GROUP_ID,string RANKS)
         {
 
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            string connectionString = MAINconnectionString;
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
             StringBuilder cmdTxt = new StringBuilder();
 
@@ -511,7 +578,7 @@ namespace TKUOF.FORMFLOWS
 
         public string SEARCHFORM_UOF_FORM_NAME(string FORM_VERSION_ID)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            string connectionString = MAINconnectionString;
             SqlConnection sqlConn = new SqlConnection(connectionString);
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -562,9 +629,9 @@ namespace TKUOF.FORMFLOWS
             }
         }
 
-        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME)
+        public string SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(string UOF_FORM_NAME, string GROUP_ID,string APPLY_RANKS)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+            string connectionString = MAINconnectionString;
             SqlConnection sqlConn = new SqlConnection(connectionString);
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -575,11 +642,21 @@ namespace TKUOF.FORMFLOWS
             {
                 //要記得改成正式-3
                 queryString.AppendFormat(@"                                                 
-                                        SELECT TOP 1 [UOF_FORM_NAME],[RANKS]
+                                        SELECT TOP (1) 
+                                        [ID]
+                                        ,[UOF_FORM_NAME]
+                                        ,[GROUP_ID]
+                                        ,[GROUP_NAME]
+                                        ,[RANKS]
+                                        ,[TITLE_NAME]
+                                        ,[APPLY_RANKS]
+                                        ,[APPLY_TITLE_NAME]
+                                        ,[PRIORITYS]
                                         FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
-                                        WHERE [UOF_FORM_NAME]='{0}'
+                                        WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2} 
+                                        ORDER BY [PRIORITYS]
 
-                                          ", UOF_FORM_NAME);
+                                          ", UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
                 adapter = new SqlDataAdapter(@"" + queryString, sqlConn);
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);
