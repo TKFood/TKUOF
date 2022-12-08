@@ -14,7 +14,7 @@ using Ede.Uof.Utility.Log;
 
 namespace TKUOF.FORMFLOWS
 {
-    class ADDUSERSITES : ICallExternalDllSites
+    class ADDUSERSITES-BACKUP : ICallExternalDllSites
     {
         string MAINconnectionString = ConfigurationManager.ConnectionStrings["connectionstringUOF"].ToString(); 
 
