@@ -854,7 +854,19 @@ namespace TKUOF.FORMFLOWS
         {
             if(DT != null && DT.Rows.Count > 0)
             {
-                string E02= formXmlDoc.SelectSingleNode("/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='E02']").Attributes["fieldValue"].Value;
+                foreach(DataRow DR in DT.Rows)
+                {
+                    StringBuilder FINDXML = new StringBuilder();
+                    string Field = DR["FIELDS"].ToString();
+
+                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", Field);
+
+                    string E02 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                }
+               
+                
+                
+                
                 return null;
             }
             else
