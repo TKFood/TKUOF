@@ -85,8 +85,9 @@ namespace TKUOF.FORMFLOWS
                 //如果有就照明細的欄位條件設定
                 RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
             }
-            
-            if(string.IsNullOrEmpty(RANKS))
+
+            //如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
+            if (string.IsNullOrEmpty(RANKS))
             {
                 //FORM_VERSION_ID，找出表單最高簽核人層級
                 RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
