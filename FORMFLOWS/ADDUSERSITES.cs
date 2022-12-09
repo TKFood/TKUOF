@@ -85,7 +85,8 @@ namespace TKUOF.FORMFLOWS
                 //如果有就照明細的欄位條件設定
                 RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
             }
-            else
+            
+            if(string.IsNullOrEmpty(RANKS))
             {
                 //FORM_VERSION_ID，找出表單最高簽核人層級
                 RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
@@ -95,12 +96,11 @@ namespace TKUOF.FORMFLOWS
 
             //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
-            //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
-            //if (!string.IsNullOrEmpty(RANKS))
-            //{
-            //    FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
-            //}
-            
+            if (!string.IsNullOrEmpty(RANKS))
+            {
+                FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            }
+
 
 
             //找出所有簽核人員，包含主管
@@ -852,22 +852,43 @@ namespace TKUOF.FORMFLOWS
         /// <returns></returns>
         public string FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(DataTable DT, XmlDocument formXmlDoc)
         {
-            if(DT != null && DT.Rows.Count > 0)
+            string FIANL_DETAILS_RANKS = null;
+
+            if (DT != null && DT.Rows.Count > 0)
             {
                 foreach(DataRow DR in DT.Rows)
                 {
                     StringBuilder FINDXML = new StringBuilder();
-                    string Field = DR["FIELDS"].ToString();
+                    string FIELDS = DR["FIELDS"].ToString();
+                    string OPERATOR = DR["OPERATOR"].ToString();
+                    string CONDTIONVALUES = DR["CONDTIONVALUES"].ToString();
+                    string DETAILS_RANKS = DR["DETAILS_RANKS"].ToString();
+                    string RANKS = DR["RANKS"].ToString();
 
-                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", Field);
+                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", FIELDS);
 
-                    string E02 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    string XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    int CONDTIONS = string.Compare(XMLVALUES, CONDTIONVALUES);
+
+                    if(CONDTIONS>0 && (OPERATOR.Equals(">=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                    else if(CONDTIONS < 0 && ( OPERATOR.Equals("<=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                    else if(CONDTIONS == 0 && (OPERATOR.Equals("==") || OPERATOR.Equals(">=") || OPERATOR.Equals("<=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                  
                 }
                
                 
                 
                 
-                return null;
+                return FIANL_DETAILS_RANKS;
             }
             else
             {
