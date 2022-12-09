@@ -711,7 +711,31 @@ namespace TKUOF.FORMFLOWS
             try
             {
                 //要記得改成正式-3
-                queryString.AppendFormat(@"                                                 
+                //先找出申請人的職級最符合的核準職級
+                //再用最符合的核準職級找是否有明細欄位的條件
+
+                queryString.AppendFormat(@" 
+                                        SELECT 
+                                        TEMP.[ID]
+                                        ,[UOF_FORM_NAME]
+                                        ,[GROUP_ID]
+                                        ,[GROUP_NAME]
+                                        ,[RANKS]
+                                        ,[TITLE_NAME]
+                                        ,[APPLY_RANKS]
+                                        ,[APPLY_TITLE_NAME]
+                                        ,[PRIORITYS]
+
+                                        ,[MID]
+                                        ,[FIELDS]
+                                        ,[OPERATOR]
+                                        ,[CONDTIONVALUES]
+                                        ,[DETAILS_RANKS]
+                                        ,[DETAILS_TITLE_NAME]
+                                        ,[DETAILS_PRIORITYS]
+
+                                        FROM 
+                                        (
                                         SELECT TOP (1) 
                                         [ID]
                                         ,[UOF_FORM_NAME]
@@ -726,6 +750,9 @@ namespace TKUOF.FORMFLOWS
                                         FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
                                         WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2} 
                                         ORDER BY ([APPLY_RANKS]-{2})
+                                        ) AS TEMP,[UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS_DETAILS] 
+                                        WHERE 1=1
+                                        AND  TEMP.ID=[Z_UOF_FORM_DEP_SINGERS_DETAILS].MID
 
                                           ", UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
