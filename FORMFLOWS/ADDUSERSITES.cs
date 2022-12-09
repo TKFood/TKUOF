@@ -83,7 +83,7 @@ namespace TKUOF.FORMFLOWS
             if (DTZ_UOF_FORM_DEP_SINGERS_DETAILS != null && DTZ_UOF_FORM_DEP_SINGERS_DETAILS.Rows.Count > 0)
             {
                 //如果有就照明細的欄位條件設定
-                RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+                RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
             }
             else
             {
@@ -96,10 +96,10 @@ namespace TKUOF.FORMFLOWS
             //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
             //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
-            if (!string.IsNullOrEmpty(RANKS))
-            {
-                FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
-            }
+            //if (!string.IsNullOrEmpty(RANKS))
+            //{
+            //    FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+            //}
             
 
 
@@ -776,7 +776,7 @@ namespace TKUOF.FORMFLOWS
             }
         }
 
-        public string SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS)
+        public string SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS, XmlDocument formXmlDoc)
         {
             string connectionString = MAINconnectionString;
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
@@ -836,7 +836,7 @@ namespace TKUOF.FORMFLOWS
             if (dt != null &&  dt.Rows.Count > 0)
             {
                 string RANK = null;
-                RANK = FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(dt);
+                RANK = FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(dt, formXmlDoc);
 
                 return RANK;
             }
@@ -850,11 +850,11 @@ namespace TKUOF.FORMFLOWS
         /// 把明細欄位的值全部找出來比對
         /// </summary>
         /// <returns></returns>
-        public string FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(DataTable DT)
+        public string FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(DataTable DT, XmlDocument formXmlDoc)
         {
             if(DT != null && DT.Rows.Count > 0)
             {
-
+                string E02= formXmlDoc.SelectSingleNode("/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='E02']").Attributes["fieldValue"].Value;
                 return null;
             }
             else
