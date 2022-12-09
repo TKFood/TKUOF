@@ -14,7 +14,7 @@ using Ede.Uof.Utility.Log;
 
 namespace TKUOF.FORMFLOWS
 {
-    class ADDUSERSITESBAKCUP : ICallExternalDllSites
+    class ADDUSERSITESBACKUP : ICallExternalDllSites
     {
         string MAINconnectionString = ConfigurationManager.ConnectionStrings["connectionstringUOF"].ToString(); 
 
@@ -80,27 +80,28 @@ namespace TKUOF.FORMFLOWS
             //RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
             DTZ_UOF_FORM_DEP_SINGERS_DETAILS = SEARCHZ_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
-            if(DTZ_UOF_FORM_DEP_SINGERS_DETAILS != null && DTZ_UOF_FORM_DEP_SINGERS_DETAILS.Rows.Count>0)
+            if (DTZ_UOF_FORM_DEP_SINGERS_DETAILS != null && DTZ_UOF_FORM_DEP_SINGERS_DETAILS.Rows.Count > 0)
             {
                 //如果有就照明細的欄位條件設定
-                RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+                RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
             }
-            else
+
+            //如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
+            if (string.IsNullOrEmpty(RANKS))
             {
                 //FORM_VERSION_ID，找出表單最高簽核人層級
                 RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
             }
 
-            
+
 
             //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
-            //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
             if (!string.IsNullOrEmpty(RANKS))
             {
                 FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
             }
-            
+
 
 
             //找出所有簽核人員，包含主管
@@ -171,7 +172,7 @@ namespace TKUOF.FORMFLOWS
 
             cmdTxt.AppendFormat(@"                            
                                 SELECT 
-                                [Z_UOF_FORM_DEP_SINGERS].[ID]
+                                TEMP.[ID]
                                 ,[UOF_FORM_NAME]
                                 ,[GROUP_ID]
                                 ,[GROUP_NAME]
@@ -188,10 +189,26 @@ namespace TKUOF.FORMFLOWS
                                 ,[DETAILS_RANKS]
                                 ,[DETAILS_TITLE_NAME]
                                 ,[DETAILS_PRIORITYS]
-                                FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS],[UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS_DETAILS] 
+
+                                FROM 
+                                (
+                                SELECT TOP (1) 
+                                [ID]
+                                ,[UOF_FORM_NAME]
+                                ,[GROUP_ID]
+                                ,[GROUP_NAME]
+                                ,[RANKS]
+                                ,[TITLE_NAME]
+                                ,[APPLY_RANKS]
+                                ,[APPLY_TITLE_NAME]
+                                ,[PRIORITYS]
+                                ,([APPLY_RANKS]-{2}) AS 'SEQ'
+                                FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
+                                WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2} 
+                                ORDER BY ([APPLY_RANKS]-{2})
+                                ) AS TEMP,[UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS_DETAILS] 
                                 WHERE 1=1
-                                AND  [Z_UOF_FORM_DEP_SINGERS].ID=[Z_UOF_FORM_DEP_SINGERS_DETAILS].MID
-                                AND UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]={2}
+                                AND  TEMP.ID=[Z_UOF_FORM_DEP_SINGERS_DETAILS].MID
 
                                  ", UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
@@ -711,7 +728,10 @@ namespace TKUOF.FORMFLOWS
             try
             {
                 //要記得改成正式-3
-                queryString.AppendFormat(@"                                                 
+                //先找出申請人的職級最符合的核準職級
+                //再用最符合的核準職級找是否有明細欄位的條件
+
+                queryString.AppendFormat(@" 
                                         SELECT TOP (1) 
                                         [ID]
                                         ,[UOF_FORM_NAME]
@@ -757,7 +777,7 @@ namespace TKUOF.FORMFLOWS
             }
         }
 
-        public string SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS)
+        public string SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS, XmlDocument formXmlDoc)
         {
             string connectionString = MAINconnectionString;
             Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
@@ -765,7 +785,7 @@ namespace TKUOF.FORMFLOWS
 
             cmdTxt.AppendFormat(@"                            
                                 SELECT 
-                                [Z_UOF_FORM_DEP_SINGERS].[ID]
+                                TEMP.[ID]
                                 ,[UOF_FORM_NAME]
                                 ,[GROUP_ID]
                                 ,[GROUP_NAME]
@@ -782,11 +802,26 @@ namespace TKUOF.FORMFLOWS
                                 ,[DETAILS_RANKS]
                                 ,[DETAILS_TITLE_NAME]
                                 ,[DETAILS_PRIORITYS]
-                                FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS],[UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS_DETAILS] 
+
+                                FROM 
+                                (
+                                SELECT TOP (1) 
+                                [ID]
+                                ,[UOF_FORM_NAME]
+                                ,[GROUP_ID]
+                                ,[GROUP_NAME]
+                                ,[RANKS]
+                                ,[TITLE_NAME]
+                                ,[APPLY_RANKS]
+                                ,[APPLY_TITLE_NAME]
+                                ,[PRIORITYS]
+                                ,([APPLY_RANKS]-{2}) AS 'SEQ'
+                                FROM [UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS]
+                                WHERE UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2} 
+                                ORDER BY ([APPLY_RANKS]-{2})
+                                ) AS TEMP,[UOF].[dbo].[Z_UOF_FORM_DEP_SINGERS_DETAILS] 
                                 WHERE 1=1
-                                AND  [Z_UOF_FORM_DEP_SINGERS].ID=[Z_UOF_FORM_DEP_SINGERS_DETAILS].MID
-                                AND UOF_FORM_NAME='{0}' AND [GROUP_ID]='{1}' AND [APPLY_RANKS]>={2}
-                                ORDER BY [DETAILS_PRIORITYS]
+                                AND  TEMP.ID=[Z_UOF_FORM_DEP_SINGERS_DETAILS].MID
 
                                  ", UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
 
@@ -799,10 +834,10 @@ namespace TKUOF.FORMFLOWS
 
 
 
-            if (dt.Rows.Count > 0)
+            if (dt != null &&  dt.Rows.Count > 0)
             {
                 string RANK = null;
-                RANK = FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(dt);
+                RANK = FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(dt, formXmlDoc);
 
                 return RANK;
             }
@@ -816,10 +851,52 @@ namespace TKUOF.FORMFLOWS
         /// 把明細欄位的值全部找出來比對
         /// </summary>
         /// <returns></returns>
-        public string FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(DataTable DT)
+        public string FIND_Z_UOF_FORM_DEP_SINGERS_DETAILS(DataTable DT, XmlDocument formXmlDoc)
         {
+            string FIANL_DETAILS_RANKS = null;
 
-            return null;
+            if (DT != null && DT.Rows.Count > 0)
+            {
+                foreach(DataRow DR in DT.Rows)
+                {
+                    StringBuilder FINDXML = new StringBuilder();
+                    string FIELDS = DR["FIELDS"].ToString();
+                    string OPERATOR = DR["OPERATOR"].ToString();
+                    string CONDTIONVALUES = DR["CONDTIONVALUES"].ToString();
+                    string DETAILS_RANKS = DR["DETAILS_RANKS"].ToString();
+                    string RANKS = DR["RANKS"].ToString();
+
+                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", FIELDS);
+
+                    string XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    int CONDTIONS = string.Compare(XMLVALUES, CONDTIONVALUES);
+
+                    if(CONDTIONS>0 && (OPERATOR.Equals(">=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                    else if(CONDTIONS < 0 && ( OPERATOR.Equals("<=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                    else if(CONDTIONS == 0 && (OPERATOR.Equals("==") || OPERATOR.Equals(">=") || OPERATOR.Equals("<=")))
+                    {
+                        FIANL_DETAILS_RANKS = DETAILS_RANKS;
+                    }
+                  
+                }
+               
+                
+                
+                
+                return FIANL_DETAILS_RANKS;
+            }
+            else
+            {
+                return null;
+            }
+
+           
         }
 
         //public string GetExternalDllSites(string formInfo)
