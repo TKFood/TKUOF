@@ -74,24 +74,30 @@ namespace TKUOF.FORMFLOWS
             FORM_VERSION_ID = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["formVersionId"].Value;
             UOF_FORM_NAME = SEARCHFORM_UOF_FORM_NAME(FORM_VERSION_ID);
 
-            //檢查是否該申請的職級是否有明細的欄位條件設定
-            //如果有就照明細的欄位條件設定
-            //如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
-            //RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+            //先找出表單預設的簽核職級=RANK
+            RANKS = Z_UOF_FORM_DEFALUT_SINGERS(UOF_FORM_NAME);
+            //再找出表單是否有明細條件設定後相關簽核職級，如果有符合京明細條件就更改預設RANK
 
-            DTZ_UOF_FORM_DEP_SINGERS_DETAILS = SEARCHZ_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
-            if (DTZ_UOF_FORM_DEP_SINGERS_DETAILS != null && DTZ_UOF_FORM_DEP_SINGERS_DETAILS.Rows.Count > 0)
-            {
-                //如果有就照明細的欄位條件設定
-                RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
-            }
 
-            //如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
-            if (string.IsNullOrEmpty(RANKS))
-            {
-                //FORM_VERSION_ID，找出表單最高簽核人層級
-                RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
-            }
+
+            ////檢查是否該申請的職級是否有明細的欄位條件設定
+            ////如果有就照明細的欄位條件設定
+            ////如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
+            ////RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+
+            //DTZ_UOF_FORM_DEP_SINGERS_DETAILS = SEARCHZ_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+            //if (DTZ_UOF_FORM_DEP_SINGERS_DETAILS != null && DTZ_UOF_FORM_DEP_SINGERS_DETAILS.Rows.Count > 0)
+            //{
+            //    //如果有就照明細的欄位條件設定
+            //    RANKS = SEARCHFORM_UOF_FORM_DEP_SINGERS_DETAILS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS, formXmlDoc);
+            //}
+
+            ////如果沒有明細的欄位條件設定，就依主要的申腈表單+申請部門+申請職級做簽核的決定
+            //if (string.IsNullOrEmpty(RANKS))
+            //{
+            //    //FORM_VERSION_ID，找出表單最高簽核人層級
+            //    RANKS = SEARCHFORM_UOF_Z_UOF_FORM_DEP_SINGERS(UOF_FORM_NAME, GROUP_ID, APPLY_RANKS);
+            //}
 
 
 
@@ -162,6 +168,43 @@ namespace TKUOF.FORMFLOWS
             }
 
            
+        }
+
+        public string Z_UOF_FORM_DEFALUT_SINGERS(string UOF_FORM_NAME)
+        {
+            string connectionString = MAINconnectionString;
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+            StringBuilder cmdTxt = new StringBuilder();
+
+            cmdTxt.AppendFormat(@" 
+                                 SELECT TOP 1
+                                [ID]
+                                ,[UOF_FORM_NAME]
+                                ,[RANKS]
+                                ,[TITLE_NAME]
+                                FROM [UOF].[dbo].[Z_UOF_FORM_DEFALUT_SINGERS]	
+                                WHERE [UOF_FORM_NAME]='{0}'
+
+                                 ", UOF_FORM_NAME);
+
+
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt.ToString()));
+
+
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt.Rows[0]["RANKS"].ToString();
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
         public DataTable SEARCHZ_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS)
