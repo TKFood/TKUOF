@@ -418,6 +418,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                     FROM [TKPUR].[dbo].[PURTATBCHAGE]
                                     WHERE  TA001='{0}' AND TA002='{1}' AND VERSIONS='{2}'
                                     )
+                                    AND TD018 IN ('Y')
                                     GROUP BY  TD001,TD002
                                     ", TA001, TA002, VERSIONS);
 
