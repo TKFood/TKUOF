@@ -88,6 +88,7 @@ namespace TKUOF.FORMFLOWS
             string APPLY_VALUES = null;
             string SET_FLOW_RANKS = null;
             StringBuilder FINDXML = new StringBuilder();
+            string XMLVALUES = null;
 
             foreach (DataRow DR in DT_Z_UOF_FROM_CONDITIONS.Rows)
             {
@@ -98,10 +99,18 @@ namespace TKUOF.FORMFLOWS
                 APPLY_VALUES = DR["APPLY_VALUES"].ToString();
                 SET_FLOW_RANKS = DR["SET_FLOW_RANKS"].ToString();
 
-                FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
-                string XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                try
+                {
+                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
+                    XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                }
+                catch
+                {
+                    XMLVALUES = null;
+                }
 
-                //檢查APPLY_GROUP_ID、APPLY_RANKS、APPLY_FILEDS都有值，而且都符合明細條件
+
+                //檢查 APPLY_GROUP_ID、APPLY_RANKS、APPLY_FILEDS 都有值，而且XMLVALUES取到表單的值也不為空，而且都符合明細條件
                 if (!string.IsNullOrEmpty(APPLY_GROUP_ID))
                 {
                     if(APPLY_GROUP_ID.Equals(USER_GROUP_ID))
@@ -112,32 +121,48 @@ namespace TKUOF.FORMFLOWS
                             {
                                 if(!string.IsNullOrEmpty(APPLY_FILEDS))
                                 {
-                                    int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
-
-                                    if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
+                                    if(!string.IsNullOrEmpty(XMLVALUES))
                                     {
-                                        RANKS= DR["SET_FLOW_RANKS"].ToString();
+                                        int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
 
-                                        break;
-                                    }
-                                    else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                        if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
+                                        {
+                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
 
-                                        break;
-                                    }
-                                    else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                            break;
+                                        }
+                                        else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                                        {
+                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
 
-                                        break;
+                                            break;
+                                        }
+                                        else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                                        {
+                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
+
+                                            break;
+                                        }
                                     }
+                                    
                                 }
                             }
                         }
                     }
                 }
+
+                //檢查 APPLY_GROUP_ID 是空的、APPLY_RANKS、APPLY_FILEDS 都有值，而且符合明細條件
                
+                //檢查 APPLY_RANKS 是空的、APPLY_GROUP_ID、APPLY_FILEDS 都有值，而且符合明細條件
+                
+                //檢查 APPLY_FILEDS 是空的、APPLY_GROUP_ID、APPLY_RANKS 都有值，而且符合明細條件
+
+                //檢查 APPLY_GROUP_ID、APPLY_RANKS 是空的、APPLY_FILEDS 有值，而且符合明細條件
+
+                //檢查 APPLY_GROUP_ID、APPLY_FILEDS 是空的、APPLY_RANKS 有值，而且符合明細條件
+
+                //檢查 APPLY_RANKS、APPLY_FILEDS 是空的、APPLY_GROUP_ID 有值，而且符合明細條件
+
             }
 
 
