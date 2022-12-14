@@ -27,6 +27,7 @@ namespace TKUOF.FORMFLOWS
         DataSet CompanyTopAccountDS = new DataSet();
         DataTable DTACCOUNT = null;
         DataTable DTZ_UOF_FORM_DEP_SINGERS_DETAILS = null;
+        DataTable DT_Z_UOF_FROM_CONDITIONS = null;
 
         string CompanyTopAccount;
         string SpecialGroupName = "N";
@@ -35,10 +36,10 @@ namespace TKUOF.FORMFLOWS
         string account;
         string userGuid;
         string RANKS;
-        string GROUP_ID;
-        string GROUP_NAME;
-        string TITLE_NAME;
-        string APPLY_RANKS;
+        string USER_GROUP_ID;
+        string USER_GROUP_NAME;
+        string USER_TITLE_NAME;
+        string USER_APPLY_RANKS;
 
         public void Finally()
         {
@@ -63,10 +64,10 @@ namespace TKUOF.FORMFLOWS
 
             DataTable DTACCOUNT = SEARCHACCOUNT(account);
             userGuid = DTACCOUNT.Rows[0]["USER_GUID"].ToString();
-            GROUP_ID = DTACCOUNT.Rows[0]["GROUP_ID"].ToString();
-            GROUP_NAME = DTACCOUNT.Rows[0]["GROUP_NAME"].ToString();
-            TITLE_NAME = DTACCOUNT.Rows[0]["TITLE_NAME"].ToString();
-            APPLY_RANKS = DTACCOUNT.Rows[0]["RANK"].ToString();
+            USER_GROUP_ID = DTACCOUNT.Rows[0]["GROUP_ID"].ToString();
+            USER_GROUP_NAME = DTACCOUNT.Rows[0]["GROUP_NAME"].ToString();
+            USER_TITLE_NAME = DTACCOUNT.Rows[0]["TITLE_NAME"].ToString();
+            USER_APPLY_RANKS = DTACCOUNT.Rows[0]["RANK"].ToString();
            
             //GROUP_ID = "0a700146-6015-4cc6-8aca-055a45e6a766";
 
@@ -76,8 +77,68 @@ namespace TKUOF.FORMFLOWS
 
             //先找出表單預設的簽核職級=RANK
             RANKS = Z_UOF_FORM_DEFALUT_SINGERS(UOF_FORM_NAME);
-            //再找出表單是否有明細條件設定後相關簽核職級，如果有符合京明細條件就更改預設RANK
 
+            //再找出表單是否有明細條件設定後相關簽核職級，如果有符合明細條件就更改預設RANK
+            DT_Z_UOF_FROM_CONDITIONS = SEARCH_DT_Z_UOF_FROM_CONDITIONS(UOF_FORM_NAME);
+           
+            string APPLY_GROUP_ID = null;
+            string APPLY_RANKS = null;
+            string APPLY_FILEDS = null;
+            string APPLY_OPERATOR = null;
+            string APPLY_VALUES = null;
+            string SET_FLOW_RANKS = null;
+            StringBuilder FINDXML = new StringBuilder();
+
+            foreach (DataRow DR in DT_Z_UOF_FROM_CONDITIONS.Rows)
+            {
+                APPLY_GROUP_ID = DR["APPLY_GROUP_ID"].ToString();
+                APPLY_RANKS = DR["APPLY_RANKS"].ToString();
+                APPLY_FILEDS = DR["APPLY_FILEDS"].ToString();
+                APPLY_OPERATOR = DR["APPLY_OPERATOR"].ToString();
+                APPLY_VALUES = DR["APPLY_VALUES"].ToString();
+                SET_FLOW_RANKS = DR["SET_FLOW_RANKS"].ToString();
+
+                FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
+                string XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+
+                //檢查APPLY_GROUP_ID、APPLY_RANKS、APPLY_FILEDS都有值，而且都符合明細條件
+                if (!string.IsNullOrEmpty(APPLY_GROUP_ID))
+                {
+                    if(APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                    {
+                        if (!string.IsNullOrEmpty(APPLY_RANKS))
+                        {
+                            if(APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                            {
+                                if(!string.IsNullOrEmpty(APPLY_FILEDS))
+                                {
+                                    int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
+
+                                    if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
+                                    {
+                                        RANKS= DR["SET_FLOW_RANKS"].ToString();
+
+                                        break;
+                                    }
+                                    else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                                    {
+                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+
+                                        break;
+                                    }
+                                    else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                                    {
+                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+               
+            }
 
 
             ////檢查是否該申請的職級是否有明細的欄位條件設定
@@ -105,7 +166,7 @@ namespace TKUOF.FORMFLOWS
             //找出部門所有簽核人員 依職級順序           
             if (!string.IsNullOrEmpty(RANKS))
             {
-                FIND_FORM_FLOW_SINGER(GROUP_ID, RANKS);
+                FIND_FORM_FLOW_SINGER(USER_GROUP_ID, RANKS);
             }
 
 
@@ -205,6 +266,51 @@ namespace TKUOF.FORMFLOWS
                 return null;
             }
 
+        }
+
+        public DataTable SEARCH_DT_Z_UOF_FROM_CONDITIONS(string UOF_FORM_NAME)
+        {
+            string connectionString = MAINconnectionString;
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+            StringBuilder cmdTxt = new StringBuilder();
+
+            cmdTxt.AppendFormat(@" 
+                                SELECT 
+                                [ID]
+                                ,[UOF_FORM_NAME]
+                                ,[APPLY_GROUP_ID]
+                                ,[APPLY_GROUP_NAME]
+                                ,[APPLY_RANKS]
+                                ,[APPLY_TITLE_NAME]
+                                ,[APPLY_FILEDS]
+                                ,[APPLY_OPERATOR]
+                                ,[APPLY_VALUES]
+                                ,[SET_FLOW_RANKS]
+                                ,[SET_FLOW_TITLE_NAME]
+                                ,[PRIORITYS]
+                                FROM [UOF].[dbo].[Z_UOF_FROM_CONDITIONS]
+                                WHERE [UOF_FORM_NAME]='{0}'
+                                ORDER BY [PRIORITYS]
+
+                                 ", UOF_FORM_NAME);
+
+
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt.ToString()));
+
+
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public DataTable SEARCHZ_UOF_FORM_DEP_SINGERS_DETAILS(string UOF_FORM_NAME, string GROUP_ID, string APPLY_RANKS)
