@@ -142,7 +142,8 @@ namespace TKUOF.FORMFLOWS
                 }
                 else if(!string.IsNullOrEmpty(APPLY_RANKS))
                 {
-                    int CONDTIONS_RANKS = string.Compare(APPLY_RANKS, USER_APPLY_RANKS);
+                    //string.Compare A、B，B>A比較大會是正數、B<A會是負數、B=A會的0
+                    int CONDTIONS_RANKS = string.Compare(APPLY_RANKS,USER_APPLY_RANKS );
 
                     if (CONDTIONS_RANKS > 0 && (APPLY_RANKS_OPERATOR.Equals(">=")))
                     {
