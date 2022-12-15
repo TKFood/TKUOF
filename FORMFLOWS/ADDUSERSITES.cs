@@ -126,19 +126,19 @@ namespace TKUOF.FORMFLOWS
                         {               
                             if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
+                                int CONDTIONS_FILEDS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
 
-                                if (CONDTIONS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                                if (CONDTIONS_FILEDS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
@@ -157,19 +157,19 @@ namespace TKUOF.FORMFLOWS
                         {
                             if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
+                                int CONDTIONS_FILEDS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
 
-                                if (CONDTIONS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                                if (CONDTIONS_FILEDS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
@@ -187,19 +187,19 @@ namespace TKUOF.FORMFLOWS
                         {
                             if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
+                                int CONDTIONS_FILEDS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
 
-                                if (CONDTIONS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                                if (CONDTIONS_FILEDS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
                                 }
-                                else if (CONDTIONS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                                else if (CONDTIONS_FILEDS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
                                 {
                                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                                     break;
@@ -230,19 +230,19 @@ namespace TKUOF.FORMFLOWS
                     {
                         if (!string.IsNullOrEmpty(XMLVALUES))
                         {
-                            int CONDTIONS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
+                            int CONDTIONS_FILEDS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
 
-                            if (CONDTIONS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                            if (CONDTIONS_FILEDS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                             {
                                 RANKS = DR["SET_FLOW_RANKS"].ToString();
                                 break;
                             }
-                            else if (CONDTIONS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                            else if (CONDTIONS_FILEDS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                             {
                                 RANKS = DR["SET_FLOW_RANKS"].ToString();
                                 break;
                             }
-                            else if (CONDTIONS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                            else if (CONDTIONS_FILEDS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
                             {
                                 RANKS = DR["SET_FLOW_RANKS"].ToString();
                                 break;
