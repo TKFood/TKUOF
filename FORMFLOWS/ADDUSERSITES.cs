@@ -101,9 +101,13 @@ namespace TKUOF.FORMFLOWS
 
                 try
                 {
-                    FINDXML.Clear();
-                    FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
-                    XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    if(!string.IsNullOrEmpty(APPLY_FILEDS))
+                    {
+                        FINDXML.Clear();
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
+                        XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    }
+                    
                 }
                 catch
                 {
@@ -111,144 +115,113 @@ namespace TKUOF.FORMFLOWS
                 }
 
 
-                //檢查 APPLY_GROUP_ID、APPLY_RANKS、APPLY_FILEDS 都有值，而且XMLVALUES取到表單的值也不為空，而且都符合明細條件
-                if (!string.IsNullOrEmpty(APPLY_GROUP_ID))
-                {
-                    if(APPLY_GROUP_ID.Equals(USER_GROUP_ID))
-                    {
-                        if (!string.IsNullOrEmpty(APPLY_RANKS))
-                        {
-                            if(APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                //檢查 APPLY_GROUP_ID、APPLY_RANKS、APPLY_FILEDS、XMLVALUES 都有值，而且XMLVALUES取到表單的值也不為空，而且都符合明細條件
+                if (!string.IsNullOrEmpty(APPLY_GROUP_ID) && APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                {                   
+                    if (!string.IsNullOrEmpty(APPLY_RANKS)&& APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                    {                            
+                        if(!string.IsNullOrEmpty(APPLY_FILEDS) )
+                        {               
+                            if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                if(!string.IsNullOrEmpty(APPLY_FILEDS))
+                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
+
+                                if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
                                 {
-                                    if(!string.IsNullOrEmpty(XMLVALUES))
-                                    {
-                                        int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
-
-                                        if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
-                                        {
-                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                            break;
-                                        }
-                                        else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
-                                        {
-                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                            break;
-                                        }
-                                        else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
-                                        {
-                                            RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                            break;
-                                        }
-                                    }
-                                    
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
                                 }
-                            }
-                        }
-                    }
+                                else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
+                                else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
+                            }  
+                        }                           
+                    }                    
                 }
 
-                //檢查 APPLY_GROUP_ID 是空的、APPLY_RANKS、APPLY_FILEDS 都有值，而且符合明細條件
+                //檢查 APPLY_GROUP_ID 是空的、APPLY_RANKS、APPLY_FILEDS、XMLVALUES 都有值，而且符合明細條件
                 if (string.IsNullOrEmpty(APPLY_GROUP_ID))
                 {
-                    if (!string.IsNullOrEmpty(APPLY_RANKS))
-                    {
-                        if (APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                    if (!string.IsNullOrEmpty(APPLY_RANKS) && APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                    {                       
+                        if (!string.IsNullOrEmpty(APPLY_FILEDS))
                         {
-                            if (!string.IsNullOrEmpty(APPLY_FILEDS))
+                            if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                if (!string.IsNullOrEmpty(XMLVALUES))
+                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
+
+                                if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
                                 {
-                                    int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
-
-                                    if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
-                                    else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
-                                    else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
                                 }
-
+                                else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
+                                else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
                             }
-                        }
+                        }                        
                     }
                 }
-                //檢查 APPLY_RANKS 是空的、APPLY_GROUP_ID、APPLY_FILEDS 都有值，而且符合明細條件
+                //檢查 APPLY_RANKS 是空的、APPLY_GROUP_ID、APPLY_FILEDS 、XMLVALUES 都有值，而且符合明細條件
                 if (string.IsNullOrEmpty(APPLY_RANKS))
                 {
-                    if (!string.IsNullOrEmpty(APPLY_GROUP_ID))
-                    {
-                        if (APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                    if (!string.IsNullOrEmpty(APPLY_GROUP_ID) && APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                    {                       
+                        if (!string.IsNullOrEmpty(APPLY_FILEDS))
                         {
-                            if (!string.IsNullOrEmpty(APPLY_FILEDS))
+                            if (!string.IsNullOrEmpty(XMLVALUES))
                             {
-                                if (!string.IsNullOrEmpty(XMLVALUES))
+                                int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
+
+                                if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
                                 {
-                                    int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
-
-                                    if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
-                                    else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
-                                    else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
-                                    {
-                                        RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                        break;
-                                    }
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
                                 }
-
+                                else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
+                                else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                                {
+                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                    break;
+                                }
                             }
-                        }
+                        }                       
                     }
                 }
 
                 //檢查 APPLY_FILEDS 是空的、APPLY_GROUP_ID、APPLY_RANKS 都有值，而且符合明細條件
                 if (string.IsNullOrEmpty(APPLY_FILEDS))
                 {
-                    if (!string.IsNullOrEmpty(APPLY_GROUP_ID))
-                    {
-                        if (APPLY_GROUP_ID.Equals(USER_GROUP_ID))
-                        {
-                            if (!string.IsNullOrEmpty(APPLY_RANKS))
-                            {
-                                if(APPLY_RANKS.Equals(USER_APPLY_RANKS))
-                                {
-                                    RANKS = DR["SET_FLOW_RANKS"].ToString();
-
-                                    break;
-                                }
-
-                            }
+                    if (!string.IsNullOrEmpty(APPLY_GROUP_ID) && APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                    {                       
+                        if (!string.IsNullOrEmpty(APPLY_RANKS) && APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                        {                                
+                                RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                break;  
                         }
+                       
                     }
                 }
 
-                //檢查 APPLY_GROUP_ID、APPLY_RANKS 是空的、APPLY_FILEDS 有值，而且符合明細條件
+                //檢查 APPLY_GROUP_ID、APPLY_RANKS 是空的、APPLY_FILEDS、XMLVALUES 有值，而且符合明細條件
 
                 //檢查 APPLY_GROUP_ID、APPLY_FILEDS 是空的、APPLY_RANKS 有值，而且符合明細條件
 
@@ -280,6 +253,7 @@ namespace TKUOF.FORMFLOWS
 
             //RANKS不得空白
             //找出部門所有簽核人員 依職級順序           
+            
             if (!string.IsNullOrEmpty(RANKS))
             {
                 FIND_FORM_FLOW_SINGER(USER_GROUP_ID, RANKS);
