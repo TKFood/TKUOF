@@ -222,11 +222,54 @@ namespace TKUOF.FORMFLOWS
                 }
 
                 //檢查 APPLY_GROUP_ID、APPLY_RANKS 是空的、APPLY_FILEDS、XMLVALUES 有值，而且符合明細條件
+                if (string.IsNullOrEmpty(APPLY_GROUP_ID) && string.IsNullOrEmpty(APPLY_RANKS))
+                {                   
+                    if (!string.IsNullOrEmpty(APPLY_FILEDS))
+                    {
+                        if (!string.IsNullOrEmpty(XMLVALUES))
+                        {
+                            int CONDTIONS = string.Compare(XMLVALUES, APPLY_VALUES);
 
+                            if (CONDTIONS > 0 && (APPLY_OPERATOR.Equals(">=")))
+                            {
+                                RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                break;
+                            }
+                            else if (CONDTIONS < 0 && (APPLY_OPERATOR.Equals("<=")))
+                            {
+                                RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                break;
+                            }
+                            else if (CONDTIONS == 0 && (APPLY_OPERATOR.Equals("==") || APPLY_OPERATOR.Equals(">=") || APPLY_OPERATOR.Equals("<=")))
+                            {
+                                RANKS = DR["SET_FLOW_RANKS"].ToString();
+                                break;
+                            }
+                       }
+                    }
+                    
+                }
                 //檢查 APPLY_GROUP_ID、APPLY_FILEDS 是空的、APPLY_RANKS 有值，而且符合明細條件
+                if (string.IsNullOrEmpty(APPLY_GROUP_ID) && string.IsNullOrEmpty(APPLY_FILEDS))
+                {
+                    if (!string.IsNullOrEmpty(APPLY_RANKS) && APPLY_RANKS.Equals(USER_APPLY_RANKS))
+                    {
+                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+                        break;
+                    }
+
+                }
 
                 //檢查 APPLY_RANKS、APPLY_FILEDS 是空的、APPLY_GROUP_ID 有值，而且符合明細條件
+                if (string.IsNullOrEmpty(APPLY_RANKS) && string.IsNullOrEmpty(APPLY_FILEDS))
+                {
+                    if (!string.IsNullOrEmpty(APPLY_GROUP_ID) && APPLY_GROUP_ID.Equals(USER_GROUP_ID))
+                    {
+                        RANKS = DR["SET_FLOW_RANKS"].ToString();
+                        break;
+                    }
 
+                }
             }
 
 
