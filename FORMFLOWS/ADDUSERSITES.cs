@@ -141,19 +141,19 @@ namespace TKUOF.FORMFLOWS
                     CHECK_RANKS = "Y";
                 }
                 else if(!string.IsNullOrEmpty(APPLY_RANKS))
-                {
-                    //string.Compare A、B，B>A比較大會是正數、B<A會是負數、B=A會的0
-                    int CONDTIONS_RANKS = string.Compare(APPLY_RANKS,USER_APPLY_RANKS);
+                {                    
+                    int int_APPLY_RANKS = Convert.ToInt32(APPLY_RANKS);
+                    int int_USER_APPLY_RANKS = Convert.ToInt32(USER_APPLY_RANKS);
 
-                    if (CONDTIONS_RANKS > 0 && (APPLY_RANKS_OPERATOR.Equals(">=")))
+                    if ((int_APPLY_RANKS- int_USER_APPLY_RANKS) > 0 && (APPLY_RANKS_OPERATOR.Equals(">=")))
                     {
                         CHECK_RANKS = "Y";
                     }
-                    else if(CONDTIONS_RANKS < 0 && (APPLY_RANKS_OPERATOR.Equals("<=")))
+                    else if((int_APPLY_RANKS - int_USER_APPLY_RANKS) < 0 && (APPLY_RANKS_OPERATOR.Equals("<=")))
                     {
                         CHECK_RANKS = "Y";
                     }
-                    else if (CONDTIONS_RANKS == 0 && (APPLY_RANKS_OPERATOR.Equals("==") || APPLY_RANKS_OPERATOR.Equals(">=") || APPLY_RANKS_OPERATOR.Equals("<=")))
+                    else if ((int_APPLY_RANKS - int_USER_APPLY_RANKS) == 0 && (APPLY_RANKS_OPERATOR.Equals("==") || APPLY_RANKS_OPERATOR.Equals(">=") || APPLY_RANKS_OPERATOR.Equals("<=")))
                     {
                         CHECK_RANKS = "Y";
                     }
@@ -167,17 +167,19 @@ namespace TKUOF.FORMFLOWS
                 }
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS))
                 {
-                    int CONDTIONS_FILEDS = string.Compare(XMLVALUES, APPLY_FILEDS_VALUES);
 
-                    if (CONDTIONS_FILEDS > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES);                   
+
+                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                     {
                         CHECK_FILEDS = "Y";
                     }
-                    else if (CONDTIONS_FILEDS < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                     {
                         CHECK_FILEDS = "Y";
                     }
-                    else if (CONDTIONS_FILEDS == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
                     {
                         CHECK_FILEDS = "Y";
                     }

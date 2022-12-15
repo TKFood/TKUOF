@@ -88,6 +88,7 @@ C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\ja\GrapeCity.Documents.Pdf.resources.dll
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\ja\GrapeCity.Documents.Common.resources.dll
 C:\VSPROJECT\TKUOF\TKUOF\bin\Debug\ja\GrapeCity.Documents.Imaging.resources.dll
+C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csprojAssemblyReference.cache
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csproj.CoreCompileInputs.cache
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.csproj.CopyComplete
 C:\VSPROJECT\TKUOF\TKUOF\obj\Debug\TKUOF.dll
