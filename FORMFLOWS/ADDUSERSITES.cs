@@ -186,7 +186,7 @@ namespace TKUOF.FORMFLOWS
                 }
 
                 //檢查是那筆規則符合條件
-                string CHEC_ID= DR["ID"].ToString();
+                string CHECK_ID= DR["ID"].ToString();
 
                 //部門、職級比較、欄位比較都一樣就帶這筆的簽核職級
                 if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS.Equals("Y"))
