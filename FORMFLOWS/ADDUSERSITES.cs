@@ -126,7 +126,19 @@ namespace TKUOF.FORMFLOWS
                 APPLY_RANKS = DR["APPLY_RANKS"].ToString();
                 APPLY_FILEDS1 = DR["APPLY_FILEDS1"].ToString();
                 APPLY_FILEDS_OPERATOR1 = DR["APPLY_FILEDS_OPERATOR1"].ToString();
-                APPLY_FILEDS_VALUES1 = DR["APPLY_FILEDS_VALUE1S"].ToString();
+                APPLY_FILEDS_VALUES1 = DR["APPLY_FILEDS_VALUES1"].ToString();
+                APPLY_FILEDS2 = DR["APPLY_FILEDS2"].ToString();
+                APPLY_FILEDS_OPERATOR2 = DR["APPLY_FILEDS_OPERATOR2"].ToString();
+                APPLY_FILEDS_VALUES2 = DR["APPLY_FILEDS_VALUES2"].ToString();
+                APPLY_FILEDS3 = DR["APPLY_FILEDS3"].ToString();
+                APPLY_FILEDS_OPERATOR3 = DR["APPLY_FILEDS_OPERATOR3"].ToString();
+                APPLY_FILEDS_VALUES3 = DR["APPLY_FILEDS_VALUES3"].ToString();
+                APPLY_FILEDS4 = DR["APPLY_FILEDS4"].ToString();
+                APPLY_FILEDS_OPERATOR4 = DR["APPLY_FILEDS_OPERATOR4"].ToString();
+                APPLY_FILEDS_VALUES4 = DR["APPLY_FILEDS_VALUES4"].ToString();
+                APPLY_FILEDS5 = DR["APPLY_FILEDS5"].ToString();
+                APPLY_FILEDS_OPERATOR5 = DR["APPLY_FILEDS_OPERATOR5"].ToString();
+                APPLY_FILEDS_VALUES5 = DR["APPLY_FILEDS_VALUES5"].ToString();
                 SET_FLOW_RANKS = DR["SET_FLOW_RANKS"].ToString();
 
                 //APPLY_FILEDS1 取值
@@ -379,7 +391,7 @@ namespace TKUOF.FORMFLOWS
                 string CHECK_ID = DR["ID"].ToString();
 
                 //部門、職級比較、欄位比較都一樣就帶這筆的簽核職級
-                if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS1.Equals("Y"))
+                if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS1.Equals("Y") && CHECK_FILEDS2.Equals("Y") && CHECK_FILEDS3.Equals("Y") && CHECK_FILEDS4.Equals("Y") && CHECK_FILEDS5.Equals("Y"))
                 {
                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                     break;
@@ -695,9 +707,21 @@ namespace TKUOF.FORMFLOWS
                                 ,[APPLY_RANKS_OPERATOR]
                                 ,[APPLY_RANKS]
                                 ,[APPLY_TITLE_NAME]
-                                ,[APPLY_FILEDS]
-                                ,[APPLY_FILEDS_OPERATOR]
-                                ,[APPLY_FILEDS_VALUES]
+                                ,[APPLY_FILEDS1]
+                                ,[APPLY_FILEDS_OPERATOR1]
+                                ,[APPLY_FILEDS_VALUES1]
+                                ,[APPLY_FILEDS2]
+                                ,[APPLY_FILEDS_OPERATOR2]
+                                ,[APPLY_FILEDS_VALUES2]
+                                ,[APPLY_FILEDS3]
+                                ,[APPLY_FILEDS_OPERATOR3]
+                                ,[APPLY_FILEDS_VALUES3]
+                                ,[APPLY_FILEDS4]
+                                ,[APPLY_FILEDS_OPERATOR4]
+                                ,[APPLY_FILEDS_VALUES4]
+                                ,[APPLY_FILEDS5]
+                                ,[APPLY_FILEDS_OPERATOR5]
+                                ,[APPLY_FILEDS_VALUES5]
                                 ,[SET_FLOW_RANKS]
                                 ,[SET_FLOW_TITLE_NAME]
                                 ,[PRIORITYS]
