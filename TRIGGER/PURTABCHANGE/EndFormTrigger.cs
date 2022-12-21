@@ -204,6 +204,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                         ,[PURTB].[TB007]=INVMB.MB004
                                         ,[PURTB].[TB017]=INVMB.MB050 
                                         ,[PURTB].[TB018]=(MB050*[PURTATBUOFCHANGE].[TB009]) 
+                                        ,[PURTB].[TB021]='N'
                                         FROM [TKPUR].[dbo].[PURTATBUOFCHANGE],[TK].dbo.INVMB
                                         WHERE [PURTATBUOFCHANGE].TB004=INVMB.MB001
                                         AND [PURTB].TB003=[PURTATBUOFCHANGE].TB003
