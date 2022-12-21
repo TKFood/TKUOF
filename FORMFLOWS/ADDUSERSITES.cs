@@ -87,13 +87,33 @@ namespace TKUOF.FORMFLOWS
             string APPLY_FILEDS1 = null;
             string APPLY_FILEDS_OPERATOR1 = null;
             string APPLY_FILEDS_VALUES1 = null;
+            string APPLY_FILEDS2 = null;
+            string APPLY_FILEDS_OPERATOR2 = null;
+            string APPLY_FILEDS_VALUES2 = null;
+            string APPLY_FILEDS3 = null;
+            string APPLY_FILEDS_OPERATOR3 = null;
+            string APPLY_FILEDS_VALUES3 = null;
+            string APPLY_FILEDS4 = null;
+            string APPLY_FILEDS_OPERATOR4 = null;
+            string APPLY_FILEDS_VALUES4 = null;
+            string APPLY_FILEDS5 = null;
+            string APPLY_FILEDS_OPERATOR5 = null;
+            string APPLY_FILEDS_VALUES5 = null;
             string SET_FLOW_RANKS = null;
             StringBuilder FINDXML = new StringBuilder();
-            string XMLVALUES = null;
+            string XMLVALUES1 = null;
+            string XMLVALUES2 = null;
+            string XMLVALUES3 = null;
+            string XMLVALUES4 = null;
+            string XMLVALUES5 = null;
 
             string CHECK_GROUP_ID = null;
             string CHECK_RANKS = null;
             string CHECK_FILEDS1 = null;
+            string CHECK_FILEDS2 = null;
+            string CHECK_FILEDS3 = null;
+            string CHECK_FILEDS4 = null;
+            string CHECK_FILEDS5 = null;
 
             foreach (DataRow DR in DT_Z_UOF_FROM_CONDITIONS.Rows)
             {
@@ -109,19 +129,80 @@ namespace TKUOF.FORMFLOWS
                 APPLY_FILEDS_VALUES1 = DR["APPLY_FILEDS_VALUE1S"].ToString();
                 SET_FLOW_RANKS = DR["SET_FLOW_RANKS"].ToString();
 
+                //APPLY_FILEDS1 取值
                 try
                 {
                     if(!string.IsNullOrEmpty(APPLY_FILEDS1))
                     {
                         FINDXML.Clear();
                         FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS1);
-                        XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                        XMLVALUES1 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
                     }
                     
                 }
                 catch
                 {
-                    XMLVALUES = null;
+                    XMLVALUES1 = null;
+                }
+                //APPLY_FILEDS2 取值
+                try
+                {
+                    if (!string.IsNullOrEmpty(APPLY_FILEDS2))
+                    {
+                        FINDXML.Clear();
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS2);
+                        XMLVALUES2= formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    }
+
+                }
+                catch
+                {
+                    XMLVALUES2 = null;
+                }
+                //APPLY_FILEDS3 取值
+                try
+                {
+                    if (!string.IsNullOrEmpty(APPLY_FILEDS3))
+                    {
+                        FINDXML.Clear();
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS3);
+                        XMLVALUES3 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    }
+
+                }
+                catch
+                {
+                    XMLVALUES3 = null;
+                }
+                //APPLY_FILEDS4 取值
+                try
+                {
+                    if (!string.IsNullOrEmpty(APPLY_FILEDS4))
+                    {
+                        FINDXML.Clear();
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS4);
+                        XMLVALUES4 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    }
+
+                }
+                catch
+                {
+                    XMLVALUES4 = null;
+                }
+                //APPLY_FILEDS5 取值
+                try
+                {
+                    if (!string.IsNullOrEmpty(APPLY_FILEDS5))
+                    {
+                        FINDXML.Clear();
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS5);
+                        XMLVALUES5 = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
+                    }
+
+                }
+                catch
+                {
+                    XMLVALUES5 = null;
                 }
 
                 //檢查部門是否一樣
@@ -160,7 +241,7 @@ namespace TKUOF.FORMFLOWS
                 }
 
                 //檢查欄位 比較是否一樣
-                //檢查 APPLY_FILEDS 是空的 或 APPLY_FILEDS 不是空的且欄位相比正確
+                //檢查 APPLY_FILEDS1 是空的 或 APPLY_FILEDS1 不是空的且欄位相比正確
                 if (string.IsNullOrEmpty(APPLY_FILEDS1))
                 {
                     CHECK_FILEDS1 = "Y";
@@ -168,25 +249,134 @@ namespace TKUOF.FORMFLOWS
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS1))
                 {
 
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES1);                   
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES1);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES1);
+                    string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR1;
 
-                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR1.Equals(">=")))
+                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
                     {
                         CHECK_FILEDS1 = "Y";
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
                     {
                         CHECK_FILEDS1 = "Y";
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR1.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
                     {
                         CHECK_FILEDS1 = "Y";
                     }
                 }
+                //檢查欄位 比較是否一樣
+                //檢查 APPLY_FILEDS2 是空的 或 APPLY_FILEDS2 不是空的且欄位相比正確
+                if (string.IsNullOrEmpty(APPLY_FILEDS2))
+                {
+                    CHECK_FILEDS2 = "Y";
+                }
+                else if (!string.IsNullOrEmpty(APPLY_FILEDS2))
+                {
+
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES2);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES2);
+                    string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR2;
+
+                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    {
+                        CHECK_FILEDS2 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    {
+                        CHECK_FILEDS2 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    {
+                        CHECK_FILEDS2 = "Y";
+                    }
+                }
+
+                //檢查欄位 比較是否一樣
+                //檢查 APPLY_FILEDS3 是空的 或 APPLY_FILEDS3 不是空的且欄位相比正確
+                if (string.IsNullOrEmpty(APPLY_FILEDS3))
+                {
+                    CHECK_FILEDS3 = "Y";
+                }
+                else if (!string.IsNullOrEmpty(APPLY_FILEDS3))
+                {
+
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES3);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES3);
+                    string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR3;
+
+                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    {
+                        CHECK_FILEDS3 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    {
+                        CHECK_FILEDS3 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                    {
+                        CHECK_FILEDS3 = "Y";
+                    }
+                }
+
+                //檢查欄位 比較是否一樣
+                //檢查 APPLY_FILEDS4 是空的 或 APPLY_FILEDS4 不是空的且欄位相比正確
+                if (string.IsNullOrEmpty(APPLY_FILEDS4))
+                {
+                    CHECK_FILEDS4 = "Y";
+                }
+                else if (!string.IsNullOrEmpty(APPLY_FILEDS4))
+                {
+
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES4);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES4);
+                    string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR4;
+
+                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    {
+                        CHECK_FILEDS4 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    {
+                        CHECK_FILEDS4 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                    {
+                        CHECK_FILEDS4 = "Y";
+                    }
+                }
+
+                //檢查欄位 比較是否一樣
+                //檢查 APPLY_FILEDS5 是空的 或 APPLY_FILEDS5 不是空的且欄位相比正確
+                if (string.IsNullOrEmpty(APPLY_FILEDS5))
+                {
+                    CHECK_FILEDS5 = "Y";
+                }
+                else if (!string.IsNullOrEmpty(APPLY_FILEDS5))
+                {
+
+                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES5);
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES5);
+                    string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR5;
+
+                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    {
+                        CHECK_FILEDS5 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    {
+                        CHECK_FILEDS5 = "Y";
+                    }
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                    {
+                        CHECK_FILEDS5 = "Y";
+                    }
+                }
+
 
                 //檢查是那筆規則符合條件
-                string CHECK_ID= DR["ID"].ToString();
+                string CHECK_ID = DR["ID"].ToString();
 
                 //部門、職級比較、欄位比較都一樣就帶這筆的簽核職級
                 if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS1.Equals("Y"))
