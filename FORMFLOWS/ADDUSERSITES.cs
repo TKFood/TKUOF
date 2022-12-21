@@ -84,37 +84,37 @@ namespace TKUOF.FORMFLOWS
             string APPLY_GROUP_ID = null;
             string APPLY_RANKS_OPERATOR = null;
             string APPLY_RANKS = null;
-            string APPLY_FILEDS = null;
-            string APPLY_FILEDS_OPERATOR = null;
-            string APPLY_FILEDS_VALUES = null;
+            string APPLY_FILEDS1 = null;
+            string APPLY_FILEDS_OPERATOR1 = null;
+            string APPLY_FILEDS_VALUES1 = null;
             string SET_FLOW_RANKS = null;
             StringBuilder FINDXML = new StringBuilder();
             string XMLVALUES = null;
 
             string CHECK_GROUP_ID = null;
             string CHECK_RANKS = null;
-            string CHECK_FILEDS = null;
+            string CHECK_FILEDS1 = null;
 
             foreach (DataRow DR in DT_Z_UOF_FROM_CONDITIONS.Rows)
             {
                 CHECK_GROUP_ID = "N";
                 CHECK_RANKS = "N";
-                CHECK_FILEDS = "N";
+                CHECK_FILEDS1 = "N";
 
                 APPLY_GROUP_ID = DR["APPLY_GROUP_ID"].ToString();
                 APPLY_RANKS_OPERATOR = DR["APPLY_RANKS_OPERATOR"].ToString();
                 APPLY_RANKS = DR["APPLY_RANKS"].ToString();
-                APPLY_FILEDS = DR["APPLY_FILEDS"].ToString();
-                APPLY_FILEDS_OPERATOR = DR["APPLY_FILEDS_OPERATOR"].ToString();
-                APPLY_FILEDS_VALUES = DR["APPLY_FILEDS_VALUES"].ToString();
+                APPLY_FILEDS1 = DR["APPLY_FILEDS1"].ToString();
+                APPLY_FILEDS_OPERATOR1 = DR["APPLY_FILEDS_OPERATOR1"].ToString();
+                APPLY_FILEDS_VALUES1 = DR["APPLY_FILEDS_VALUE1S"].ToString();
                 SET_FLOW_RANKS = DR["SET_FLOW_RANKS"].ToString();
 
                 try
                 {
-                    if(!string.IsNullOrEmpty(APPLY_FILEDS))
+                    if(!string.IsNullOrEmpty(APPLY_FILEDS1))
                     {
                         FINDXML.Clear();
-                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS);
+                        FINDXML.AppendFormat(@"/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='{0}'] ", APPLY_FILEDS1);
                         XMLVALUES = formXmlDoc.SelectSingleNode(FINDXML.ToString()).Attributes["fieldValue"].Value;
                     }
                     
@@ -161,27 +161,27 @@ namespace TKUOF.FORMFLOWS
 
                 //檢查欄位 比較是否一樣
                 //檢查 APPLY_FILEDS 是空的 或 APPLY_FILEDS 不是空的且欄位相比正確
-                if (string.IsNullOrEmpty(APPLY_FILEDS))
+                if (string.IsNullOrEmpty(APPLY_FILEDS1))
                 {
-                    CHECK_FILEDS = "Y";
+                    CHECK_FILEDS1 = "Y";
                 }
-                else if (!string.IsNullOrEmpty(APPLY_FILEDS))
+                else if (!string.IsNullOrEmpty(APPLY_FILEDS1))
                 {
 
                     int int_XMLVALUES = Convert.ToInt32(XMLVALUES);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES);                   
+                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES1);                   
 
-                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR1.Equals(">=")))
                     {
-                        CHECK_FILEDS = "Y";
+                        CHECK_FILEDS1 = "Y";
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR1.Equals("<=")))
                     {
-                        CHECK_FILEDS = "Y";
+                        CHECK_FILEDS1 = "Y";
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR1.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
                     {
-                        CHECK_FILEDS = "Y";
+                        CHECK_FILEDS1 = "Y";
                     }
                 }
 
@@ -189,7 +189,7 @@ namespace TKUOF.FORMFLOWS
                 string CHECK_ID= DR["ID"].ToString();
 
                 //部門、職級比較、欄位比較都一樣就帶這筆的簽核職級
-                if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS.Equals("Y"))
+                if (CHECK_GROUP_ID.Equals("Y") && CHECK_RANKS.Equals("Y") && CHECK_FILEDS1.Equals("Y"))
                 {
                     RANKS = DR["SET_FLOW_RANKS"].ToString();
                     break;
