@@ -120,6 +120,11 @@ namespace TKUOF.FORMFLOWS
                 CHECK_GROUP_ID = "N";
                 CHECK_RANKS = "N";
                 CHECK_FILEDS1 = "N";
+                CHECK_FILEDS2 = "N";
+                CHECK_FILEDS3 = "N";
+                CHECK_FILEDS4 = "N";
+                CHECK_FILEDS5 = "N";
+
 
                 APPLY_GROUP_ID = DR["APPLY_GROUP_ID"].ToString();
                 APPLY_RANKS_OPERATOR = DR["APPLY_RANKS_OPERATOR"].ToString();
@@ -260,23 +265,36 @@ namespace TKUOF.FORMFLOWS
                 }
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS1))
                 {
-
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES1);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES1);
                     string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR1;
 
-                    if ((int_XMLVALUES- int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if (APPLY_FILEDS_OPERATOR.Equals("LIKE"))
                     {
-                        CHECK_FILEDS1 = "Y";
+                        string string_XMLVALUES =XMLVALUES1;
+                        string string_APPLY_FILEDS_VALUES = APPLY_FILEDS_VALUES1;
+                        if (string_XMLVALUES.Contains(string_APPLY_FILEDS_VALUES))
+                        {
+                            CHECK_FILEDS1 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else
                     {
-                        CHECK_FILEDS1 = "Y";
+                        int int_XMLVALUES = Convert.ToInt32(XMLVALUES1);
+                        int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES1);                       
+
+                        if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                        {
+                            CHECK_FILEDS1 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS1 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                        {
+                            CHECK_FILEDS1 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
-                    {
-                        CHECK_FILEDS1 = "Y";
-                    }
+                    
                 }
                 //檢查欄位 比較是否一樣
                 //檢查 APPLY_FILEDS2 是空的 或 APPLY_FILEDS2 不是空的且欄位相比正確
@@ -287,22 +305,36 @@ namespace TKUOF.FORMFLOWS
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS2))
                 {
 
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES2);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES2);
                     string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR2;
 
-                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if (APPLY_FILEDS_OPERATOR.Equals("LIKE"))
                     {
-                        CHECK_FILEDS2 = "Y";
+                        string string_XMLVALUES = XMLVALUES2;
+                        string string_APPLY_FILEDS_VALUES = APPLY_FILEDS_VALUES2;
+                        if (string_XMLVALUES.Contains(string_APPLY_FILEDS_VALUES))
+                        {
+                            CHECK_FILEDS2 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else
                     {
-                        CHECK_FILEDS2 = "Y";
+                        int int_XMLVALUES = Convert.ToInt32(XMLVALUES2);
+                        int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES2);                      
+
+                        if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                        {
+                            CHECK_FILEDS2 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS2 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS2 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR.Equals(">=") || APPLY_FILEDS_OPERATOR.Equals("<=")))
-                    {
-                        CHECK_FILEDS2 = "Y";
-                    }
+                    
                 }
 
                 //檢查欄位 比較是否一樣
@@ -313,23 +345,39 @@ namespace TKUOF.FORMFLOWS
                 }
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS3))
                 {
-
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES3);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES3);
                     string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR3;
 
-                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if (APPLY_FILEDS_OPERATOR.Equals("LIKE"))
                     {
-                        CHECK_FILEDS3 = "Y";
+                        string string_XMLVALUES = XMLVALUES3;
+                        string string_APPLY_FILEDS_VALUES = APPLY_FILEDS_VALUES3;
+                        if (string_XMLVALUES.Contains(string_APPLY_FILEDS_VALUES))
+                        {
+                            CHECK_FILEDS3 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else
                     {
-                        CHECK_FILEDS3 = "Y";
+                        int int_XMLVALUES = Convert.ToInt32(XMLVALUES3);
+                        int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES3);
+                    
+
+                        if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                        {
+                            CHECK_FILEDS3 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS3 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                        {
+                            CHECK_FILEDS3 = "Y";
+                        }
+
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
-                    {
-                        CHECK_FILEDS3 = "Y";
-                    }
+
+                    
                 }
 
                 //檢查欄位 比較是否一樣
@@ -341,22 +389,38 @@ namespace TKUOF.FORMFLOWS
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS4))
                 {
 
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES4);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES4);
                     string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR4;
 
-                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if (APPLY_FILEDS_OPERATOR.Equals("LIKE"))
                     {
-                        CHECK_FILEDS4 = "Y";
+                        string string_XMLVALUES = XMLVALUES4;
+                        string string_APPLY_FILEDS_VALUES = APPLY_FILEDS_VALUES4;
+                        if (string_XMLVALUES.Contains(string_APPLY_FILEDS_VALUES))
+                        {
+                            CHECK_FILEDS4 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else
                     {
-                        CHECK_FILEDS4 = "Y";
+                        int int_XMLVALUES = Convert.ToInt32(XMLVALUES4);
+                        int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES4);
+                       
+
+                        if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                        {
+                            CHECK_FILEDS4 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS4 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                        {
+                            CHECK_FILEDS4 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
-                    {
-                        CHECK_FILEDS4 = "Y";
-                    }
+
+                   
                 }
 
                 //檢查欄位 比較是否一樣
@@ -367,23 +431,37 @@ namespace TKUOF.FORMFLOWS
                 }
                 else if (!string.IsNullOrEmpty(APPLY_FILEDS5))
                 {
-
-                    int int_XMLVALUES = Convert.ToInt32(XMLVALUES5);
-                    int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES5);
                     string APPLY_FILEDS_OPERATOR = APPLY_FILEDS_OPERATOR5;
 
-                    if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                    if (APPLY_FILEDS_OPERATOR.Equals("LIKE"))
                     {
-                        CHECK_FILEDS5 = "Y";
+                        string string_XMLVALUES = XMLVALUES5;
+                        string string_APPLY_FILEDS_VALUES = APPLY_FILEDS_VALUES5;
+                        if (string_XMLVALUES.Contains(string_APPLY_FILEDS_VALUES))
+                        {
+                            CHECK_FILEDS5 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                    else
                     {
-                        CHECK_FILEDS5 = "Y";
+                        int int_XMLVALUES = Convert.ToInt32(XMLVALUES5);
+                        int int_APPLY_FILEDS_VALUES = Convert.ToInt32(APPLY_FILEDS_VALUES5);                     
+
+                        if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) > 0 && (APPLY_FILEDS_OPERATOR.Equals(">=")))
+                        {
+                            CHECK_FILEDS5 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) < 0 && (APPLY_FILEDS_OPERATOR.Equals("<=")))
+                        {
+                            CHECK_FILEDS5 = "Y";
+                        }
+                        else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
+                        {
+                            CHECK_FILEDS5 = "Y";
+                        }
                     }
-                    else if ((int_XMLVALUES - int_APPLY_FILEDS_VALUES) == 0 && (APPLY_FILEDS_OPERATOR.Equals("==") || APPLY_FILEDS_OPERATOR1.Equals(">=") || APPLY_FILEDS_OPERATOR1.Equals("<=")))
-                    {
-                        CHECK_FILEDS5 = "Y";
-                    }
+
+                   
                 }
 
 
