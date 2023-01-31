@@ -242,6 +242,48 @@ namespace TKUOF.TRIGGER.BOMTATBTC
                                         SET TB012='Y'
                                         WHERE TB001='{0}' AND  TB002='{1}'
 
+
+                                        UPDATE [TK].dbo.BOMMC
+                                        SET BOMMC.UDF03=BOMTBUDF03
+                                        FROM 
+                                        (
+                                        SELECT TA001,TA002,TB004,BOMTB.UDF03 AS 'BOMTBUDF03'
+                                        FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB
+                                        WHERE TA001=TB001 AND TA002=TB002
+                                        AND ISNULL(BOMTB.UDF03 ,'')<>''
+                                        AND TA001='{0}'AND TA002='{1}'
+
+                                        ) AS TEMP
+                                        WHERE TEMP.TB004=BOMMC.MC001
+
+
+                                        UPDATE [TK].dbo.BOMMC
+                                        SET BOMMC.UDF04=BOMTBUDF04
+                                        FROM 
+                                        (
+                                        SELECT TA001,TA002,TB004,BOMTB.UDF04 AS 'BOMTBUDF04'
+                                        FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB
+                                        WHERE TA001=TB001 AND TA002=TB002
+                                        AND ISNULL(BOMTB.UDF04 ,'')<>''
+                                        AND TA001='{0}'AND TA002='{1}'
+
+                                        ) AS TEMP
+                                        WHERE TEMP.TB004=BOMMC.MC001
+
+
+                                        UPDATE [TK].dbo.BOMMC
+                                        SET BOMMC.UDF05=BOMTBUDF05
+                                        FROM 
+                                        (
+                                        SELECT TA001,TA002,TB004,BOMTB.UDF05 AS 'BOMTBUDF05'
+                                        FROM [TK].dbo.BOMTA,[TK].dbo.BOMTB
+                                        WHERE TA001=TB001 AND TA002=TB002
+                                        AND ISNULL(BOMTB.UDF05 ,'')<>''
+                                        AND TA001='{0}'AND TA002='{1}'
+
+                                        ) AS TEMP
+                                        WHERE TEMP.TB004=BOMMC.MC001
+
                                         ", TA001, TA002, FORMID, TA010);
 
             try
