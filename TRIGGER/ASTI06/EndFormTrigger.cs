@@ -98,7 +98,7 @@ namespace TKUOF.TRIGGER.ASTI06
                                     ,MB021=TC007
                                     ,MB015=TC009+MB015
                                     ,MB022=TC010
-                                    ,MB014=TC029+MB014
+                                    ,MB014=TC009+MB014
                                     ,MB049=TC030
                                     ,MB051=TC033 
                                     ,MB041=TC037
