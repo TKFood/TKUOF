@@ -93,6 +93,7 @@ namespace TKUOF.TRIGGER.ASTI11
                                     ,MODIFIER=@MODIFIER 
                                     ,MODI_DATE=@MODI_DATE
                                     ,MODI_TIME=@MODI_TIME
+                                    ,UDF02=@UDF02
                                     WHERE TC001=@TC001 AND TC002=@TC002
 
                                     UPDATE [TK].dbo.ASTTD
