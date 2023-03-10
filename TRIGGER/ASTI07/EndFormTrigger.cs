@@ -84,14 +84,13 @@ namespace TKUOF.TRIGGER.ASTI07
                                      UPDATE [TK].dbo.ASTMB
                                     SET 
                                     ASTMB.FLAG=ASTMB.FLAG+1
-
-                                    ,MB022=TC010
+                                     ,MB022=TC010
                                     ,MB051=TC033 
                                     ,MB058=TC036
-                                    ,MB027=TC010 
-                                    ,MB075=TC036
-                                    ,MB077=TC010
-                                    ,MB066=TC033 
+                                    ,MB027=TC039 
+                                    ,MB075=TC077
+                                    ,MB077=TC078
+                                    ,MB066=TC079 
                                     ,MODIFIER=@MODIFIER
                                     ,MODI_DATE=@MODI_DATE 
                                     ,MODI_TIME=@MODI_TIME

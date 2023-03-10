@@ -16,7 +16,7 @@ using System.Xml;
 using Ede.Uof.EIP.Organization.Util;
 using Ede.Uof.EIP.SystemInfo;
 
-namespace TKUOF.TRIGGER.ASTI09
+namespace TKUOF.TRIGGER.ASTI10
 {
     //訂單的核準
 
@@ -113,26 +113,42 @@ namespace TKUOF.TRIGGER.ASTI09
 
                                    UPDATE [TK].dbo.ASTMB
                                     SET
-                                    ASTMB.FLAG=ASTMB.FLAG+1
-                                    ,MB012=TC005
-                                    ,MB020=MB020-TC006
-                                    ,MB021=MB021-TC007
-                                    ,MB029=MB029-TC008
-                                    ,MB022=MB022-TC010
-                                    ,MB017=TC003
-                                    ,MB051=MB051-TC033
-                                    ,MB058=MB058-TC036 
-                                    ,MB027=MB027-TC039
-                                    ,MB073=MB073-TC075
-                                    ,MB074=MB074-TC076
-                                    ,MB075=MB075-TC077
-                                    ,MB076=MB076-TC068
-                                    ,MB064=MB064-TC039
-                                    ,MB077=MB077-TC078
-                                    ,MB066=MB066-TC079
-                                    ,MB071=TC003
-                                    ,MB078=MB078-TC092
-                                    ,MB079=MB079-TC093 
+                                   ASTMB.FLAG=ASTMB.FLAG+1 
+                                    ,MB012=TC005 
+                                    ,MB015=TC009 
+                                    ,MB020=TC006 
+                                    ,MB021=TC007 
+                                    ,MB022=TC010 
+                                    ,MB029=TC008 
+                                    ,MB058=TC036 
+                                    ,MB049=TC030 
+                                    ,MB051=TC033  
+                                    ,MB025=TC059
+                                    ,MB014=TC035
+                                    ,MB041=TC038
+                                    ,MB027=TC039
+                                    ,MB026=TC037
+                                    ,MB081=TC038
+                                    ,MB073=TC075
+                                    ,MB074=TC076
+                                    ,MB075=TC077
+                                    ,MB076=TC068
+                                    ,MB066=TC079
+                                    ,MB069=TC073
+                                    ,MB068=TC074
+                                    ,MB077=TC078
+                                    ,MB063=TC038
+                                    ,MB062=TC037
+                                    ,MB064=TC039
+                                    ,MB065=TC030
+                                    ,MB061=TC059
+                                    ,MB078=TC092
+                                    ,MB079=TC093
+                                    ,MB023=TC097
+                                    ,MB059=TC099
+                                    ,MB082=TC061 
+                                    ,MB019=TC007 
+                                    ,MB072=TC075
                                     ,MODIFIER=@MODIFIER
                                     ,MODI_DATE=@MODI_DATE
                                     ,MODI_TIME=@MODI_TIME 

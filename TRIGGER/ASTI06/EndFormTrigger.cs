@@ -98,18 +98,18 @@ namespace TKUOF.TRIGGER.ASTI06
                                     ,MB021=TC007
                                     ,MB015=TC009+MB015
                                     ,MB022=TC010
-                                    ,MB014=TC009+MB014
+                                    ,MB014=TC035+MB014
                                     ,MB049=TC030
                                     ,MB051=TC033 
-                                    ,MB041=TC037
-                                    ,MB074=TC007
-                                    ,MB069=TC009
-                                    ,MB068=TC029
-                                    ,MB077=TC010
+                                    ,MB041=TC038
+                                    ,MB074=TC076
+                                    ,MB069=TC073
+                                    ,MB068=TC074
+                                    ,MB077=TC078
                                     ,MB063=TC038
                                     ,MB062=TC037
                                     ,MB064=TC039
-                                    ,MB066=TC033
+                                    ,MB066=TC079
                                     ,MB065=TC030
 
                                     ,MODIFIER=@MODIFIER 
