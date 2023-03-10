@@ -19,6 +19,7 @@ using Ede.Uof.EIP.SystemInfo;
 namespace TKUOF.TRIGGER.ASTI10
 {
     //訂單的核準
+    //修改的ASTMB>ASTTC的完整欄位對照
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
