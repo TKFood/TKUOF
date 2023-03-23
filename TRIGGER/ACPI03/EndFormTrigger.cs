@@ -110,8 +110,8 @@ namespace TKUOF.TRIGGER.ACPI03
                                     SET
                                     ACPTA.FLAG=ACPTA.FLAG+1
                                     ,TA026='N'
-                                    ,TA030=TD015 
-                                    ,TA048=TD015  
+                                    ,TA030=TA030+TD015 
+                                    ,TA048=TA048+TD015 
                                     ,TA051=''
                                     FROM [test0923].dbo.ACPTD
                                     WHERE TD006=TA001 AND TD007=TA002
@@ -122,8 +122,8 @@ namespace TKUOF.TRIGGER.ACPI03
                                     SET
                                     ACPTA.FLAG=ACPTA.FLAG+1
                                     ,TA026='Y'
-                                    ,TA030=TD015 
-                                    ,TA048=TD015  
+                                    ,TA030=TA030+TD015 
+                                    ,TA048=TA048+TD015  
                                     ,TA051=@TA051  
                                     FROM [test0923].dbo.ACPTD
                                     WHERE TD006=TA001 AND TD007=TA002

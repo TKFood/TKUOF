@@ -103,12 +103,25 @@ namespace TKUOF.TRIGGER.ACRI03
                                     UPDATE [test0923].dbo.ACRTA
                                     SET 
                                     TA027=@TA027
-                                    ,TA031=TD014
-                                    ,TA058=TD015
+                                    ,TA031=TA031+TD014
+                                    ,TA058=TA058+TD015
                                     ,TA062=@MODI_DATE
                                     FROM [test0923].dbo.ACRTD
                                     WHERE TD001=@TD001 AND TD002=TD002
+                                    AND TD013=TD014
                                     AND TD006=TA001 AND TD007=TA002
+
+                                    UPDATE [test0923].dbo.ACRTA
+                                    SET 
+                                    TA027='N'
+                                    ,TA031=TA031+TD014
+                                    ,TA058=TA058+TD015
+                                    ,TA062=''
+                                    FROM [test0923].dbo.ACRTD
+                                    WHERE TD001=@TD001 AND TD002=TD002
+                                    AND TD013<>TD014
+                                    AND TD006=TA001 AND TD007=TA002
+
                                         ");
 
             try
