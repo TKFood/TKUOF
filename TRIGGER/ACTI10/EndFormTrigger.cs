@@ -242,82 +242,53 @@ namespace TKUOF.TRIGGER.ACTI10
                 queryString.AppendFormat(@"  
                                         ");
 
-                foreach(DataRow DR in DT.Rows)
+                foreach (DataRow DR in DT.Rows)
                 {
                     queryString.AppendFormat(@"  
-                                            IF EXISTS (SELECT MB001 FROM [test0923].dbo.[ACTMB] WHERE MB001=@MB001 AND MB002=@MB002 AND MB003=@MB003 AND MB008=@MB008)
-                                            BEGIN
-	                                            UPDATE  [test0923].dbo.[ACTMB]
-	                                            SET MB004=MB004+@MB004NEW,MB005=MB005+@MB005NEW,MB006=MB006+@MB006NEW,MB007=MB007+@MB007NEW,MB009=MB009+@MB009NEW,MB010=MB010+@MB010NEW
-	                                            WHERE MB001=@MB001 AND MB002=@MB002 AND MB003=@MB003
-                                            END
+                          
+                                                IF NOT EXISTS (SELECT MB001 FROM [test0923].dbo.[ACTMB] WHERE MB001='{0}' AND MB002='{1}' AND MB003='{2}')
+                                                BEGIN
+                                                 INSERT INTO  [test0923].dbo.[ACTMB]
+                                                 (MB001,MB002,MB003,MB004,MB005,MB006,MB007,MB008,MB009,MB010,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME)
+                                                 VALUES
+                                                 ('{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}')
+                                                END
 
-                                            IF NOT EXISTS (SELECT MB001 FROM [test0923].dbo.[ACTMB] WHERE MB001=@MB001 AND MB002=@MB002 AND MB003=@MB003)
-                                            BEGIN
-	                                            INSERT INTO  [test0923].dbo.[ACTMB]
-	                                            (MB001,MB002,MB003,MB004,MB005,MB006,MB007,MB008,MB009,MB010,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME)
-	                                            VALUES
-	                                            (@MB001,@MB002,@MB003,@MB004,@MB005,@MB006,@MB007,@MB008,@MB009,@MB010,@COMPANY,@CREATOR,@USR_GROUP,@CREATE_DATE,@MODIFIER,@MODI_DATE,@FLAG,@CREATE_TIME,@MODI_TIME,@TRANS_TYPE,@TRANS_NAME)
-                                            END
+                                                 ", DR["MB001"].ToString(), DR["MB002"].ToString(), DR["MB003"].ToString()
+                                                  , DR["MB001"].ToString(), DR["MB002"].ToString(), DR["MB003"].ToString(), DR["MB004NEW"].ToString(), DR["MB005NEW"].ToString(), DR["MB006NEW"].ToString(), DR["MB007NEW"].ToString(), DR["MB008NEW"].ToString(), DR["MB009NEW"].ToString(), DR["MB010NEW"].ToString()
+                                                  , DR["COMPANY"].ToString(), DR["CREATOR"].ToString() , DR["USR_GROUP"].ToString() , DR["CREATE_DATE"].ToString() , DR["MODIFIER"].ToString() , DR["MODI_DATE"].ToString() ,'0', DR["CREATE_TIME"].ToString() , DR["MODI_TIME"].ToString() , DR["TRANS_TYPE"].ToString() , DR["TRANS_NAME"].ToString() 
+                                                 );
+                    
+                }
 
-                                             ");
-
-                    try
-                    {
-                        using (SqlConnection connection = new SqlConnection(connectionString))
-                        {
-
-                            SqlCommand command = new SqlCommand(queryString.ToString(), connection);
-                            command.Parameters.Add("@MB001", SqlDbType.NVarChar).Value = DR["TB005"].ToString();
-                            command.Parameters.Add("@MB002", SqlDbType.NVarChar).Value = DR["YEARS"].ToString();
-                            command.Parameters.Add("@MB003", SqlDbType.NVarChar).Value = DR["MONTHS"].ToString();
-                            command.Parameters.Add("@MB008", SqlDbType.NVarChar).Value = DR["TB013"].ToString();
-                            command.Parameters.Add("@MB004NEW", SqlDbType.NVarChar).Value = DR["MB004NEW"].ToString();
-                            command.Parameters.Add("@MB005NEW", SqlDbType.NVarChar).Value = DR["MB005NEW"].ToString();
-                            command.Parameters.Add("@MB006NEW", SqlDbType.NVarChar).Value = DR["MB006NEW"].ToString();
-                            command.Parameters.Add("@MB007NEW", SqlDbType.NVarChar).Value = DR["MB007NEW"].ToString();
-                            command.Parameters.Add("@MB009NEW", SqlDbType.NVarChar).Value = DR["MB009NEW"].ToString();
-                            command.Parameters.Add("@MB010NEW", SqlDbType.NVarChar).Value = DR["MB010NEW"].ToString();
-
-                 
-                            command.Parameters.Add("@MB004", SqlDbType.NVarChar).Value = DR["MB004NEW"].ToString();
-                            command.Parameters.Add("@MB005", SqlDbType.NVarChar).Value = DR["MB005NEW"].ToString();
-                            command.Parameters.Add("@MB006", SqlDbType.NVarChar).Value = DR["MB006NEW"].ToString();
-                            command.Parameters.Add("@MB007", SqlDbType.NVarChar).Value = DR["MB007NEW"].ToString();
-                            command.Parameters.Add("@MB009", SqlDbType.NVarChar).Value = DR["MB009NEW"].ToString();
-                            command.Parameters.Add("@MB010", SqlDbType.NVarChar).Value = DR["MB010NEW"].ToString();
-                            command.Parameters.Add("@COMPANY", SqlDbType.NVarChar).Value = DR["COMPANY"].ToString();
-                            command.Parameters.Add("@CREATOR", SqlDbType.NVarChar).Value = DR["CREATOR"].ToString();
-                            command.Parameters.Add("@USR_GROUP", SqlDbType.NVarChar).Value = DR["USR_GROUP"].ToString();
-                            command.Parameters.Add("@CREATE_DATE", SqlDbType.NVarChar).Value = DR["CREATE_DATE"].ToString();
-                            command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = DR["MODIFIER"].ToString();
-                            command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DR["MODI_DATE"].ToString();
-                            command.Parameters.Add("@FLAG", SqlDbType.NVarChar).Value = "0";
-                            command.Parameters.Add("@CREATE_TIME", SqlDbType.NVarChar).Value = DR["CREATE_TIME"].ToString();
-                            command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DR["MODI_TIME"].ToString();
-                            command.Parameters.Add("@TRANS_TYPE", SqlDbType.NVarChar).Value = DR["TRANS_TYPE"].ToString();
-                            command.Parameters.Add("@TRANS_NAME", SqlDbType.NVarChar).Value = DR["TRANS_NAME"].ToString();
-
-                            command.Connection.Open();
-
-                            int count = command.ExecuteNonQuery();
-
-                            connection.Close();
-                            connection.Dispose();
-
-                        }
-                    }
-                    catch
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
 
-                    }
-                    finally
-                    {
+                        SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                        //command.Parameters.Add("@MB001", SqlDbType.NVarChar).Value = DR["TB005"].ToString();                           
+                        command.Connection.Open();
+
+                        int count = command.ExecuteNonQuery();
+
+                        connection.Close();
+                        connection.Dispose();
 
                     }
                 }
+                catch
+                {
 
-                
+                }
+                finally
+                {
+
+                }
+
+               
+
+
             }
 
         }
@@ -331,7 +302,7 @@ namespace TKUOF.TRIGGER.ACTI10
                             SELECT *
                             FROM 
                             (
-                            SELECT TB004,TB005,TB006,TB007,TB013,TB015,SUBSTRING(TA003,1,4) AS 'YEARS',SUBSTRING(TA003,5,2) AS 'MONTHS'
+                            SELECT TB004,TB005 AS MB001 ,TB006,TB007,TB013  AS 'MB008NEW',TB015,SUBSTRING(TA003,1,4) AS 'MB002',SUBSTRING(TA003,5,2) AS 'MB003'
                             ,(CASE WHEN TB004='1' THEN 1 ELSE 0 END) MB006NEW
                             ,(CASE WHEN TB004='-1' THEN 1 ELSE 0 END) MB007NEW
                             ,(CASE WHEN TB004='1' THEN TB007 ELSE 0 END) MB004NEW
