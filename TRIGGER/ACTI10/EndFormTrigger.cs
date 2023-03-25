@@ -57,9 +57,9 @@ namespace TKUOF.TRIGGER.ACTI10
                     //會計傳票核準
                     UPDATE_ACTI10(TA001, TA002, FORMID, MODIFIER);
                     //過帳-分類帳檔
-                    //ACTATB_TO_ACTML(TA001, TA002);
+                    ACTATB_TO_ACTML(TA001, TA002);
                     //會計科目各期額檔
-                    //ACTATB_TO_ACTMB(TA001, TA002);
+                    ACTATB_TO_ACTMB(TA001, TA002);
                 }
             }
 
@@ -248,7 +248,7 @@ namespace TKUOF.TRIGGER.ACTI10
                                             IF EXISTS (SELECT MB001 FROM [test0923].dbo.[ACTMB] WHERE MB001=@MB001 AND MB002=@MB002 AND MB003=@MB003 AND MB008=@MB008)
                                             BEGIN
 	                                            UPDATE  [test0923].dbo.[ACTMB]
-	                                            SET MB004=MB004+MB004NEW,MB005=MB005+MB005NEW,MB006=MB006+MB006NEW,MB007=MB007+MB007NEW,MB009=MB009+MB009NEW,MB010=MB010+MB010NEW
+	                                            SET MB004=MB004+@MB004NEW,MB005=MB005+@MB005NEW,MB006=MB006+@MB006NEW,MB007=MB007+@MB007NEW,MB009=MB009+@MB009NEW,MB010=MB010+@MB010NEW
 	                                            WHERE MB001=@MB001 AND MB002=@MB002 AND MB003=@MB003
                                             END
 
@@ -256,7 +256,7 @@ namespace TKUOF.TRIGGER.ACTI10
                                             BEGIN
 	                                            INSERT INTO  [test0923].dbo.[ACTMB]
 	                                            (MB001,MB002,MB003,MB004,MB005,MB006,MB007,MB008,MB009,MB010,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME)
-	                                            VALUE
+	                                            VALUES
 	                                            (@MB001,@MB002,@MB003,@MB004,@MB005,@MB006,@MB007,@MB008,@MB009,@MB010,@COMPANY,@CREATOR,@USR_GROUP,@CREATE_DATE,@MODIFIER,@MODI_DATE,@FLAG,@CREATE_TIME,@MODI_TIME,@TRANS_TYPE,@TRANS_NAME)
                                             END
 
@@ -280,19 +280,19 @@ namespace TKUOF.TRIGGER.ACTI10
                             command.Parameters.Add("@MB010NEW", SqlDbType.NVarChar).Value = DR["MB010NEW"].ToString();
 
                  
-                            command.Parameters.Add("@MB004", SqlDbType.NVarChar).Value = DR["MB004"].ToString();
-                            command.Parameters.Add("@MB005", SqlDbType.NVarChar).Value = DR["MB005"].ToString();
-                            command.Parameters.Add("@MB006", SqlDbType.NVarChar).Value = DR["MB006"].ToString();
-                            command.Parameters.Add("@MB007", SqlDbType.NVarChar).Value = DR["MB007"].ToString();
-                            command.Parameters.Add("@MB009", SqlDbType.NVarChar).Value = DR["MB009"].ToString();
-                            command.Parameters.Add("@MB010", SqlDbType.NVarChar).Value = DR["MB010"].ToString();
+                            command.Parameters.Add("@MB004", SqlDbType.NVarChar).Value = DR["MB004NEW"].ToString();
+                            command.Parameters.Add("@MB005", SqlDbType.NVarChar).Value = DR["MB005NEW"].ToString();
+                            command.Parameters.Add("@MB006", SqlDbType.NVarChar).Value = DR["MB006NEW"].ToString();
+                            command.Parameters.Add("@MB007", SqlDbType.NVarChar).Value = DR["MB007NEW"].ToString();
+                            command.Parameters.Add("@MB009", SqlDbType.NVarChar).Value = DR["MB009NEW"].ToString();
+                            command.Parameters.Add("@MB010", SqlDbType.NVarChar).Value = DR["MB010NEW"].ToString();
                             command.Parameters.Add("@COMPANY", SqlDbType.NVarChar).Value = DR["COMPANY"].ToString();
                             command.Parameters.Add("@CREATOR", SqlDbType.NVarChar).Value = DR["CREATOR"].ToString();
                             command.Parameters.Add("@USR_GROUP", SqlDbType.NVarChar).Value = DR["USR_GROUP"].ToString();
                             command.Parameters.Add("@CREATE_DATE", SqlDbType.NVarChar).Value = DR["CREATE_DATE"].ToString();
                             command.Parameters.Add("@MODIFIER", SqlDbType.NVarChar).Value = DR["MODIFIER"].ToString();
                             command.Parameters.Add("@MODI_DATE", SqlDbType.NVarChar).Value = DR["MODI_DATE"].ToString();
-                            command.Parameters.Add("@FLAG", SqlDbType.NVarChar).Value = DR["FLAG"].ToString();
+                            command.Parameters.Add("@FLAG", SqlDbType.NVarChar).Value = "0";
                             command.Parameters.Add("@CREATE_TIME", SqlDbType.NVarChar).Value = DR["CREATE_TIME"].ToString();
                             command.Parameters.Add("@MODI_TIME", SqlDbType.NVarChar).Value = DR["MODI_TIME"].ToString();
                             command.Parameters.Add("@TRANS_TYPE", SqlDbType.NVarChar).Value = DR["TRANS_TYPE"].ToString();
@@ -341,7 +341,7 @@ namespace TKUOF.TRIGGER.ACTI10
                             ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAS,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
                             FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
                             WHERE TA001=TB001 AND TA002=TB002
-                            AND TA001=@TA001 AND TA002=@TA002'
+                            AND TA001=@TA001 AND TA002=@TA002
 
                             UNION ALL
                             SELECT TB004,MA2.MA001,TB006,TB007,TB013,TB015,SUBSTRING(TA003,1,4) AS 'YEARS',SUBSTRING(TA003,5,2) AS 'MONTHS'
@@ -354,7 +354,7 @@ namespace TKUOF.TRIGGER.ACTI10
                             ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAS,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
                             FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB,[test0923].dbo.ACTMA MA1,[test0923].dbo.ACTMA MA2
                             WHERE TA001=TB001 AND TA002=TB002
-                            AND TA001=@TA001 AND TA002=@TA002'
+                            AND TA001=@TA001 AND TA002=@TA002
                             AND TB005=MA1.MA001
                             AND MA1.MA008<>'3'
                             AND MA2.MA002=SUBSTRING(MA1.MA002,1,LEN(MA1.MA002)-2)
