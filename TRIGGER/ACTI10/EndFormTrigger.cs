@@ -548,7 +548,20 @@ namespace TKUOF.TRIGGER.ACTI10
                                                 , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString().Trim(), DR["TRANS_NAME"].ToString().Trim()
                                                 );
 
-                  
+                    queryString.AppendFormat(@"  
+                                                IF  EXISTS (SELECT MM001 FROM [test0923].dbo.[ACTMM] WHERE MM001='{0}' AND MM002='{1}' AND MM003='{2}' AND MM004='{3}' AND MM005='{4}' AND MM016='{5}')
+                                                BEGIN
+	                                                UPDATE [test0923].dbo.[ACTMM]
+	                                                SET MM006=MM006+{6},MM007=MM007+{7},MM008=MM008+{8},MM009=MM009+{9}
+                                                    WHERE  MM001='{0}' AND MM002='{1}' AND MM003='{2}' AND MM004='{3}' AND MM005='{4}' AND MM016='{5}'
+                                                END
+                                       
+                                                ", DR["MM001"].ToString().Trim(), DR["MM002"].ToString().Trim(), DR["MM003"].ToString().Trim(), DR["MM004"].ToString().Trim(), DR["MM005"].ToString().Trim(), DR["MM016"].ToString().Trim()
+                                               ,  DR["MM006NEW"].ToString().Trim(), DR["MM007NEW"].ToString().Trim(), DR["MM008NEW"].ToString().Trim(), DR["MM009NEW"].ToString().Trim()
+                                               
+                                               );
+
+
 
                 }
 
