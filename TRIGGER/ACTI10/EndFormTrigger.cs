@@ -64,6 +64,8 @@ namespace TKUOF.TRIGGER.ACTI10
                     ACTATB_TO_ACTMD(TA001, TA002);
                     //ACTMM 立沖帳目金額檔
                     ACTATB_TO_ACTMM(TA001, TA002);
+                    //ACTMN 立沖帳目來源檔
+                    ACTATB_TO_ACTMN(TA001, TA002);
 
                 }
             }
@@ -650,7 +652,80 @@ namespace TKUOF.TRIGGER.ACTI10
             }
         }
 
+        /// <summary>
+        /// 找出會計傳票中ACTMN 立沖帳目來源檔
+        //  再判斷該年、月的ACTATB_TO_ACTMN 立沖帳目來源檔
+        //  有就UPDATE
+        //  沒有就INSERT
+        /// </summary>
+        /// <param name="TA001"></param>
+        /// <param name="TA002"></param>
+        public void ACTATB_TO_ACTMN(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            StringBuilder queryString = new StringBuilder();
 
+            queryString.AppendFormat(@"  
+                                    INSERT INTO [test0923].dbo.ACTMN
+                                    (MN001,MN002,MN003,MN004,MN005,MN006,MN007,MN008,MN009,MN010,MN011,MN012,MN013,MN014,MN015,MN018,MN019,MN020,MN027
+                                    ,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME)
+
+                                    SELECT MN001,MN002,MN003,MN004,MN005,MN006,MN007,MN008,MN009,MN010,MN011,MN012,MN013,MN014,MN015,MN018,MN019,MN020,MN027
+                                            ,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME
+                                    FROM
+                                    (
+                                    SELECT TB005 MN001,'1' AS MN002,TB008 MN003,TA003 MN004,TB001 MN005,TB002 MN006,TB003 MN007,TB004 MN008,TB007 MN009,TB010 MN010,TB006 MN011,TB013 MN012,TB014 MN013,TB015 MN014,TB017 MN015,0 MN018,0 MN019,'N' MN020,TA041 MN027
+                                    ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAG,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
+
+                                    FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+                                    WHERE TA001=TB001 AND TA002=TB002
+                                    AND (ISNULL(TB008,'')<>'')
+                                    AND ISNULL(TB021,'')=''
+                                    AND TA001=@TA001 AND TA002=@TA002
+                                    UNION ALL
+                                    SELECT TB005 MN001,'1' AS MN002,TB008 MN003,TA003 MN004,TB001 MN005,TB002 MN006,TB003 MN007,TB004 MN008,TB007 MN009,TB010 MN010,TB006 MN011,TB013 MN012,TB014 MN013,TB015 MN014,TB017 MN015,0 MN018,0 MN019,'N' MN020,TA041 MN027
+                                    ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAG,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
+
+                                    FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+                                    WHERE TA001=TB001 AND TA002=TB002
+                                    AND (ISNULL(TB009,'')<>'')
+                                    AND ISNULL(TB024,'')=''
+                                    AND TA001=@TA001 AND TA002=@TA002
+                                    ) AS TEMP
+                                    WHERE REPLACE(MN005+MN006+MN007,' ','') NOT IN (SELECT REPLACE(MN005+MN006+MN007,' ','') FROM [test0923].dbo.ACTMN)
+                                        ");
+
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
+                    command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+        }
+
+       
 
 
     }
