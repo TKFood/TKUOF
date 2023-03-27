@@ -259,7 +259,7 @@ namespace TKUOF.TRIGGER.ACTI10
 
                                                  ", DR["MB001"].ToString().Trim(), DR["MB002"].ToString().Trim(), DR["MB003"].ToString().Trim(), DR["MB008NEW"].ToString().Trim()
                                                   , DR["MB001"].ToString().Trim(), DR["MB002"].ToString().Trim(), DR["MB003"].ToString().Trim(), DR["MB004NEW"].ToString().Trim(), DR["MB005NEW"].ToString().Trim(), DR["MB006NEW"].ToString().Trim(), DR["MB007NEW"].ToString(), DR["MB008NEW"].ToString().Trim(), DR["MB009NEW"].ToString().Trim(), DR["MB010NEW"].ToString().Trim()
-                                                  , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString() , DR["TRANS_NAME"].ToString().Trim()
+                                                  , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString().Trim(), DR["TRANS_NAME"].ToString().Trim()
                                                  );
                     queryString.AppendFormat(@"  
                           
@@ -270,9 +270,9 @@ namespace TKUOF.TRIGGER.ACTI10
                                                  WHERE MB001='{0}' AND MB002='{1}' AND MB003='{2}'  AND MB008='{3}'
                                                 END
 
-                                                 ", DR["MB001"].ToString(), DR["MB002"].ToString(), DR["MB003"].ToString() ,DR["MB008NEW"].ToString()
-                                                ,  DR["MB004NEW"].ToString(), DR["MB005NEW"].ToString(), DR["MB006NEW"].ToString(), DR["MB007NEW"].ToString(), DR["MB009NEW"].ToString(), DR["MB010NEW"].ToString()
-                                              
+                                                 ", DR["MB001"].ToString().Trim(), DR["MB002"].ToString().Trim(), DR["MB003"].ToString().Trim(), DR["MB008NEW"].ToString().Trim()
+                                                ,  DR["MB004NEW"].ToString().Trim(), DR["MB005NEW"].ToString().Trim(), DR["MB006NEW"].ToString().Trim(), DR["MB007NEW"].ToString().Trim(), DR["MB009NEW"].ToString().Trim(), DR["MB010NEW"].ToString().Trim()
+
                                                );
 
                 }
@@ -399,10 +399,22 @@ namespace TKUOF.TRIGGER.ACTI10
 	                                            VALUES
 	                                            ('{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}','{24}')
                                             END
-                                             ", DR["MD001"].ToString(), DR["MD002"].ToString(), DR["MD003"].ToString(), DR["MD004"].ToString(), DR["MD007"].ToString()
-                                             , DR["MD001"].ToString(), DR["MD002"].ToString(), DR["MD003"].ToString(), DR["MD004"].ToString(), DR["MD005NEW"].ToString(), DR["MD006NEW"].ToString(), DR["MD007"].ToString(), DR["MD008NEW"].ToString(), DR["MD009NEW"].ToString()
-                                             , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString(), DR["TRANS_NAME"].ToString().Trim()
+                                             ", DR["MD001"].ToString().Trim(), DR["MD002"].ToString().Trim(), DR["MD003"].ToString().Trim(), DR["MD004"].ToString().Trim(), DR["MD007"].ToString().Trim()
+                                             , DR["MD001"].ToString().Trim(), DR["MD002"].ToString().Trim(), DR["MD003"].ToString().Trim(), DR["MD004"].ToString().Trim(), DR["MD005NEW"].ToString().Trim(), DR["MD006NEW"].ToString().Trim(), DR["MD007"].ToString().Trim(), DR["MD008NEW"].ToString().Trim(), DR["MD009NEW"].ToString().Trim()
+                                             , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString().Trim(), DR["TRANS_NAME"].ToString().Trim()
                                              );
+
+                    queryString.AppendFormat(@"  
+                                            IF  EXISTS (SELECT MD001 FROM [test0923].dbo.[ACTMD] WHERE MD001='{0}' AND MD002='{1}' AND MD003='{2}' AND MD004='{3}' AND MD007='{4}')
+                                            BEGIN
+	                                           UPDATE [test0923].dbo.[ACTMD]
+                                                SET MD005=MD005+{5},MD006=MD006+{6},MD008=MD008+{7},MD009=MD009+{8}
+                                                WHERE  MD001='{0}' AND MD002='{1}' AND MD003='{2}' AND MD004='{3}' AND MD007='{4}'
+                                            END
+                                             ", DR["MD001"].ToString().Trim(), DR["MD002"].ToString(), DR["MD003"].ToString().Trim(), DR["MD004"].ToString().Trim(), DR["MD007"].ToString().Trim()
+                                            , DR["MD005NEW"].ToString().Trim(), DR["MD006NEW"].ToString().Trim(), DR["MD008NEW"].ToString().Trim(), DR["MD009NEW"].ToString().Trim()
+
+                                            );
 
                 }
 
