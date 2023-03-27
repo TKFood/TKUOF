@@ -62,6 +62,8 @@ namespace TKUOF.TRIGGER.ACTI10
                     ACTATB_TO_ACTMB(TA001, TA002);
                     //ACTMD 部門科目各期金額檔
                     ACTATB_TO_ACTMD(TA001, TA002);
+                    //ACTMM 立沖帳目金額檔
+                    ACTATB_TO_ACTMM(TA001, TA002);
 
                 }
             }
@@ -507,6 +509,136 @@ namespace TKUOF.TRIGGER.ACTI10
                 return null;
             }
         }
+
+
+
+        /// <summary>
+        /// 找出會計傳票中ACTMM 立沖帳目金額檔
+        //  再判斷該年、月的ACTATB_TO_ACTMM
+        //  有就UPDATE
+        //  沒有就INSERT
+        /// </summary>
+        /// <param name="TA001"></param>
+        /// <param name="TA002"></param>
+        public void ACTATB_TO_ACTMM(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            StringBuilder queryString = new StringBuilder();
+
+            DataTable DT = FIND_ACTATB_TO_ACTMM(TA001, TA002);
+
+            if (DT != null && DT.Rows.Count >= 1)
+            {
+                queryString.AppendFormat(@"  
+                                        ");
+
+                foreach (DataRow DR in DT.Rows)
+                {
+                    queryString.AppendFormat(@"  
+                                                IF NOT EXISTS (SELECT MM001 FROM [test0923].dbo.[ACTMM] WHERE MM001='{0}' AND MM002='{1}' AND MM003='{2}' AND MM004='{3}' AND MM005='{4}' AND MM016='{5}')
+                                                BEGIN
+	                                                INSERT INTO  [test0923].dbo.[ACTMM]
+	                                                (MM001,MM002,MM003,MM004,MM005,MM006,MM007,MM008,MM009,MM016,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,MODIFIER,MODI_DATE,FLAG,CREATE_TIME,MODI_TIME,TRANS_TYPE,TRANS_NAME)
+	                                                VALUES
+	                                                ('{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}','{24}','{25}','{26}')
+                                                END
+                                       
+                                                ", DR["MM001"].ToString().Trim(), DR["MM002"].ToString().Trim(), DR["MM003"].ToString().Trim(), DR["MM004"].ToString().Trim(), DR["MM005"].ToString().Trim(), DR["MM016"].ToString().Trim()
+                                                , DR["MM001"].ToString().Trim(), DR["MM002"].ToString().Trim(), DR["MM003"].ToString().Trim(), DR["MM004"].ToString().Trim(), DR["MM005"].ToString().Trim(), DR["MM006NEW"].ToString().Trim(), DR["MM007NEW"].ToString().Trim(), DR["MM008NEW"].ToString().Trim(), DR["MM009NEW"].ToString().Trim(), DR["MM016"].ToString().Trim()
+                                                , DR["COMPANY"].ToString().Trim(), DR["CREATOR"].ToString().Trim(), DR["USR_GROUP"].ToString().Trim(), DR["CREATE_DATE"].ToString().Trim(), DR["MODIFIER"].ToString().Trim(), DR["MODI_DATE"].ToString().Trim(), '0', DR["CREATE_TIME"].ToString().Trim(), DR["MODI_TIME"].ToString().Trim(), DR["TRANS_TYPE"].ToString().Trim(), DR["TRANS_NAME"].ToString().Trim()
+                                                );
+
+                  
+
+                }
+
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+
+                        SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                        //command.Parameters.Add("@MB001", SqlDbType.NVarChar).Value = DR["TB005"].ToString();                           
+                        command.Connection.Open();
+
+                        int count = command.ExecuteNonQuery();
+
+                        connection.Close();
+                        connection.Dispose();
+
+                    }
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+
+                }
+
+
+
+
+            }
+
+        }
+
+        public DataTable FIND_ACTATB_TO_ACTMM(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+            string cmdTxt = @"                             
+                                SELECT *
+                                FROM
+                                (
+                                SELECT TB004,TB005 MM001,'1' MM002,TB008 MM003,TB006,TB007,TB013,TB015,SUBSTRING(TA003,1,4) AS 'MM004',SUBSTRING(TA003,5,2) AS 'MM005',TA041 AS MM016
+                                ,(CASE WHEN TB004='1' THEN 1 ELSE 0 END) MM008NEW
+                                ,(CASE WHEN TB004='-1' THEN 1 ELSE 0 END) MM009NEW
+                                ,(CASE WHEN TB004='1' THEN TB007 ELSE 0 END) MM006NEW
+                                ,(CASE WHEN TB004='-1' THEN TB007 ELSE 0 END) MM007NEW
+                                ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAS,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
+
+                                FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+                                WHERE TA001=TB001 AND TA002=TB002
+                                AND (ISNULL(TB008,'')<>'')
+                                AND TA001=@TA001 AND TA002=@TA002
+                                UNION ALL
+                                SELECT TB004,TB005,'2' MM002,TB009 MM003,TB006,TB007,TB013,TB015,SUBSTRING(TA003,1,4) AS 'YEARS',SUBSTRING(TA003,5,2) AS 'MONTHS',TA041 AS MM016
+                                ,(CASE WHEN TB004='1' THEN 1 ELSE 0 END) MM008NEW
+                                ,(CASE WHEN TB004='-1' THEN 1 ELSE 0 END) MM009NEW
+                                ,(CASE WHEN TB004='1' THEN TB007 ELSE 0 END) MB004NEW
+                                ,(CASE WHEN TB004='-1' THEN TB007 ELSE 0 END) MB005NEW
+                                ,ACTTA.COMPANY,ACTTA.CREATOR,ACTTA.USR_GROUP,ACTTA.CREATE_DATE,ACTTA.MODIFIER,ACTTA.MODI_DATE,0 AS FLAS,ACTTA.CREATE_TIME,ACTTA.MODI_TIME,'P003' TRANS_TYPE,'Actb03'TRANS_NAME
+
+                                FROM [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+                                WHERE TA001=TB001 AND TA002=TB002
+                                AND (ISNULL(TB009,'')<>'')
+                                AND TA001=@TA001 AND TA002=@TA002
+                                ) AS TEMP
+                             ";
+
+            m_db.AddParameter("@TA001", TA001);
+            m_db.AddParameter("@TA002", TA002);
+
+
+            DataTable dt = new DataTable();
+
+            dt.Load(m_db.ExecuteReader(cmdTxt));
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
 
     }
 
