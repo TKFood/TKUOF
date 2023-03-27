@@ -64,8 +64,11 @@ namespace TKUOF.TRIGGER.ACTI10
                     ACTATB_TO_ACTMD(TA001, TA002);
                     //ACTMM 立沖帳目金額檔
                     ACTATB_TO_ACTMM(TA001, TA002);
-                    //ACTMN 立沖帳目來源檔
+                    //ACTMN 立沖帳目來源檔 立帳
                     ACTATB_TO_ACTMN(TA001, TA002);
+                    //ACTMN 立沖帳目來源檔 沖帳
+                    ACTATB_TO_ACTMN_UPDATE(TA001, TA002);
+
 
                 }
             }
@@ -725,7 +728,76 @@ namespace TKUOF.TRIGGER.ACTI10
 
         }
 
-       
+        /// <summary>
+        /// 找出會計傳票中ACTMN 立沖帳目來源檔
+        //  再判斷該年、月的ACTATB_TO_ACTMN 立沖帳目來源檔
+        //  有就UPDATE
+        //  沒有就INSERT
+        /// </summary>
+        /// <param name="TA001"></param>
+        /// <param name="TA002"></param>
+        public void ACTATB_TO_ACTMN_UPDATE(string TA001, string TA002)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
+            StringBuilder queryString = new StringBuilder();
+
+            queryString.AppendFormat(@"  
+
+UPDATE [test0923].dbo.ACTMN
+SET MN018=MN018+TB007,MN019=MN019+TB015
+,MN020 = CASE WHEN MN018 + TB007 = MN009 THEN 'Y' ELSE MN020 END
+,MN021 = CASE WHEN MN018 + TB007 = MN009 THEN TA003 ELSE MN020 END
+FROM (
+SELECT *
+FROM 
+(
+SELECT TA003,TB005,TB008,TB007,TB015,TB021,TB022,TB023
+FROM  [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+WHERE TA001=TB001 AND TA002=TB002
+AND ISNULL(TB021,'')<>''
+AND TA001='A911' AND TA002='20230327003'
+UNION ALL
+SELECT TA003,TB005,TB008,TB007,TB015,TB024,TB025,TB026
+FROM  [test0923].dbo.ACTTA,[test0923].dbo.ACTTB
+WHERE TA001=TB001 AND TA002=TB002
+AND ISNULL(TB024,'')<>''
+AND TA001='A911' AND TA002='20230327003'
+) AS TEMP
+) AS TEMP2 
+WHERE TEMP2.TB021=MN004 AND TEMP2.TB022=MN005 AND TEMP2.TB023=MN006 
+
+                                     ");
+
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
+                    command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+        }
+
 
 
     }
