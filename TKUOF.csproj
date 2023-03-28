@@ -83,6 +83,7 @@
     <Compile Include="FORMFLOWS\ADDUSERSITES.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TRIGGER\AB\ATOB.cs" />
+    <Compile Include="TRIGGER\PUR60\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\ACTI10\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\ACPI03\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\ACPI02\EndFormTrigger.cs" />
