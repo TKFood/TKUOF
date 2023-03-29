@@ -165,8 +165,26 @@ namespace TKUOF.TRIGGER.PUR60
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
                                     WHERE TG001=TH001 AND TG002=TH002 
                                     AND  TG001=@TG001 AND TG002=@TG002
-                                       
+                            
+                                    UPDATE [test0923].dbo.INVMB
+                                    SET MB064=MB064+NUMS,MB065=MB065+TH047
+                                    FROM 
+                                    (SELECT TH004,SUM(TH015-TH017) AS NUMS,SUM(TH047) TH047
+                                    FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
+                                    WHERE TG001=TH001 AND TG002=TH002 
+                                    AND TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TH004) AS TEMP
+                                    WHERE TEMP.TH004=MB001
 
+                                    UPDATE [test0923].dbo.INVMC
+                                    SET MC007=MC007+NUMS,MC008=MC008+TH047,MC012=TG003
+                                    FROM 
+                                    (SELECT TH004,SUM(TH015-TH017) AS NUMS,SUM(TH047) TH047,TH009,TG003
+                                    FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
+                                    WHERE TG001=TH001 AND TG002=TH002 
+                                    AND  TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TH004,TH009,TG003 ) AS TEMP
+                                    WHERE TEMP.TH004=MC001 AND TEMP.TH009=MC002
 
                                         ");
 
