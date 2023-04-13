@@ -83,108 +83,109 @@ namespace TKUOF.TRIGGER.COP40
 
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"       
-UPDATE [test0923].dbo.COPTI 
-SET 
-TI019=@TI019 
-,TI035=@TI035
-,TI041=@TI041 
-,FLAG=FLAG+1
-,MODIFIER=@MODIFIER
-,MODI_DATE=@MODI_DATE
-,MODI_TIME=@MODI_TIME 
-WHERE TI001=@TI001 AND TI002=@TI002 
+                                        UPDATE [test0923].dbo.COPTI 
+                                        SET 
+                                        TI019=@TI019 
+                                        ,TI035=@TI035
+                                        ,TI041=@TI041 
+                                        ,FLAG=FLAG+1
+                                        ,MODIFIER=@MODIFIER
+                                        ,MODI_DATE=@MODI_DATE
+                                        ,MODI_TIME=@MODI_TIME 
+                                        WHERE TI001=@TI001 AND TI002=@TI002 
 
-UPDATE [test0923].dbo.COPTJ 
-SET 
-TJ021=@TJ021
-,TJ024=@TJ024
-,FLAG=FLAG+1
-,MODIFIER=@MODIFIER
-,MODI_DATE=@MODI_DATE
-,MODI_TIME=@MODI_TIME 
-WHERE TJ001=@TJ001 AND TJ002=@TJ002
+                                        UPDATE [test0923].dbo.COPTJ 
+                                        SET 
+                                        TJ021=@TJ021
+                                        ,TJ024=@TJ024
+                                        ,FLAG=FLAG+1
+                                        ,MODIFIER=@MODIFIER
+                                        ,MODI_DATE=@MODI_DATE
+                                        ,MODI_TIME=@MODI_TIME 
+                                        WHERE TJ001=@TJ001 AND TJ002=@TJ002
 
 
-INSERT INTO [test0923].dbo.INVLA 
-(LA001 ,LA002 , LA003 ,LA004 ,LA005 ,LA006,LA007,LA008 ,LA009 ,LA010 , 
-LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
-COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
-CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
-SELECT 
-TJ001 LA001 ,'' LA002 ,'' LA003 ,TI003 LA004 ,1 LA005 ,TJ001 LA006, TJ002 LA007,TJ003 LA008 ,TJ013 LA009 ,TJ023 LA010 , 
-(CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA011 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END) LA012 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA013 ,'2' LA014 ,'N' LA015 ,TJ014 LA016 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (TJ007+TJ047)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
-COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
-COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
-FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
-WHERE TI001=TJ001 AND TI002=TJ002
-AND TJ004=MB001
-AND TI001=@TI001 AND TI002=@TI002
+                                        INSERT INTO [test0923].dbo.INVLA 
+                                        (LA001 ,LA002 , LA003 ,LA004 ,LA005 ,LA006,LA007,LA008 ,LA009 ,LA010 , 
+                                        LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
+                                        COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
+                                        CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
+                                        SELECT 
+                                        TJ001 LA001 ,'' LA002 ,'' LA003 ,TI003 LA004 ,1 LA005 ,TJ001 LA006, TJ002 LA007,TJ003 LA008 ,TJ013 LA009 ,TJ023 LA010 , 
+                                        (CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA011 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END) LA012 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA013 ,'2' LA014 ,'N' LA015 ,TJ014 LA016 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (TJ007+TJ047)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                        COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
+                                        COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        WHERE TI001=TJ001 AND TI002=TJ002
+                                        AND TJ004=MB001
+                                        AND TI001=@TI001 AND TI002=@TI002
 
-INSERT INTO [test0923].dbo.INVMF 
-(MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , 
-MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
-CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
-SELECT 
-TJ004 MF001 ,TJ014 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ013 MF007,'1' MF008 ,'2' MF009 ,(CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) MF010 , 
-'' MF011 ,'' MF012 ,''  MF013,0 MF014 
-,COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
-COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
-FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
-WHERE TI001=TJ001 AND TI002=TJ002
-AND TJ004=MB001
-AND TI001=@TI001 AND TI002=@TI002
+                                        INSERT INTO [test0923].dbo.INVMF 
+                                        (MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , 
+                                        MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
+                                        CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
+                                        SELECT 
+                                        TJ004 MF001 ,TJ014 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ013 MF007,'1' MF008 ,'2' MF009 ,(CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) MF010 , 
+                                        '' MF011 ,'' MF012 ,''  MF013,0 MF014 
+                                        ,COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
+                                        COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        WHERE TI001=TJ001 AND TI002=TJ002
+                                        AND TJ004=MB001
+                                        AND TJ030='1'
+                                        AND TI001=@TI001 AND TI002=@TI002
 
-UPDATE [test0923].dbo.INVMB 
-SET INVMB.MB064=INVMB.MB064+TEMP.MB064, INVMB.MB065=INVMB.MB065+TEMP.MB065,INVMB.MB089=INVMB.MB089+TEMP.MB089,INVMB.FLAG=INVMB.FLAG+1
-FROM (
-SELECT 
-MB001 
-,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MB064 
-,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MB065
-,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END)MB089
-FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
-WHERE TI001=TJ001 AND TI002=TJ002
-AND TJ004=MB001
-AND TI001=@TI001 AND TI002=@TI002
-GROUP BY MB001,TJ030,MB064,MB065
-) AS TEMP 
-WHERE TEMP.MB001=INVMB.MB001
+                                        UPDATE [test0923].dbo.INVMB 
+                                        SET INVMB.MB064=INVMB.MB064+TEMP.MB064, INVMB.MB065=INVMB.MB065+TEMP.MB065,INVMB.MB089=INVMB.MB089+TEMP.MB089,INVMB.FLAG=INVMB.FLAG+1
+                                        FROM (
+                                        SELECT 
+                                        MB001 
+                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MB064 
+                                        ,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MB065
+                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END)MB089
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        WHERE TI001=TJ001 AND TI002=TJ002
+                                        AND TJ004=MB001
+                                        AND TI001=@TI001 AND TI002=@TI002
+                                        GROUP BY MB001,TJ030,MB064,MB065
+                                        ) AS TEMP 
+                                        WHERE TEMP.MB001=INVMB.MB001
 
-UPDATE [test0923].dbo.INVMC 
-SET INVMC.MC008=INVMC.MC008+TEMP.MC008,INVMC.MC007=INVMC.MC007++TEMP.MC007,INVMC.MC012=TI003,INVMC.MC014=INVMC.MC014+TEMP.MC014
-,INVMC.FLAG=INVMC.FLAG+1
-FROM (
-SELECT 
-MB001,TJ013 ,TI003
-,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MC007 
-,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MC008
-,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END) MC014
-FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
-WHERE TI001=TJ001 AND TI002=TJ002
-AND TJ004=MB001
-AND TI001=@TI001 AND TI002=@TI002
-GROUP BY MB001,TJ030,MB064,MB065,TJ013,TI003
-) AS TEMP 
-WHERE TEMP.MB001=INVMC.MC001 AND TEMP.TJ013=INVMC.MC002
+                                        UPDATE [test0923].dbo.INVMC 
+                                        SET INVMC.MC008=INVMC.MC008+TEMP.MC008,INVMC.MC007=INVMC.MC007++TEMP.MC007,INVMC.MC012=TI003,INVMC.MC014=INVMC.MC014+TEMP.MC014
+                                        ,INVMC.FLAG=INVMC.FLAG+1
+                                        FROM (
+                                        SELECT 
+                                        MB001,TJ013 ,TI003
+                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MC007 
+                                        ,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MC008
+                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END) MC014
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        WHERE TI001=TJ001 AND TI002=TJ002
+                                        AND TJ004=MB001
+                                        AND TI001=@TI001 AND TI002=@TI002
+                                        GROUP BY MB001,TJ030,MB064,MB065,TJ013,TI003
+                                        ) AS TEMP 
+                                        WHERE TEMP.MB001=INVMC.MC001 AND TEMP.TJ013=INVMC.MC002
 
-UPDATE [test0923].dbo.COPTD 
-SET TD009=TD009-NUMSTJ007,TD016='N',FLAG=FLAG+1 ,TD033=TD033-NUMSTJ035,TD080='1'
-,TD025=TD025-NUMSTJ047,TD035=TD035-NUMSTJ048 
-FROM (
-SELECT 
-TJ018,TJ019,TJ020,MB001,TJ013 ,TI003
-,(CASE WHEN TJ030='1' THEN (TJ007) ELSE '0' END) NUMSTJ007 
-,(CASE WHEN TJ030='1' THEN (TJ047) ELSE '0' END) NUMSTJ047
-,(CASE WHEN TJ030='1' THEN (TJ035) ELSE '0' END) NUMSTJ035 
-,(CASE WHEN TJ030='1' THEN (TJ048) ELSE '0' END) NUMSTJ048
-FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
-WHERE TI001=TJ001 AND TI002=TJ002
-AND TJ004=MB001
-AND TI001=@TI001 AND TI002=@TI002
-AND ISNULL(TJ018,'')<>''
+                                        UPDATE [test0923].dbo.COPTD 
+                                        SET TD009=TD009-NUMSTJ007,TD016='N',FLAG=FLAG+1 ,TD033=TD033-NUMSTJ035,TD080='1'
+                                        ,TD025=TD025-NUMSTJ047,TD035=TD035-NUMSTJ048 
+                                        FROM (
+                                        SELECT 
+                                        TJ018,TJ019,TJ020,MB001,TJ013 ,TI003
+                                        ,(CASE WHEN TJ030='1' THEN (TJ007) ELSE '0' END) NUMSTJ007 
+                                        ,(CASE WHEN TJ030='1' THEN (TJ047) ELSE '0' END) NUMSTJ047
+                                        ,(CASE WHEN TJ030='1' THEN (TJ035) ELSE '0' END) NUMSTJ035 
+                                        ,(CASE WHEN TJ030='1' THEN (TJ048) ELSE '0' END) NUMSTJ048
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        WHERE TI001=TJ001 AND TI002=TJ002
+                                        AND TJ004=MB001
+                                        AND TI001=@TI001 AND TI002=@TI002
+                                        AND ISNULL(TJ018,'')<>''
 
-) AS TEMP 
-WHERE TJ018=TD001 AND TJ019=TD002 AND TJ020=TD003
+                                        ) AS TEMP 
+                                        WHERE TJ018=TD001 AND TJ019=TD002 AND TJ020=TD003
 
 
                                         ");
