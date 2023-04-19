@@ -23,16 +23,7 @@ namespace TKUOF.EXTERNALFORMFLOWS.GF05.ASSERT1001
         EBUser EBUserSuperior;
         UserSet userSet1 = new UserSet();
 
-        Boolean FLAGGO = true;
-        DataSet CompanyTopAccountDS = new DataSet();
-        DataTable DTACCOUNT = null;
-        DataTable DTZ_UOF_FORM_DEP_SINGERS_DETAILS = null;
-        DataTable DT_Z_UOF_FROM_CONDITIONS = null;
-
-        string CompanyTopAccount;
-        string SpecialGroupName = "N";
-        string FORM_VERSION_ID;
-        string UOF_FORM_NAME;
+      
         string account;
         string userGuid;
         string RANKS;
