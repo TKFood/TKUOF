@@ -79,6 +79,7 @@
     <Compile Include="CDS\ADDUSERSITES.cs" />
     <Compile Include="CDS\EXTRAEFDLL.cs" />
     <Compile Include="CDS\EXTRATHREEEFDLL.cs" />
+    <Compile Include="EXTERNALFORMFLOWS\GF05\ASSERT1001\ADDUSERSITES.cs" />
     <Compile Include="FORMFLOWS\ADDUSERSITESBACKUP.cs" />
     <Compile Include="FORMFLOWS\ADDUSERSITES.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
