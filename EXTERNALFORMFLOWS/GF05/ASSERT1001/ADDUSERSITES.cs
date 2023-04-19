@@ -49,9 +49,12 @@ namespace TKUOF.EXTERNALFORMFLOWS.GF05.ASSERT1001
             UserUCO userUCO = new UserUCO();
             DataSet GroupName = new DataSet();
 
-            //找出表單申請人、申請部門
+            //找出表單新保管人(無法使用UOF者)、新保管人(無法使用UOF者)的部門
+            //GAFrm000001NOU
             formXmlDoc.LoadXml(formInfo);
-            account = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["account"].Value;
+            //account = formXmlDoc.SelectSingleNode("/ExternalFlowSite/ApplicantInfo").Attributes["account"].Value;
+            account = formXmlDoc.SelectSingleNode("/ExternalFlowSite/FormFieldValue/FieldItem[@fieldId='GAFrm000001NOU']").Attributes["fieldValue"].Value;
+            account = account.Substring(4,6);
 
             DataTable DTACCOUNT = SEARCHACCOUNT(account);
             userGuid = DTACCOUNT.Rows[0]["USER_GUID"].ToString();
