@@ -14,6 +14,8 @@ using Ede.Uof.Utility.Data;
 using Ede.Uof.WKF.ExternalUtility;
 using System.Xml;
 using System.Xml.Linq;
+using Ede.Uof.EIP.Organization.Util;
+using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.PURTABCHANGE
 {
@@ -39,6 +41,15 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             string TB012 = null;
             string ADDSQL = null;
             string VERSIONS = null;
+            string TA014 = null;
+            string MODIFIER = null;
+            UserUCO userUCO = new UserUCO();
+
+
+            //取得簽核人工號
+            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
+            MODIFIER = ebUser.Account;
+            TA014 = ebUser.Account;
 
             SqlConnection sqlConn = new SqlConnection();
             string connectionString;
@@ -117,7 +128,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                     }
                 }
 
-                ADDPURTATBUOFCHANGE(FORMID,TA001,TA002, ADDSQL);
+                ADDPURTATBUOFCHANGE(FORMID,TA001,TA002, ADDSQL,TA014);
 
                 NEWPURTEPURTF(TA001, TA002,VERSIONS);
 
@@ -147,7 +158,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             return SQL.ToString();
         }
 
-        public void ADDPURTATBUOFCHANGE(string FORMID,string TA001,string TA002,string ADDSQL)
+        public void ADDPURTATBUOFCHANGE(string FORMID,string TA001,string TA002,string ADDSQL,string TA014)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
@@ -171,7 +182,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                     connection.Close();
                     connection.Dispose();
 
-                    UPDATEPURTATB(FORMID, TA001, TA002);
+                    UPDATEPURTATB(FORMID, TA001, TA002, TA014);
                 }
             }
             catch
@@ -185,14 +196,14 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                 
         }
 
-        public void UPDATEPURTATB(string FORMID, string TA001, string TA002)
+        public void UPDATEPURTATB(string FORMID, string TA001, string TA002, string TA014)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"
                                         UPDATE [TK].[dbo].[PURTA]
-                                        SET [PURTA].[TA006]=[PURTATBUOFCHANGE].[TA006], [PURTA].[UDF04]=@FORMID
+                                        SET [PURTA].[TA006]=[PURTATBUOFCHANGE].[TA006], [PURTA].[UDF04]=@FORMID,[TA014]=@TA014
                                         FROM [TKPUR].[dbo].[PURTATBUOFCHANGE]
                                         WHERE [PURTA].TA001=@TA001 AND [PURTA].TA002=@TA002
                                         AND [PURTATBUOFCHANGE].FORMID=@FORMID
@@ -257,6 +268,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                     command.Parameters.Add("@FORMID", SqlDbType.NVarChar).Value = FORMID;
                     command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
                     command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+                    command.Parameters.Add("@TA014", SqlDbType.NVarChar).Value = TA014;
 
                     command.Connection.Open();
 
