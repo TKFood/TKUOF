@@ -18,7 +18,7 @@ using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COP40
 {
-    //核準
+    //COP40銷退單 核準
 
 
     class EndFormTrigger : ICallbackTriggerPlugin
@@ -112,10 +112,12 @@ namespace TKUOF.TRIGGER.COP40
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                         SELECT 
                                         TJ001 LA001 ,'' LA002 ,'' LA003 ,TI003 LA004 ,1 LA005 ,TJ001 LA006, TJ002 LA007,TJ003 LA008 ,TJ013 LA009 ,TJ023 LA010 , 
-                                        (CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA011 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END) LA012 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) LA013 ,'2' LA014 ,'N' LA015 ,TJ014 LA016 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (TJ007+TJ047)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                        (CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN (TJ007+TJ047)*MD004 ELSE (TJ007+TJ047) END)  ELSE '0' END) LA011 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END) LA012 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN (TJ007+TJ047)*MD004 ELSE (TJ007+TJ047) END)  ELSE '0' END) LA013 ,'2' LA014 ,'N' LA015 ,TJ014 LA016 ,(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)* (TJ007+TJ047)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
                                         COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
                                         COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
-                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ008
+                                        ,[test0923].dbo.INVMB
                                         WHERE TI001=TJ001 AND TI002=TJ002
                                         AND TJ004=MB001
                                         AND TI001=@TI001 AND TI002=@TI002
@@ -125,11 +127,13 @@ namespace TKUOF.TRIGGER.COP40
                                         MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                         SELECT 
-                                        TJ004 MF001 ,TJ014 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ013 MF007,'1' MF008 ,'2' MF009 ,(CASE WHEN TJ030='1' THEN (TJ007+TJ047) ELSE '0' END) MF010 , 
+                                        TJ004 MF001 ,TJ014 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ013 MF007,'1' MF008 ,'2' MF009 ,(CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN (TJ007+TJ047)*MD004 ELSE (TJ007+TJ047) END)  ELSE '0' END) MF010 , 
                                         '' MF011 ,'' MF012 ,''  MF013,0 MF014 
                                         ,COPTI.COMPANY ,COPTI.CREATOR ,COPTI.USR_GROUP ,COPTI.CREATE_DATE ,0 FLAG, 
                                         COPTI.CREATE_TIME, COPTI.MODI_TIME, COPTI.TRANS_TYPE, COPTI.TRANS_NAME
-                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ008
+                                        ,[test0923].dbo.INVMB
                                         WHERE TI001=TJ001 AND TI002=TJ002
                                         AND TJ004=MB001
                                         AND TJ030='1'
@@ -140,14 +144,16 @@ namespace TKUOF.TRIGGER.COP40
                                         FROM (
                                         SELECT 
                                         MB001 
-                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MB064 
-                                        ,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MB065
+                                        ,(CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ007+TJ047)*MD004 ELSE SUM(TJ007+TJ047) END)  ELSE '0' END) MB064 
+                                        ,((CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ007+TJ047)*MD004 ELSE SUM(TJ007+TJ047) END)  ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MB065
                                         ,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END)MB089
-                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ008
+                                        ,[test0923].dbo.INVMB
                                         WHERE TI001=TJ001 AND TI002=TJ002
                                         AND TJ004=MB001
                                         AND TI001=@TI001 AND TI002=@TI002
-                                        GROUP BY MB001,TJ030,MB064,MB065
+                                        GROUP BY MB001,TJ030,MB064,MB065,MD004
                                         ) AS TEMP 
                                         WHERE TEMP.MB001=INVMB.MB001
 
@@ -157,14 +163,16 @@ namespace TKUOF.TRIGGER.COP40
                                         FROM (
                                         SELECT 
                                         MB001,TJ013 ,TI003
-                                        ,(CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END) MC007 
-                                        ,((CASE WHEN TJ030='1' THEN SUM(TJ007+TJ047) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MC008
+                                        ,(CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ007+TJ047)*MD004 ELSE SUM(TJ007+TJ047) END) ELSE '0' END) MC007 
+                                        ,((CASE WHEN TJ030='1' THEN (CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ007+TJ047)*MD004 ELSE SUM(TJ007+TJ047) END) ELSE '0' END)*(CASE WHEN MB064>0 AND MB065>0 THEN MB065/MB064 ELSE 0 END)) MC008
                                         ,(CASE WHEN TJ030='1' THEN SUM(TJ035+TJ048) ELSE '0' END) MC014
-                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ,[test0923].dbo.INVMB
+                                        FROM [test0923].dbo.COPTI, [test0923].dbo.COPTJ
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ008
+                                        ,[test0923].dbo.INVMB
                                         WHERE TI001=TJ001 AND TI002=TJ002
                                         AND TJ004=MB001
                                         AND TI001=@TI001 AND TI002=@TI002
-                                        GROUP BY MB001,TJ030,MB064,MB065,TJ013,TI003
+                                        GROUP BY MB001,TJ030,MB064,MB065,TJ013,TI003,MD004
                                         ) AS TEMP 
                                         WHERE TEMP.MB001=INVMC.MC001 AND TEMP.TJ013=INVMC.MC002
 
