@@ -109,9 +109,10 @@ namespace TKUOF.TRIGGER.PUR70
                                      CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                     SELECT 
                                     TJ004 LA001 ,'' LA002 , '' LA003 ,TI003 LA004 ,-1 LA005 ,TJ001 LA006,TJ002 LA007,TJ003 LA008 ,TJ011 LA009 ,TI016 LA010 , 
-                                    TJ009 LA011 ,TJ008 LA012 ,TJ010 LA013 ,1 LA014 , 'Y' LA015 ,TJ012 LA016 ,TJ010 LA017,0 LA018,0 LA019,0 LA020,0LA021, 
+                                    (CASE WHEN ISNULL(MD004,0)>0 THEN TJ009*MD004 ELSE TJ009 END)  LA011 ,TJ008 LA012 ,TJ010 LA013 ,1 LA014 , 'Y' LA015 ,TJ012 LA016 ,TJ010 LA017,0 LA018,0 LA019,0 LA020,0LA021, 
                                     PURTI.COMPANY ,PURTI.CREATOR ,PURTI.USR_GROUP ,PURTI.CREATE_DATE ,0 FLAG,  PURTI.CREATE_TIME, PURTI.MODI_TIME, PURTI.TRANS_TYPE, PURTI.TRANS_NAME 
                                     FROM [test0923].dbo.PURTI,[test0923].dbo.PURTJ
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ007
                                     WHERE TI001=TJ001 AND TI002=TJ002
                                     AND  TI001=@TI001 AND TI002=@TI002
 
@@ -120,11 +121,12 @@ namespace TKUOF.TRIGGER.PUR70
                                      MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                      CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME )
                                     SELECT 
-                                    TJ004 MF001 ,TJ012 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ011 MF007,-1 MF008 ,1 MF009 ,TJ009 MF010 , 
+                                    TJ004 MF001 ,TJ012 MF002 ,TI003 MF003 ,TJ001 MF004 ,TJ002 MF005 ,TJ003 MF006,TJ011 MF007,-1 MF008 ,1 MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN TJ009*MD004 ELSE TJ009 END)  MF010 , 
                                     '' MF011 ,'' MF012 ,TJ019 MF013,TJ024 MF014 
                                     ,PURTI.COMPANY ,PURTI.CREATOR ,PURTI.USR_GROUP ,PURTI.CREATE_DATE ,0 FLAG, 
                                     PURTI.CREATE_TIME, PURTI.MODI_TIME, PURTI.TRANS_TYPE, PURTI.TRANS_NAME
                                     FROM [test0923].dbo.PURTI,[test0923].dbo.PURTJ
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ007
                                     WHERE TI001=TJ001 AND TI002=TJ002
                                     AND  TI001=@TI001 AND TI002=@TI002
 
@@ -143,21 +145,27 @@ namespace TKUOF.TRIGGER.PUR70
                                     UPDATE [test0923].dbo.INVMB
                                     SET MB064=MB064-NUMS,MB065=MB065-TJ032
                                     FROM 
-                                    (SELECT TJ004,SUM(TJ009) AS NUMS,SUM(TJ032) TJ032
+                                    (
+                                    SELECT TJ004,(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ009)*MD004 ELSE SUM(TJ009) END)   AS NUMS,SUM(TJ032) TJ032
                                     FROM [test0923].dbo.PURTI,[test0923].dbo.PURTJ
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ007
                                     WHERE TI001=TJ001 AND TI002=TJ002 
                                     AND  TI001=@TI001 AND TI002=@TI002
-                                    GROUP BY TJ004) AS TEMP
+                                    GROUP BY TJ004,MD004
+                                    ) AS TEMP
                                     WHERE TEMP.TJ004=MB001
 
                                     UPDATE [test0923].dbo.INVMC
                                     SET MC007=MC007-NUMS,MC008=MC008-TJ032,MC012=TI003
                                     FROM 
-                                    (SELECT TJ004,SUM(TJ009) AS NUMS,SUM(TJ032) TJ032,TJ011,TI003
+                                    (
+                                    SELECT TJ004,(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TJ009)*MD004 ELSE SUM(TJ009) END)   AS NUMS,SUM(TJ032) TJ032,TJ011,TI003
                                     FROM [test0923].dbo.PURTI,[test0923].dbo.PURTJ
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TJ004 AND MD002=TJ007
                                     WHERE TI001=TJ001 AND TI002=TJ002 
                                     AND  TI001=@TI001 AND TI002=@TI002
-                                    GROUP BY TJ004,TJ011,TI003 ) AS TEMP
+                                    GROUP BY TJ004,TJ011,TI003 ,MD004
+                                    ) AS TEMP
                                     WHERE TEMP.TJ004=MC001 AND TEMP.TJ011=MC002
 
 
