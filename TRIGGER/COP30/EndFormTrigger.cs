@@ -18,7 +18,7 @@ using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COP30
 {
-    //核準
+    //COP30銷貨單 核準
 
 
     class EndFormTrigger : ICallbackTriggerPlugin
@@ -82,105 +82,115 @@ namespace TKUOF.TRIGGER.COP30
 
             StringBuilder queryString = new StringBuilder();
             queryString.AppendFormat(@"       
- UPDATE [test0923].dbo.COPTG
-SET
-TG023=@TG023 
-,TG043=@TG043  
-,FLAG=FLAG+1
-,MODIFIER=@MODIFIER
-,MODI_DATE=@MODI_DATE
-,MODI_TIME=@MODI_TIME 
-WHERE TG001=@TG001 AND TG002=@TG002
+                                    UPDATE [test0923].dbo.COPTG
+                                    SET
+                                    TG023=@TG023 
+                                    ,TG043=@TG043  
+                                    ,FLAG=FLAG+1
+                                    ,MODIFIER=@MODIFIER
+                                    ,MODI_DATE=@MODI_DATE
+                                    ,MODI_TIME=@MODI_TIME 
+                                    WHERE TG001=@TG001 AND TG002=@TG002
 
-UPDATE [test0923].dbo.COPTH
-SET
-TH020=@TH020 
-,TH026=@TH026 
-,FLAG=FLAG+1
-,MODIFIER=@MODIFIER
-,MODI_DATE=@MODI_DATE
-,MODI_TIME=@MODI_TIME 
-WHERE TH001=@TH001 AND TH002=@TH002
+                                    UPDATE [test0923].dbo.COPTH
+                                    SET
+                                    TH020=@TH020 
+                                    ,TH026=@TH026 
+                                    ,FLAG=FLAG+1
+                                    ,MODIFIER=@MODIFIER
+                                    ,MODI_DATE=@MODI_DATE
+                                    ,MODI_TIME=@MODI_TIME 
+                                    WHERE TH001=@TH001 AND TH002=@TH002
 
-UPDATE [test0923].dbo.INVMB
-SET  MB064=MB064-NUMS, MB065=MB065-MONEYS,MB089=MB089-PNUMS
-FROM 
-(
-SELECT TG003,TH004,SUM(TH008+TH024) AS NUMS,(CASE WHEN MB065>0 AND MB064>0 THEN SUM(TH008+TH024)*(MB065/MB064) ELSE 0 END) AS 'MONEYS',SUM(TH039+TH040) AS 'PNUMS'
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
-GROUP BY TG003,TH004,MB064,MB065
-) AS TEMP
-WHERE TEMP.TH004=INVMB.MB001
+                                    UPDATE [test0923].dbo.INVMB
+                                    SET  MB064=MB064-NUMS, MB065=MB065-MONEYS,MB089=MB089-PNUMS
+                                    FROM 
+                                    (
+                                    SELECT TG003,TH004,(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TH008+TH024)*MD004 ELSE SUM(TH008+TH024) END)    AS NUMS
+                                    ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END)*(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TH008+TH024)*MD004 ELSE SUM(TH008+TH024) END) ) AS 'MONEYS',SUM(TH039+TH040) AS 'PNUMS'
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH009
+                                    ,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TG003,TH004,MB064,MB065,MD004
+                                    ) AS TEMP
+                                    WHERE TEMP.TH004=INVMB.MB001
 
-UPDATE [test0923].dbo.INVMC
-SET   MC007=MC007-NUMS,MC008=MC008-MONEYS,MC013=TG003,MC014=MC014-PNUMS
-FROM 
-(
-SELECT TG003,TH004,SUM(TH008+TH024) AS NUMS,(CASE WHEN MB065>0 AND MB064>0 THEN SUM(TH008+TH024)*(MB065/MB064) ELSE 0 END) AS 'MONEYS',SUM(TH039+TH040) AS 'PNUMS',TH007
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
-GROUP BY TG003,TH004,MB064,MB065,TH007
-) AS TEMP
-WHERE TEMP.TH004=INVMC.MC001 AND TEMP.TH007=INVMC.MC002
+                                    UPDATE [test0923].dbo.INVMC
+                                    SET   MC007=MC007-NUMS,MC008=MC008-MONEYS,MC013=TG003,MC014=MC014-PNUMS
+                                    FROM 
+                                    (
+                                    SELECT TG003,TH004,(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TH008+TH024)*MD004 ELSE SUM(TH008+TH024) END)  AS NUMS
+                                    ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END)*(CASE WHEN ISNULL(MD004,0)>0 THEN SUM(TH008+TH024)*MD004 ELSE SUM(TH008+TH024) END) ) AS 'MONEYS',SUM(TH039+TH040) AS 'PNUMS',TH007
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH009
+                                    ,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TG003,TH004,MB064,MB065,TH007,MD004
+                                    ) AS TEMP
+                                    WHERE TEMP.TH004=INVMC.MC001 AND TEMP.TH007=INVMC.MC002
 
-UPDATE [test0923].dbo.COPMA
-SET  MA022=TG003
-FROM 
-(
-SELECT TG003,TG004
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
-GROUP BY TG003,TG004
-) AS TEMP
-WHERE TEMP.TG004=COPMA.MA001
+                                    UPDATE [test0923].dbo.COPMA
+                                    SET  MA022=TG003
+                                    FROM 
+                                    (
+                                    SELECT TG003,TG004
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TG003,TG004
+                                    ) AS TEMP
+                                    WHERE TEMP.TG004=COPMA.MA001
 
-UPDATE [test0923].dbo.COPTD
-SET  TD009=TD009+TH008,TD025=TH024,TD033=TH039,TD035=TH040 ,FLAG=FLAG+1 
-,TD016= (CASE WHEN TD008=TD009+TH008 THEN 'Y' ELSE 'N' END )
-FROM 
-(
-SELECT TG003,TH004,SUM(TH008) TH008,SUM(TH024) AS TH024,SUM(TH039) TH039,SUM(TH040) TH040 ,TH014,TH015,TH016
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
-GROUP BY TG003,TH004,TH014,TH015,TH016
-) AS TEMP
-WHERE TEMP.TH014=TD001 AND TEMP.TH015=TD003 AND TEMP.TH016=TD003 
+                                    UPDATE [test0923].dbo.COPTD
+                                    SET  TD009=TD009+TH008,TD025=TH024,TD033=TH039,TD035=TH040 ,FLAG=FLAG+1 
+                                    ,TD016= (CASE WHEN TD008=TD009+TH008 THEN 'Y' ELSE 'N' END )
+                                    FROM 
+                                    (
+                                    SELECT TG003,TH004,SUM(TH008) TH008,SUM(TH024) AS TH024,SUM(TH039) TH039,SUM(TH040) TH040 ,TH014,TH015,TH016
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
+                                    GROUP BY TG003,TH004,TH014,TH015,TH016
+                                    ) AS TEMP
+                                    WHERE TEMP.TH014=TD001 AND TEMP.TH015=TD003 AND TEMP.TH016=TD003 
 
-INSERT INTO [test0923].dbo.INVLA 
-(LA001 ,LA002 , LA003 ,LA004 ,LA005 ,LA006,LA007,LA008 ,LA009 ,LA010 , 
-LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
-COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
-CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME )
-SELECT  TH004 LA001 ,'' LA002 ,'' LA003 ,TG003 LA004 ,-1 LA005 ,TH001 LA006,TH002 LA007,TH003 LA008 ,TH007 LA009 ,TH018 LA010 , 
-(TH008+TH024) LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END) LA012 ,(CASE WHEN MB065>0 AND MB064>0 THEN (TH008+TH024)*(MB065/MB064) ELSE 0 END) LA013 ,'2' LA014 ,'N' LA015 ,TH017 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN (TH008+TH024)*(MB065/MB064) ELSE 0 END)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
-COPTG.COMPANY ,COPTG.CREATOR ,COPTG.USR_GROUP ,COPTG.CREATE_DATE ,0 FLAG, 
-COPTG.CREATE_TIME, COPTG.MODI_TIME, COPTG.TRANS_TYPE, COPTG.TRANS_NAME
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
+                                    INSERT INTO [test0923].dbo.INVLA 
+                                    (LA001 ,LA002 , LA003 ,LA004 ,LA005 ,LA006,LA007,LA008 ,LA009 ,LA010 , 
+                                    LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
+                                    COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
+                                    CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME )
+                                    SELECT  TH004 LA001 ,'' LA002 ,'' LA003 ,TG003 LA004 ,-1 LA005 ,TH001 LA006,TH002 LA007,TH003 LA008 ,TH007 LA009 ,TH018 LA010 , 
+                                    (CASE WHEN ISNULL(MD004,0)>0 THEN (TH008+TH024)*MD004 ELSE (TH008+TH024) END)  LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END) LA012 ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END)*(CASE WHEN ISNULL(MD004,0)>0 THEN (TH008+TH024)*MD004 ELSE (TH008+TH024) END) ) LA013 ,'2' LA014 ,'N' LA015 ,TH017 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN (TH008+TH024)*(MB065/MB064) ELSE 0 END)  LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                    COPTG.COMPANY ,COPTG.CREATOR ,COPTG.USR_GROUP ,COPTG.CREATE_DATE ,0 FLAG, 
+                                    COPTG.CREATE_TIME, COPTG.MODI_TIME, COPTG.TRANS_TYPE, COPTG.TRANS_NAME
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH009
+                                    ,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
 
-INSERT INTO [test0923].dbo.INVMF 
-(MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , 
-MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
-CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
-SELECT TH004  MF001 ,TH017 MF002 ,TG003 MF003 ,TH001 MF004 ,TH002 MF005 ,TH003 MF006,TH007 MF007,-1 MF008 ,'2' MF009 ,(TH008+TH024) MF010 , 
-'' MF011 ,'' MF012 ,TH018 MF013,(TH039+TH040) MF014 
-,COPTG.COMPANY ,COPTG.CREATOR ,COPTG.USR_GROUP ,COPTG.CREATE_DATE ,0 FLAG, 
-COPTG.CREATE_TIME, COPTG.MODI_TIME, COPTG.TRANS_TYPE, COPTG.TRANS_NAME 
-FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH,[test0923].dbo.INVMB
-WHERE TG001=TH001 AND TG002=TH002
-AND TH004=MB001
-AND TG001=@TG001 AND TG002=@TG002
+                                    INSERT INTO [test0923].dbo.INVMF 
+                                    (MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , 
+                                    MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
+                                    CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
+                                    SELECT TH004  MF001 ,TH017 MF002 ,TG003 MF003 ,TH001 MF004 ,TH002 MF005 ,TH003 MF006,TH007 MF007,-1 MF008 ,'2' MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN (TH008+TH024)*MD004 ELSE (TH008+TH024) END)MF010 , 
+                                    '' MF011 ,'' MF012 ,TH018 MF013,(TH039+TH040) MF014 
+                                    ,COPTG.COMPANY ,COPTG.CREATOR ,COPTG.USR_GROUP ,COPTG.CREATE_DATE ,0 FLAG, 
+                                    COPTG.CREATE_TIME, COPTG.MODI_TIME, COPTG.TRANS_TYPE, COPTG.TRANS_NAME 
+                                    FROM [test0923].dbo.COPTG,[test0923].dbo.COPTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH009
+                                    ,[test0923].dbo.INVMB
+                                    WHERE TG001=TH001 AND TG002=TH002
+                                    AND TH004=MB001
+                                    AND TG001=@TG001 AND TG002=@TG002
 
 
                                         ");
