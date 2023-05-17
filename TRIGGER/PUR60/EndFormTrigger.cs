@@ -18,7 +18,7 @@ using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.PUR60
 {
-    //ACRI02.結帳單 的核準
+    //PUR60進貨單 的核準
 
 
     class EndFormTrigger : ICallbackTriggerPlugin
@@ -125,11 +125,12 @@ namespace TKUOF.TRIGGER.PUR60
                                     COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                     CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                     SELECT TH004 LA001 ,'' LA002 ,'' LA003 ,TG003 LA004 ,1 LA005 ,TH001 LA006,TH002 LA007,TH003 LA008 ,TH009 LA009 ,TH033 LA010 , 
-                                    (TH015-TH017) LA011 ,TH018 LA012 ,TH047 LA013 ,'1' LA014 ,'Y' LA015 ,TH010 LA016 ,TH047 LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                    (CASE WHEN ISNULL(MD004,0)>0 THEN (TH015-TH017)*MD004 ELSE (TH015-TH017) END)  LA011 ,TH018 LA012 ,TH047 LA013 ,'1' LA014 ,'Y' LA015 ,TH010 LA016 ,TH047 LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
                                     PURTG.COMPANY ,PURTG.CREATOR CREATOR , PURTG.USR_GROUP  USR_GROUP ,  PURTG.CREATE_DATE CREATE_DATE ,0 FLAG, 
                                     PURTG.CREATE_TIME  CREATE_TIME, PURTG.MODI_TIME  MODI_TIME,'P004' TRANS_TYPE,'PURI09' TRANS_NAME
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
-                                    WHERE TG001=TH001 AND TG002=TH002 
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH008
+                                    WHERE TG001=TH001 AND TG002=TH002                              
                                     AND  TG001=@TG001 AND TG002=@TG002
 
                                     INSERT INTO [test0923].dbo.INVME 
@@ -147,7 +148,9 @@ namespace TKUOF.TRIGGER.PUR60
                                     ME003=TEMP.ME003,ME004=TEMP.ME004,ME005=TEMP.ME005
                                     ,ME006=TEMP.ME006,ME007=TEMP.ME007,ME008=TEMP.ME008,ME009=TEMP.ME009,ME010=TEMP.ME010, 
                                     ME032=TEMP.ME032
-                                    FROM (SELECT TH004 ME001,TH010 ME002,TG003 ME003,'' ME004, TH001 ME005,TH002 ME006,'N' ME007,TH036 ME009,TH037 ME010,TH117 ME032,TH033 ME008
+                                    FROM 
+                                    (
+                                    SELECT TH004 ME001,TH010 ME002,TG003 ME003,'' ME004, TH001 ME005,TH002 ME006,'N' ME007,TH036 ME009,TH037 ME010,TH117 ME032,TH033 ME008
                                     ,0 FLAG,PURTG.COMPANY ,PURTG.CREATOR CREATOR , PURTG.USR_GROUP  USR_GROUP ,  PURTG.CREATE_DATE CREATE_DATE ,
                                     PURTG.CREATE_TIME  CREATE_TIME, PURTG.MODI_TIME  MODI_TIME,'P004' TRANS_TYPE,'PURI09' TRANS_NAME
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
@@ -160,30 +163,37 @@ namespace TKUOF.TRIGGER.PUR60
                                      (MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , MF011 ,MF012 ,MF013,MF014 
                                     ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                     SELECT
-                                    TH004 MF001 ,TH010 MF002 ,TG003 MF003 ,TH001 MF004 ,TH002 MF005 ,TH003 MF006,TH009 MF007,1 MF008 ,1 MF009 ,(TH015-TH017) MF010 ,'' MF011 ,'' MF012 ,'' MF013,0 F014 
+                                    TH004 MF001 ,TH010 MF002 ,TG003 MF003 ,TH001 MF004 ,TH002 MF005 ,TH003 MF006,TH009 MF007,1 MF008 ,1 MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN  (TH015-TH017)*MD004 ELSE (TH015-TH017) END)  MF010,'' MF011 ,'' MF012 ,'' MF013,0 F014 
                                     ,PURTG.COMPANY ,PURTG.CREATOR ,PURTG.USR_GROUP ,PURTG.CREATE_DATE ,0 FLAG, PURTG.CREATE_TIME, PURTG.MODI_TIME,'P004' TRANS_TYPE,'PURI09' TRANS_NAME
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH008
                                     WHERE TG001=TH001 AND TG002=TH002 
                                     AND  TG001=@TG001 AND TG002=@TG002
                             
                                     UPDATE [test0923].dbo.INVMB
                                     SET MB064=MB064+NUMS,MB065=MB065+TH047
                                     FROM 
-                                    (SELECT TH004,SUM(TH015-TH017) AS NUMS,SUM(TH047) TH047
+                                     (
+                                    SELECT TH004,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TH015-TH017)*MD004 ELSE SUM(TH015-TH017) END)  AS NUMS,SUM(TH047) TH047
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH008
                                     WHERE TG001=TH001 AND TG002=TH002 
                                     AND TG001=@TG001 AND TG002=@TG002
-                                    GROUP BY TH004) AS TEMP
+                                    GROUP BY TH004,MD004
+                                    ) AS TEMP
                                     WHERE TEMP.TH004=MB001
 
                                     UPDATE [test0923].dbo.INVMC
                                     SET MC007=MC007+NUMS,MC008=MC008+TH047,MC012=TG003
                                     FROM 
-                                    (SELECT TH004,SUM(TH015-TH017) AS NUMS,SUM(TH047) TH047,TH009,TG003
+                                    (
+                                    SELECT TH004,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TH015-TH017)*MD004 ELSE SUM(TH015-TH017) END) AS NUMS,SUM(TH047) TH047,TH009,TG003
                                     FROM [test0923].dbo.PURTG,[test0923].dbo.PURTH
+                                    LEFT JOIN [test0923].dbo.INVMD ON MD001=TH004 AND MD002=TH008
                                     WHERE TG001=TH001 AND TG002=TH002 
                                     AND  TG001=@TG001 AND TG002=@TG002
-                                    GROUP BY TH004,TH009,TG003 ) AS TEMP
+                                    GROUP BY TH004,TH009,TG003,MD004
+                                    ) AS TEMP
                                     WHERE TEMP.TH004=MC001 AND TEMP.TH009=MC002
 
                                         ");
