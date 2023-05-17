@@ -88,6 +88,7 @@
     <Compile Include="TRIGGER\COP40\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\COP30\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\BOMI02\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\MOCI03B\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\MOCI03\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\MOCI05\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\MOCI07\EndFormTrigger.cs" />
