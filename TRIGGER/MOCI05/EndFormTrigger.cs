@@ -112,12 +112,15 @@ namespace TKUOF.TRIGGER.MOCI05
                                         ,INVMB.FLAG=INVMB.FLAG+1
                                         FROM 
                                         (
-                                        SELECT TG004,SUM(TG011) TUMS,SUM(TG025) TPACKAGES,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END )*SUM(TG011)) TMONEYS 
-                                        FROM  [test0923].dbo.MOCTF,[test0923].dbo.MOCTG,[test0923].dbo.INVMB
+                                        SELECT 
+                                        TG004,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TG011)*MD004 ELSE  SUM(TG011) END) TUMS,SUM(TG025) TPACKAGES,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END ))*(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TG011)*MD004 ELSE  SUM(TG011) END) TUMS,SUM(TG025)  TMONEYS 
+                                        FROM  [test0923].dbo.MOCTF,[test0923].dbo.MOCTG
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
+                                        ,[test0923].dbo.INVMB
                                         WHERE TF001=TG001 AND TF002=TG002
                                         AND MB001=TG004
                                         AND TF001=@TF001 AND TF002=@TF002
-                                        GROUP BY TG004,MB065,MB064
+                                        GROUP BY TG004,MB065,MB064,MD004
                                         ) AS TEMP
                                         WHERE TEMP.TG004=MB001
 
@@ -131,12 +134,14 @@ namespace TKUOF.TRIGGER.MOCI05
                                         ,INVMC.FLAG=INVMC.FLAG+1 
                                         FROM 
                                         (
-                                        SELECT TG004,TG010,SUM(TG011) TUMS,SUM(TG025) TPACKAGES,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END )*SUM(TG011)) TMONEYS 
-                                        FROM  [test0923].dbo.MOCTF,[test0923].dbo.MOCTG,[test0923].dbo.INVMB
+                                        SELECT TG004,TG010,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TG011)*MD004 ELSE  SUM(TG011) END) TUMS,SUM(TG025) TPACKAGES,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END )*(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TG011)*MD004 ELSE  SUM(TG011) END)) TMONEYS 
+                                        FROM  [test0923].dbo.MOCTF,[test0923].dbo.MOCTG
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
+                                        ,[test0923].dbo.INVMB
                                         WHERE TF001=TG001 AND TF002=TG002
                                         AND MB001=TG004
                                         AND TF001=@TF001 AND TF002=@TF002
-                                        GROUP BY TG004,TG010,MB065,MB064
+                                        GROUP BY TG004,TG010,MB065,MB064,MD004
                                         ) AS TEMP 
                                         WHERE TEMP.TG004=MC001 AND TEMP.TG010=MC002
 
@@ -147,27 +152,29 @@ namespace TKUOF.TRIGGER.MOCI05
                                         LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
                                         COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
-                                        SELECT TG004 LA001 ,'' LA002 ,'' LA003 ,TF003 LA004 ,'1' LA005 ,TG001 LA006,TG002 LA007,TG003 LA008 ,TG010 LA009 ,TG011 LA010 , 
+                                        SELECT 
+                                        TG004 LA001 ,'' LA002 ,'' LA003 ,TF003 LA004 ,'1' LA005 ,TG001 LA006,TG002 LA007,TG003 LA008 ,TG010 LA009 ,TG011 LA010 , 
                                         (CASE WHEN ISNULL(MD004,0)>0 THEN  TG011*MD004 ELSE TG011 END) LA011 ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END ))  LA012 ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END )*((CASE WHEN ISNULL(MD004,0)>0 THEN  TG011*MD004 ELSE TG011 END)))  LA013 ,'1' LA014 ,'Y' LA015 ,TG017 LA016 ,((CASE WHEN MB065>0 AND MB064>0 THEN (MB065/MB064) ELSE 0 END )*(TG011))  LA017,0 LA018, 0 LA019,0 LA020, 0 LA021, 
                                         MOCTF.COMPANY ,MOCTF.CREATOR ,MOCTF.USR_GROUP ,MOCTF.CREATE_DATE ,0 FLAG, 
                                         MOCTF.CREATE_TIME, MOCTF.MODI_TIME, 'P004' TRANS_TYPE, 'MOCI05' TRANS_NAME
                                         FROM [test0923].dbo.MOCTF
                                         JOIN [test0923].dbo.MOCTG ON TF001=TG001 AND TF002=TG002
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
                                         JOIN [test0923].dbo.INVMB ON MB001=TG004
-                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=MB001 AND MD002=TG007
                                         JOIN [test0923].dbo.CMSMQ ON TG001=MQ001
                                         WHERE  TF001=@TF001 AND TF002=@TF002
 
                                         INSERT INTO   [test0923].dbo.INVME (
                                         ME001,ME002,ME003,ME004,ME005,ME006,ME007,ME008,ME009,ME010,ME032,FLAG,COMPANY,CREATOR,USR_GROUP,CREATE_DATE,
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
-                                        SELECT TG004 ME001,TG017 ME002,TF003 ME003,'' ME004,TG001 ME005,TG002 ME006,'N' ME007,'' ME008,TG018 ME009,TG019 ME010,TF003 ME032
+                                        SELECT 
+                                        TG004 ME001,TG017 ME002,TF003 ME003,'' ME004,TG001 ME005,TG002 ME006,'N' ME007,'' ME008,TG018 ME009,TG019 ME010,TF003 ME032
                                         ,0 FLAG,MOCTF.COMPANY,MOCTF.CREATOR,MOCTF.USR_GROUP,MOCTF.CREATE_DATE
                                         ,MOCTF.CREATE_TIME, MOCTF.MODI_TIME, 'P004' TRANS_TYPE, 'MOCI05' TRANS_NAME
                                         FROM [test0923].dbo.MOCTF
                                         JOIN [test0923].dbo.MOCTG ON TF001=TG001 AND TF002=TG002
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
                                         JOIN [test0923].dbo.INVMB ON MB001=TG004
-                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=MB001 AND MD002=TG007
                                         JOIN [test0923].dbo.CMSMQ ON TG001=MQ001
                                         WHERE TF001=@TF001 AND TF002=@TF002
                                         AND REPLACE(TG004+TG017,' ','') NOT IN (SELECT REPLACE(ME001+ME002,' ','') FROM [test0923].dbo.INVME )
@@ -184,13 +191,14 @@ namespace TKUOF.TRIGGER.MOCI05
                                         ,ME032=TEMP.ME032
                                         ,INVME.FLAG=INVME.FLAG+1
                                         FROM (
-                                        SELECT TG004 ME001,TG017 ME002,TF003 ME003,'' ME004,TG001 ME005,TG002 ME006,'N' ME007,'' ME008,TG018 ME009,TG019 ME010,TF003 ME032
+                                        SELECT 
+                                        TG004 ME001,TG017 ME002,TF003 ME003,'' ME004,TG001 ME005,TG002 ME006,'N' ME007,'' ME008,TG018 ME009,TG019 ME010,TF003 ME032
                                         ,0 FLAG,MOCTF.COMPANY,MOCTF.CREATOR,MOCTF.USR_GROUP,MOCTF.CREATE_DATE
                                         ,MOCTF.CREATE_TIME, MOCTF.MODI_TIME, 'P004' TRANS_TYPE, 'MOCI05' TRANS_NAME
                                         FROM [test0923].dbo.MOCTF
                                         JOIN [test0923].dbo.MOCTG ON TF001=TG001 AND TF002=TG002
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
                                         JOIN [test0923].dbo.INVMB ON MB001=TG004
-                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=MB001 AND MD002=TG007
                                         JOIN [test0923].dbo.CMSMQ ON TG001=MQ001
                                         WHERE TF001=@TF001 AND TF002=@TF002
                                         AND REPLACE(TG004+TG017,' ','') IN (SELECT REPLACE(ME001+ME002,' ','') FROM [test0923].dbo.INVME )
@@ -201,14 +209,15 @@ namespace TKUOF.TRIGGER.MOCI05
                                         (MF001 ,MF002 ,MF003 ,MF004 ,MF005 ,MF006,MF007,MF008 ,MF009 ,MF010 , 
                                         MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME )
-                                        SELECT TG004 MF001 ,TG017 MF002 ,TF003 MF003 ,TF001 MF004 ,TF002 MF005 ,TG003 MF006,TG010 MF007,'1' MF008 ,'1' MF009 ,TG011 MF010 
+                                        SELECT 
+                                        TG004 MF001 ,TG017 MF002 ,TF003 MF003 ,TF001 MF004 ,TF002 MF005 ,TG003 MF006,TG010 MF007,'1' MF008 ,'1' MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN  TG011*MD004 ELSE TG011 END) MF010 
                                         ,'' MF011 ,'' MF012 ,'' MF013,TG025 MF014 
                                         ,MOCTF.COMPANY ,MOCTF.CREATOR ,MOCTF.USR_GROUP ,MOCTF.CREATE_DATE ,0 FLAG
                                         ,MOCTF.CREATE_TIME, MOCTF.MODI_TIME,'P004' TRANS_TYPE,'MOCI05' TRANS_NAME 
                                         FROM [test0923].dbo.MOCTF
                                         JOIN [test0923].dbo.MOCTG ON TF001=TG001 AND TF002=TG002
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TG004 AND MD002=TG007
                                         JOIN [test0923].dbo.INVMB ON MB001=TG004
-                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=MB001 AND MD002=TG007
                                         JOIN [test0923].dbo.CMSMQ ON TG001=MQ001
                                         WHERE TF001=@TF001 AND TF002=@TF002
 
