@@ -18,7 +18,7 @@ using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.INVI08
 {
-    //INVTA INVTB 轉撥單的 核準
+    //INVI08轉撥單 INVTA INVTB 轉撥單的 核準
 
 
     class EndFormTrigger : ICallbackTriggerPlugin
@@ -119,13 +119,15 @@ namespace TKUOF.TRIGGER.INVI08
 
                                         FROM 
                                         (
-                                        SELECT TB004,TB012,SUM(TB007)*-1 TB007,SUM(TB022)*-1 TB022,(CASE WHEN MB064>0 AND MB065>0 THEN SUM((MB065/MB064)*TB007)*-1 ELSE 0 END) AS TB007MONEY
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB
+                                        SELECT TB004,TB012,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TB007)*MD004 ELSE SUM(TB007) END) *-1 TB007,SUM(TB022)*-1 TB022,(CASE WHEN MB064>0 AND MB065>0 THEN SUM((MB065/MB064))*(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TB007)*MD004 ELSE SUM(TB007) END)*-1 ELSE 0 END) AS TB007MONEY
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=TB001 AND TA002=TB002
                                         AND TA001=@TA001 AND TA002=@TA002
-                                        GROUP BY TB004,TB012,MB064,MB065
+                                        GROUP BY TB004,TB012,MB064,MB065,MD004
 
                                         ) AS TEMP
                                         WHERE TEMP.TB004=MC001 AND TEMP.TB012=MC002
@@ -140,13 +142,15 @@ namespace TKUOF.TRIGGER.INVI08
 
                                         FROM 
                                         (
-                                        SELECT TB004,TB013,SUM(TB007) TB007,SUM(TB022) TB022,(CASE WHEN MB064>0 AND MB065>0 THEN SUM((MB065/MB064)*TB007) ELSE 0 END) AS TB007MONEY
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB
+                                        SELECT TB004,TB013,(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TB007)*MD004 ELSE SUM(TB007) END)  TB007,SUM(TB022) TB022,(CASE WHEN MB064>0 AND MB065>0 THEN SUM((MB065/MB064)) ELSE 0 END)*(CASE WHEN ISNULL(MD004,0)>0 THEN  SUM(TB007)*MD004 ELSE SUM(TB007) END)  AS TB007MONEY
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=TB001 AND TA002=TB002
                                         AND TA001=@TA001 AND TA002=@TA002
-                                        GROUP BY TB004,TB013,MB064,MB065
+                                        GROUP BY TB004,TB012,MB064,MB065,MD004
 
                                         ) AS TEMP
                                         WHERE TEMP.TB004=MC001 AND TEMP.TB013=MC002
@@ -157,13 +161,15 @@ namespace TKUOF.TRIGGER.INVI08
                                         (LA001 ,LA002 , LA003 ,LA004 ,LA005 ,LA006,LA007,LA008 ,LA009 ,LA010 , 
                                         LA011 ,LA012 ,LA013 ,LA014 ,LA015 ,LA016 ,LA017,LA018,LA019,LA020,LA021, 
                                         COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
-                                        CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
+                                        CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME )                                        
                                         SELECT 
                                         TB004 LA001 ,'' LA002 ,'' LA003 ,TA003 LA004 , '-1' LA005 ,TB001 LA006,TB002 LA007,TB003 LA008 ,TB012 LA009 ,TB017 LA010 , 
-                                        TB007 LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END ) LA012 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA013 ,MQ008 LA014 ,MQ011 LA015 ,TB014 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                        (CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END)  LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END ) LA012 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END )*(CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END) LA013 ,MQ008 LA014 ,MQ011 LA015 ,TB014 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
                                         INVTA.COMPANY COMPANY ,INVTA.CREATOR CREATOR ,INVTA.USR_GROUP USR_GROUP ,INVTA.CREATE_DATE CREATE_DATE ,0 FLAG, 
                                         INVTA.CREATE_TIME CREATE_TIME,INVTA.MODI_TIME MODI_TIME,INVTA.TRANS_TYPE TRANS_TYPE,INVTA.TRANS_NAME TRANS_NAME 
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=MQ001
@@ -177,10 +183,12 @@ namespace TKUOF.TRIGGER.INVI08
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                         SELECT 
                                         TB004 LA001 ,'' LA002 ,'' LA003 ,TA003 LA004 , '1' LA005 ,TB001 LA006,TB002 LA007,TB003 LA008 ,TB013 LA009 ,TB017 LA010 , 
-                                        TB007 LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END ) LA012 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA013 ,MQ008 LA014 ,MQ011 LA015 ,TB014 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
+                                        (CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END) LA011 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END ) LA012 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064 ELSE 0 END )*(CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END) LA013 ,MQ008 LA014 ,MQ011 LA015 ,TB014 LA016 ,(CASE WHEN MB065>0 AND MB064>0 THEN MB065/MB064*TB007 ELSE 0 END ) LA017,0 LA018,0 LA019,0 LA020,0 LA021, 
                                         INVTA.COMPANY COMPANY ,INVTA.CREATOR CREATOR ,INVTA.USR_GROUP USR_GROUP ,INVTA.CREATE_DATE CREATE_DATE ,0 FLAG, 
                                         INVTA.CREATE_TIME CREATE_TIME,INVTA.MODI_TIME MODI_TIME,INVTA.TRANS_TYPE TRANS_TYPE,INVTA.TRANS_NAME TRANS_NAME 
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=MQ001
@@ -194,11 +202,13 @@ namespace TKUOF.TRIGGER.INVI08
                                         MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                         SELECT 
-                                        TB004 MF001 ,TB014 MF002 ,TA003 MF003 ,TB001 MF004 ,TB002 MF005 ,TB003 MF006,TB012 MQ010,'-1' MF008 ,MQ008 MF009 ,TB007 MF010 , 
+                                        TB004 MF001 ,TB014 MF002 ,TA003 MF003 ,TB001 MF004 ,TB002 MF005 ,TB003 MF006,TB012 MQ010,'-1' MF008 ,MQ008 MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END) MF010 , 
                                         '' MF011 ,'' MF012 ,TB017 MF013,TB022 MF014 
                                         ,INVTA.COMPANY COMPANY ,INVTA.CREATOR CREATOR ,INVTA.USR_GROUP USR_GROUP ,INVTA.CREATE_DATE CREATE_DATE ,0 FLAG, 
                                         INVTA.CREATE_TIME CREATE_TIME,INVTA.MODI_TIME MODI_TIME,INVTA.TRANS_TYPE TRANS_TYPE,INVTA.TRANS_NAME TRANS_NAME
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=MQ001
@@ -211,11 +221,13 @@ namespace TKUOF.TRIGGER.INVI08
                                         MF011 ,MF012 ,MF013,MF014 ,COMPANY ,CREATOR ,USR_GROUP ,CREATE_DATE ,FLAG, 
                                         CREATE_TIME, MODI_TIME, TRANS_TYPE, TRANS_NAME ) 
                                         SELECT 
-                                        TB004 MF001 ,TB014 MF002 ,TA003 MF003 ,TB001 MF004 ,TB002 MF005 ,TB003 MF006,TB013 MQ010,'1' MF008 ,MQ008 MF009 ,TB007 MF010 , 
+                                        TB004 MF001 ,TB014 MF002 ,TA003 MF003 ,TB001 MF004 ,TB002 MF005 ,TB003 MF006,TB013 MQ010,'1' MF008 ,MQ008 MF009 ,(CASE WHEN ISNULL(MD004,0)>0 THEN TB007*MD004 ELSE TB007 END) MF010 , 
                                         '' MF011 ,'' MF012 ,TB017 MF013,TB022 MF014 
                                         ,INVTA.COMPANY COMPANY ,INVTA.CREATOR CREATOR ,INVTA.USR_GROUP USR_GROUP ,INVTA.CREATE_DATE CREATE_DATE ,0 FLAG, 
                                         INVTA.CREATE_TIME CREATE_TIME,INVTA.MODI_TIME MODI_TIME,INVTA.TRANS_TYPE TRANS_TYPE,INVTA.TRANS_NAME TRANS_NAME
-                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
+                                        FROM [test0923].dbo.INVTA,[test0923].dbo.INVTB
+                                        LEFT JOIN [test0923].dbo.INVMD ON MD001=TB004 AND MD002=TB008
+                                        ,[test0923].dbo.INVMB,[test0923].dbo.CMSMQ
                                         WHERE 1=1
                                         AND TB004=MB001
                                         AND TA001=MQ001
