@@ -36,6 +36,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             string TA006 = null;
             string TB003 = null;
             string TB004 = null;
+            string TB007 = null;
             string TB009 = null;
             string TB011 = null;
             string TB012 = null;
@@ -107,6 +108,10 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                         {
                             TB004 = cell.fieldValue;
                         }
+                        if (cell.fieldId == "TB007")
+                        {
+                            TB007 = cell.fieldValue;
+                        }
                         if (cell.fieldId == "TB009")
                         {
                             TB009 = cell.fieldValue;
@@ -123,7 +128,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
 
                     if (!string.IsNullOrEmpty(FORMID) && !string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
                     {
-                        ADDSQL = ADDSQL+ SETPURTATBUOFCHANGE(FORMID, TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012);
+                        ADDSQL = ADDSQL+ SETPURTATBUOFCHANGE(FORMID, TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012, TB007);
                         ADDSQL = ADDSQL + " ";
                     }
                 }
@@ -144,16 +149,16 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
             
         }
 
-        public string SETPURTATBUOFCHANGE(string FORMID, string TA001, string TA002, string TA006, string TB003, string TB004, string TB009, string TB011, string TB012)
+        public string SETPURTATBUOFCHANGE(string FORMID, string TA001, string TA002, string TA006, string TB003, string TB004, string TB009, string TB011, string TB012,string TB007)
         {
             StringBuilder SQL = new StringBuilder();
             SQL.AppendFormat(@" 
                                 INSERT INTO [TKPUR].[dbo].[PURTATBUOFCHANGE]
-                                ([FORMID],[TA001],[TA002],[TA006],[TB003],[TB004],[TB009],[TB011],[TB012])
+                                ([FORMID],[TA001],[TA002],[TA006],[TB003],[TB004],[TB009],[TB011],[TB012],[TB007])
                                 VALUES
-                                (@FORMID,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
+                                (@FORMID,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')
 
-                                ",  TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012);
+                                ",  TA001, TA002, TA006, TB003, TB004, TB009, TB011, TB012, TB007);
 
             return SQL.ToString();
         }
@@ -212,7 +217,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                         SET [PURTB].[TB004]=[PURTATBUOFCHANGE].[TB004],[PURTB].[TB009]=[PURTATBUOFCHANGE].[TB009],[PURTB].[TB011]=[PURTATBUOFCHANGE].[TB011],[PURTB].[TB012]=[PURTATBUOFCHANGE].[TB012]
                                         ,[PURTB].[TB005]=INVMB.MB002
                                         ,[PURTB].[TB006]=INVMB.MB003
-                                        ,[PURTB].[TB007]=INVMB.MB004
+                                        ,[PURTB].[TB007]=PURTATBUOFCHANGE.TB007
                                         ,[PURTB].[TB017]=INVMB.MB050 
                                         ,[PURTB].[TB018]=(MB050*[PURTATBUOFCHANGE].[TB009]) 
                                         ,[PURTB].[TB021]='N'
@@ -238,7 +243,7 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
                                         ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]
                                         )
                                         SELECT [PURTB].[COMPANY],[PURTB].[CREATOR],[PURTB].[USR_GROUP],[PURTB].[CREATE_DATE],[PURTB].[MODIFIER],[PURTB].[MODI_DATE],[PURTB].[FLAG],[PURTB].[CREATE_TIME],[PURTB].[MODI_TIME],[PURTB].[TRANS_TYPE],[PURTB].[TRANS_NAME],[PURTB].[sync_date],[PURTB].[sync_time],[PURTB].[sync_mark],[PURTB].[sync_count],[PURTB].[DataUser],[PURTB].[DataGroup]
-                                        ,[TB001],[TB002],[PURTATBUOFCHANGE].[TB003] TB003,[PURTATBUOFCHANGE].[TB004] TB004,INVMB.MB002 [TB005],INVMB.MB003 [TB006],INVMB.MB004 [TB007],[TB008],[PURTATBUOFCHANGE].[TB009] TB009,MB032 [TB010]
+                                        ,[TB001],[TB002],[PURTATBUOFCHANGE].[TB003] TB003,[PURTATBUOFCHANGE].[TB004] TB004,INVMB.MB002 [TB005],INVMB.MB003 [TB006],[PURTATBUOFCHANGE].[TB007]  [TB007],[TB008],[PURTATBUOFCHANGE].[TB009] TB009,MB032 [TB010]
                                         ,[PURTATBUOFCHANGE].[TB011] TB011,[PURTATBUOFCHANGE].[TB012] TB012,[TB013],[TB014],[TB015],[TB016],MB050 [TB017],(MB050*[PURTATBUOFCHANGE].[TB009]) [TB018], [TB019],[TB020]
                                         ,[TB021],[TB022],[TB023],[TB024],'Y' [TB025],[TB026],[TB027],[TB028],[TB029],[TB030]
                                         ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]
@@ -291,41 +296,48 @@ namespace TKUOF.TRIGGER.PURTABCHANGE
         }
 
         public void NEWPURTEPURTF(string TA001, string TA002, string VERSIONS)
-        {
-
-            //A311 20221101011 1
-            //檢查請購變更單的採購單，是否有採購變更單未核準
-            DataTable DTCHECKPURTEPURTF = CHECKPURTEPURTF(TA001, TA002, VERSIONS);
-
-            if (DTCHECKPURTEPURTF == null)
+        {          
+            try
             {
-                //找出請購變更單有幾張採購單，要1對多
-                DataTable DTPURTCPURTD = SEARCHPURTCPURTD(TA001, TA002, VERSIONS);
-                //DataTable DTPURTCPURTD = SEARCHPURTCPURTD("A312", "20221116001", "2");
-                DataTable DTOURTE = new DataTable();
+               
+                //檢查請購變更單的採購單，是否有採購變更單未核準
+                DataTable DTCHECKPURTEPURTF = CHECKPURTEPURTF(TA001, TA002, VERSIONS);
 
-                //找出採購單跟最大的版次
-                if (DTPURTCPURTD.Rows.Count > 0)
+                if (DTCHECKPURTEPURTF == null)
                 {
-                    DTOURTE = FINDPURTE(DTPURTCPURTD);
+                    //找出請購變更單有幾張採購單，要1對多
+                    DataTable DTPURTCPURTD = SEARCHPURTCPURTD(TA001, TA002, VERSIONS);
+                    //DataTable DTPURTCPURTD = SEARCHPURTCPURTD("A312", "20221116001", "2");
+                    DataTable DTOURTE = new DataTable();
+
+                    //找出採購單跟最大的版次
+                    if(DTPURTCPURTD!= null && DTPURTCPURTD.Rows.Count > 0)
+                    {
+                        DTOURTE = FINDPURTE(DTPURTCPURTD);
+
+                        //新增採購變更單
+                        if (DTOURTE.Rows.Count > 0)
+                        {
+                            ADDTOPURTEPURTF(DTOURTE);
+                        }
+                    }
+                    
+
+                   
                 }
-
-                //新增採購變更單
-                if (DTOURTE.Rows.Count > 0)
+                else
                 {
-                    ADDTOPURTEPURTF(DTOURTE);
+                    //StringBuilder MESS = new StringBuilder();
+                    //foreach (DataRow DR in DTCHECKPURTEPURTF.Rows)
+                    //{
+                    //    MESS.AppendFormat(@" 採購變更單:" + DR["TE001"].ToString() + " " + DR["TE002"].ToString() + "" + "變更版次:" + DR["TE003"].ToString() + " 沒有核準 ");
+                    //}
+
+                    //MessageBox.Show(MESS.ToString());
                 }
             }
-            else
-            {
-                //StringBuilder MESS = new StringBuilder();
-                //foreach (DataRow DR in DTCHECKPURTEPURTF.Rows)
-                //{
-                //    MESS.AppendFormat(@" 採購變更單:" + DR["TE001"].ToString() + " " + DR["TE002"].ToString() + "" + "變更版次:" + DR["TE003"].ToString() + " 沒有核準 ");
-                //}
-
-                //MessageBox.Show(MESS.ToString());
-            }
+            catch { }
+           
 
 
         }
