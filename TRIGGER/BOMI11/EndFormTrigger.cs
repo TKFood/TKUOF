@@ -125,7 +125,11 @@ namespace TKUOF.TRIGGER.BOMI11
                                     ,[MC024]
                                     ,[MC025]
                                     ,[MC026]
-                                    ,[MC027])
+                                    ,[MC027]
+                                    ,[UDF03]
+                                    ,[UDF04]
+                                    ,[UDF05]
+                                        )
                                     SELECT 
                                     [BOMMJ].[COMPANY]
                                     ,[BOMMJ].[CREATOR]
@@ -171,6 +175,11 @@ namespace TKUOF.TRIGGER.BOMI11
                                     ,MB003 [MC025]
                                     ,'' [MC026]
                                     ,0 [MC027]
+                                    ,[BOMMJ].[UDF03]
+                                    ,[BOMMJ].[UDF04]
+                                    ,[BOMMJ].[UDF05]
+                                    
+                                    
                                     FROM [TK].[dbo].[BOMMJ],[TK].[dbo].INVMB
                                     WHERE MJ001=MB001
                                     AND MJ001=@MJ001
