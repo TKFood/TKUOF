@@ -18,7 +18,7 @@ using Ede.Uof.EIP.SystemInfo;
 
 namespace TKUOF.TRIGGER.COPTAB
 {
-    //訂單的核準
+    //報價單 的核準
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
@@ -94,7 +94,7 @@ namespace TKUOF.TRIGGER.COPTAB
                                         WHERE TB001=@TB001 AND TB002=@TB002
 
                                         UPDATE [TK].dbo.COPTA
-                                        SET TA016=@TA016,TA019=@TA019,TA029=@TA029
+                                        SET TA016=@TA016,TA019=@TA019,TA029=@TA029,TA015=@TA015
                                         ,FLAG=FLAG+1,MODIFIER=@MODIFIER,MODI_DATE=@MODI_DATE,MODI_TIME=@MODI_TIME
                                         ,UDF02=@UDF02
                                         WHERE TA001=@TA001 AND TA002=@TA002
@@ -150,6 +150,7 @@ namespace TKUOF.TRIGGER.COPTAB
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
                     command.Parameters.Add("@TA001", SqlDbType.NVarChar).Value = TA001;
                     command.Parameters.Add("@TA002", SqlDbType.NVarChar).Value = TA002;
+                    command.Parameters.Add("@TA015", SqlDbType.NVarChar).Value = MODIFIER;
                     command.Parameters.Add("@TB001", SqlDbType.NVarChar).Value = TA001;
                     command.Parameters.Add("@TB002", SqlDbType.NVarChar).Value = TA002;
                     command.Parameters.Add("@TB011", SqlDbType.NVarChar).Value = "Y";
