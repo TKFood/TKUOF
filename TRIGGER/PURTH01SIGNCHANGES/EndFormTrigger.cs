@@ -48,31 +48,50 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
             EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
             MODIFIER = ebUser.Account;
 
-            int rows = 1;
+           
+            string TD004 = null;
+            string INPCTS = null;
+            string INPCTS_NEW = null;
             //針對DETAIL抓出來的資料作處理
             //DataGrid的欄位名=DETAILS
             Ede.Uof.WKF.Design.FieldDataGrid grid = applyTask.Task.CurrentDocument.Fields["DETAILS"] as Ede.Uof.WKF.Design.FieldDataGrid;
             foreach (var row in grid.FieldDataGridValue.RowValueList)
-            {
+            {           
+
                 //在DataGrid裡，每個欄位=TD004、INPCTS 
                 foreach (var cell in row.CellValueList)
                 {
                     if (cell.fieldId == "TD004")
                     {
-                        string  TD004 = cell.fieldValue;
-                        EXESQL.AppendFormat(@" TD004='{0}'", TD004);
+                        TD004 = cell.fieldValue;
                     }
                     if (cell.fieldId == "INPCTS")
                     {
-                        string INPCTS = cell.fieldValue;
-                        EXESQL.AppendFormat(@" INPCTS='{0}'", INPCTS);
-                    }
+                        INPCTS = cell.fieldValue;
 
+                        decimal CAL_INPCTS=Convert.ToDecimal(INPCTS);
+                        decimal CAL_INPCTS_NEW=0;
+
+                        if (decimal.TryParse(INPCTS, out CAL_INPCTS))
+                        {
+                            CAL_INPCTS_NEW = CAL_INPCTS / 100;
+                            INPCTS_NEW = CAL_INPCTS_NEW.ToString();
+                        }
+                        else
+                        {
+                            // 當INPCTS無法轉換為Decimal時的處理邏輯
+                            // 可以選擇報錯、提供預設值等方式處理
+                        }
+                    }
                 }
             
-                rows = rows + 1;
 
-                EXESQL.AppendFormat(@" rows='{0}'", rows);
+                EXESQL.AppendFormat(@" 
+                                    UPDATE [TK].dbo.INVMB
+                                    SET MB045='{1}'
+                                    WHERE MB001='{0}'
+
+                                    ", TD004, INPCTS_NEW);
             }
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
@@ -80,7 +99,7 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
             {
                 if (!string.IsNullOrEmpty(EXESQL.ToString()))
                 {
-                    UPDATE_INVMB_MB045(EXESQL.ToString());
+                    UPDATE_INVMB_MB045(EXESQL);
                 }
             }
 
@@ -94,7 +113,7 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
 
         }
 
-        public void UPDATE_INVMB_MB045(string EXESQL)
+        public void UPDATE_INVMB_MB045(StringBuilder EXESQL)
         {
             string COMPANY = "TK";
             string MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
@@ -102,13 +121,13 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
 
             string connectionString = ConfigurationManager.ConnectionStrings["ERPconnectionstring"].ToString();
 
-
-
             StringBuilder queryString = new StringBuilder();
-            queryString.AppendFormat(@"
-                                   
-
+        
+            queryString.AppendFormat(@"  
                                         ");
+
+            queryString = EXESQL;
+
 
             try
             {
