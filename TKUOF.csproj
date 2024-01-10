@@ -132,6 +132,7 @@
     <Compile Include="TRIGGER\PURTCPURTD\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTGPURTH\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTEPURTF\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\PURTH01BACKS\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTH01SIGNCHANGES\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\PURTLPURTMPURTN\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QCFrm002\EndFormTrigger.cs" />
@@ -141,8 +142,6 @@
     <Compile Include="TRIGGER\QC\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\STOREFrm\EndFormTrigger.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TRIGGER\PURTH01BACKS\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

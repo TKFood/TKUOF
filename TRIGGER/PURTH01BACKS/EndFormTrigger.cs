@@ -17,9 +17,9 @@ using Ede.Uof.EIP.Organization.Util;
 using Ede.Uof.EIP.Organization.Util;
 using Ede.Uof.EIP.SystemInfo;
 
-namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
+namespace TKUOF.TRIGGER.PURTH01BACKS
 {
-    //12.資材類表單，PURTH01.進貨超收單，主管核準就提升超收率
+    //12.資材類表單，PURTH01.進貨超收單，結案後，超收率回=0.1=10%
 
     class EndFormTrigger : ICallbackTriggerPlugin
     {
@@ -67,21 +67,22 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
                     }
                     if (cell.fieldId == "INPCTS")
                     {
-                        INPCTS = cell.fieldValue;
+                        INPCTS_NEW = "0.1";
+                        //INPCTS = cell.fieldValue;
 
-                        decimal CAL_INPCTS=Convert.ToDecimal(INPCTS);
-                        decimal CAL_INPCTS_NEW=0;
+                        //decimal CAL_INPCTS=Convert.ToDecimal(INPCTS);
+                        //decimal CAL_INPCTS_NEW=0;
 
-                        if (decimal.TryParse(INPCTS, out CAL_INPCTS))
-                        {
-                            CAL_INPCTS_NEW = CAL_INPCTS / 100;
-                            INPCTS_NEW = CAL_INPCTS_NEW.ToString();
-                        }
-                        else
-                        {
-                            // 當INPCTS無法轉換為Decimal時的處理邏輯
-                            // 可以選擇報錯、提供預設值等方式處理
-                        }
+                        //if (decimal.TryParse(INPCTS, out CAL_INPCTS))
+                        //{
+                        //    CAL_INPCTS_NEW = CAL_INPCTS / 100;
+                        //    INPCTS_NEW = CAL_INPCTS_NEW.ToString();
+                        //}
+                        //else
+                        //{
+                        //    // 當INPCTS無法轉換為Decimal時的處理邏輯
+                        //    // 可以選擇報錯、提供預設值等方式處理
+                        //}
                     }
                 }
             
@@ -95,7 +96,7 @@ namespace TKUOF.TRIGGER.PURTH01SIGNCHANGES
             }
 
             ///核準 == Ede.Uof.WKF.Engine.ApplyResult.Adopt
-            if (applyTask.SignResult == Ede.Uof.WKF.Engine.SignResult.Approve)
+            if (applyTask.FormResult == Ede.Uof.WKF.Engine.ApplyResult.Adopt)
             {
                 if (!string.IsNullOrEmpty(EXESQL.ToString()))
                 {
