@@ -64,8 +64,7 @@ namespace TKUOF.TRIGGER.COPTEF
             if (Current.UserGUID != null)
             {
                 ebUser = userUCO.GetEBUser(Current.UserGUID);
-                MODIFIER = ebUser.Account;
-
+                
                 TE039 = ebUser.Account;
                 MODIFIER = ebUser.Account;
 
@@ -76,8 +75,7 @@ namespace TKUOF.TRIGGER.COPTEF
                 if (DT != null && DT.Rows.Count >= 1)
                 {
                     ebUser = userUCO.GetEBUser(DT.Rows[0]["USER_GUID"].ToString());
-                    MODIFIER = ebUser.Account;
-
+                   
                     TE039 = ebUser.Account;
                     MODIFIER = ebUser.Account;
                 }

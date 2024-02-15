@@ -53,8 +53,7 @@ namespace TKUOF.TRIGGER.COPTCD
             if (Current.UserGUID != null)
             {
                 ebUser = userUCO.GetEBUser(Current.UserGUID);
-                MODIFIER = ebUser.Account;
-
+               
                 TC040 = ebUser.Account;
                 MODIFIER = ebUser.Account;
 
@@ -65,8 +64,7 @@ namespace TKUOF.TRIGGER.COPTCD
                 if(DT!=null && DT.Rows.Count>=1)
                 {
                     ebUser = userUCO.GetEBUser(DT.Rows[0]["USER_GUID"].ToString());
-                    MODIFIER = ebUser.Account;
-
+                   
                     TC040 = ebUser.Account;
                     MODIFIER = ebUser.Account;
                 }

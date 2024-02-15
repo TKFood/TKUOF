@@ -45,11 +45,30 @@ namespace TKUOF.TRIGGER.COPTAB
             FORMID = applyTask.FormNumber;
             //MODIFIER = applyTask.Task.Applicant.Account;
 
-            //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);          
-            MODIFIER = ebUser.Account;
+            ////取得簽核人工號
+            //EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);          
+            //MODIFIER = ebUser.Account;
             //MODIFIER = "160115";
+            EBUser ebUser = null;
 
+            //取得簽核人工號
+            if (Current.UserGUID != null)
+            {
+                ebUser = userUCO.GetEBUser(Current.UserGUID);
+                             
+                MODIFIER = ebUser.Account;
+
+            }
+            else
+            {
+                DataTable DT = FIND_DEFALUT_UserGUID();
+                if (DT != null && DT.Rows.Count >= 1)
+                {
+                    ebUser = userUCO.GetEBUser(DT.Rows[0]["USER_GUID"].ToString());
+                                    
+                    MODIFIER = ebUser.Account;
+                }
+            }
 
 
 
@@ -183,6 +202,48 @@ namespace TKUOF.TRIGGER.COPTAB
             }
 
 
+
+        }
+
+        public DataTable FIND_DEFALUT_UserGUID()
+        {
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+                Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+                string cmdTxt = @" 
+                            SELECT 
+                            [ACCOUNT]
+                            ,[USER_GUID]
+                            ,[NAME]
+                            FROM [UOF].[dbo].[Z_UOF_DEFALUT_UserGUID]
+
+                        ";
+
+                //m_db.AddParameter("@SDATE", SDATE);
+
+
+                DataTable dt = new DataTable();
+                dt.Load(m_db.ExecuteReader(cmdTxt));
+
+                if (dt != null && dt.Rows.Count >= 1)
+                {
+                    return dt;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
 
         }
     }
