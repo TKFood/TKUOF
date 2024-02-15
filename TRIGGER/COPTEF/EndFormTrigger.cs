@@ -52,10 +52,36 @@ namespace TKUOF.TRIGGER.COPTEF
 
             //取得簽核人工號
             //取得簽核人工號
-            EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
-            MODIFIER = ebUser.Account;
+            //EBUser ebUser = userUCO.GetEBUser(Current.UserGUID);
+            //MODIFIER = ebUser.Account;
 
-            TE039 = ebUser.Account;
+            //TE039 = ebUser.Account;
+
+            //MODIFIER = applyTask.Task.Applicant.Account;
+            EBUser ebUser = null;
+
+            //取得簽核人工號
+            if (Current.UserGUID != null)
+            {
+                ebUser = userUCO.GetEBUser(Current.UserGUID);
+                MODIFIER = ebUser.Account;
+
+                TE039 = ebUser.Account;
+                MODIFIER = ebUser.Account;
+
+            }
+            else
+            {
+                DataTable DT = FIND_DEFALUT_UserGUID();
+                if (DT != null && DT.Rows.Count >= 1)
+                {
+                    ebUser = userUCO.GetEBUser(DT.Rows[0]["USER_GUID"].ToString());
+                    MODIFIER = ebUser.Account;
+
+                    TE039 = ebUser.Account;
+                    MODIFIER = ebUser.Account;
+                }
+            }
 
             //指定簽核站是主管
             if (applyTask.SiteCode.Equals("COP"))
@@ -282,5 +308,49 @@ namespace TKUOF.TRIGGER.COPTEF
 
 
         }
+
+        public DataTable FIND_DEFALUT_UserGUID()
+        {
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["connectionstring"].ToString();
+                Ede.Uof.Utility.Data.DatabaseHelper m_db = new Ede.Uof.Utility.Data.DatabaseHelper(connectionString);
+
+                string cmdTxt = @" 
+                            SELECT 
+                            [ACCOUNT]
+                            ,[USER_GUID]
+                            ,[NAME]
+                            FROM [UOF].[dbo].[Z_UOF_DEFALUT_UserGUID]
+
+                        ";
+
+                //m_db.AddParameter("@SDATE", SDATE);
+
+
+                DataTable dt = new DataTable();
+                dt.Load(m_db.ExecuteReader(cmdTxt));
+
+                if (dt != null && dt.Rows.Count >= 1)
+                {
+                    return dt;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+
+        }
     }
+
+
 }
