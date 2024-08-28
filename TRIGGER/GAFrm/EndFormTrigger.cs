@@ -57,13 +57,25 @@ namespace TKUOF.TRIGGER.GAFrm
             xmlDoc.LoadXml(applyTask.CurrentDocXML);
             UOFGAFrm.TaskId = applyTask.Task.TaskId;
 
-            UOFGAFrm.GAFrm004SN = applyTask.Task.CurrentDocument.Fields["GAFrm004SN"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004SI = applyTask.Task.CurrentDocument.Fields["GAFrm004SI"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004CM = applyTask.Task.CurrentDocument.Fields["GAFrm004CM"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004OD = applyTask.Task.CurrentDocument.Fields["GAFrm004OD"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004PS = applyTask.Task.CurrentDocument.Fields["GAFrm004PS"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004PID = applyTask.Task.CurrentDocument.Fields["GAFrm004PID"].FieldValue.ToString().Trim();
-            UOFGAFrm.GAFrm004RD = applyTask.Task.CurrentDocument.Fields["GAFrm004RD"].FieldValue.ToString().Trim();
+            try
+            {
+                UOFGAFrm.GAFrm004SN = applyTask.Task.CurrentDocument.Fields["GAFrm004SN"].FieldValue.ToString().Trim();
+                UOFGAFrm.GAFrm004SI = applyTask.Task.CurrentDocument.Fields["GAFrm004SI"].FieldValue.ToString().Trim();
+                //UOFGAFrm.GAFrm004CM = applyTask.Task.CurrentDocument.Fields["GAFrm004CM"].FieldValue.ToString().Trim();
+                //UOFGAFrm.GAFrm004OD = applyTask.Task.CurrentDocument.Fields["GAFrm004OD"].FieldValue.ToString().Trim();
+                //UOFGAFrm.GAFrm004PS = applyTask.Task.CurrentDocument.Fields["GAFrm004PS"].FieldValue.ToString().Trim();
+                //UOFGAFrm.GAFrm004PID = applyTask.Task.CurrentDocument.Fields["GAFrm004PID"].FieldValue.ToString().Trim();
+                //UOFGAFrm.GAFrm004RD = applyTask.Task.CurrentDocument.Fields["GAFrm004RD"].FieldValue.ToString().Trim();
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+            
 
 
 
@@ -71,11 +83,23 @@ namespace TKUOF.TRIGGER.GAFrm
 
             foreach (XmlNode node in xmlDoc.SelectNodes("./Form/FormFieldValue/FieldItem[@fieldId='GAFrm004IT']/DataGrid/Row"))
             {
-                UOFGAFrm.GAFrm004DN[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004DN']").Attributes["fieldValue"].Value;
-                UOFGAFrm.GAFrm004NB[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004NB']").Attributes["fieldValue"].Value;
-                UOFGAFrm.GAFrm004ID[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ID']").Attributes["fieldValue"].Value;
-                UOFGAFrm.GAFrm004ER[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ER']").Attributes["fieldValue"].Value;
-                UOFGAFrm.GAFrm004S0ND[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004S0ND']").Attributes["fieldValue"].Value;
+                try
+                {
+
+                    UOFGAFrm.GAFrm004DN[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004DN']").Attributes["fieldValue"].Value;
+                    //UOFGAFrm.GAFrm004NB[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004NB']").Attributes["fieldValue"].Value;
+                    //UOFGAFrm.GAFrm004ID[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ID']").Attributes["fieldValue"].Value;
+                    UOFGAFrm.GAFrm004ER[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004ER']").Attributes["fieldValue"].Value;
+                    //UOFGAFrm.GAFrm004S0ND[ROWS] = node.SelectSingleNode("./Cell[@fieldId='GAFrm004S0ND']").Attributes["fieldValue"].Value;
+
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+                }
 
                 ROWS = ROWS + 1;
             }
