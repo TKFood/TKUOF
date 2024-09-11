@@ -141,9 +141,9 @@ namespace TKUOF.TRIGGER.QCMOCTHMOCTI
                     }
                     queryString.AppendFormat(@"
                                             UPDATE [TK].dbo.MOCTI
-                                            SET TI019={1},UDF01='{2}',TI022=TI007-{4},TI035='{5}'
+                                            SET TI019={1},TI020={1},UDF01='{2}',TI022=TI007-{4},TI035='{5}'
                                             WHERE TI001=@TI001 AND TI002=@TI002 AND TI003='{0}'
-                                         ",  dr["TI001"].ToString(), Convert.ToDecimal(dr["TI019"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TI019"].ToString()), Convert.ToDecimal(dr["TH015"].ToString()), TI035);
+                                         ",  dr["TI003"].ToString(), Convert.ToDecimal(dr["TI019"].ToString()), dr["CHECK"].ToString()+','+ QCMAN+'-'+ FORMID, Convert.ToDecimal(dr["TI019"].ToString()), Convert.ToDecimal(dr["TI019"].ToString()), TI035);
                 }
                
             }
@@ -250,6 +250,8 @@ namespace TKUOF.TRIGGER.QCMOCTHMOCTI
                                         ,TH027=TEMP.TH027
                                         ,TH031=TEMP.TH031
                                         ,TH032=TEMP.TH032
+                                        ,TH020=TEMP.TH020
+
                                         FROM 
                                         (
                                         SELECT TH001,TH002
@@ -259,6 +261,7 @@ namespace TKUOF.TRIGGER.QCMOCTHMOCTI
                                         ,(SELECT SUM(TI025) FROM [TK].dbo.MOCTI WHERE TH001=TI001 AND TH002=TI002) TH027
                                         ,(SELECT SUM(TI046) FROM [TK].dbo.MOCTI WHERE TH001=TI001 AND TH002=TI002) TH031
                                         ,(SELECT SUM(TI047) FROM [TK].dbo.MOCTI WHERE TH001=TI001 AND TH002=TI002) TH032
+                                        ,(SELECT SUM(TI045) FROM [TK].dbo.MOCTI WHERE TH001=TI001 AND TH002=TI002) TH020
                                         FROM [TK].dbo.MOCTH
                                         WHERE TH001=@TH001 AND TH002=@TH002
                                         ) AS TEMP
@@ -278,7 +281,7 @@ namespace TKUOF.TRIGGER.QCMOCTHMOCTI
 
                     SqlCommand command = new SqlCommand(queryString.ToString(), connection);
                     command.Parameters.Add("@TH001", SqlDbType.NVarChar).Value = TH001;
-                    command.Parameters.Add("@TH001", SqlDbType.NVarChar).Value = TH002;
+                    command.Parameters.Add("@TH002", SqlDbType.NVarChar).Value = TH002;
 
                     command.Connection.Open();
 
