@@ -138,6 +138,7 @@
     <Compile Include="TRIGGER\QCFrm002\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QCFrm003\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QCINVTAINVTB\EndFormTrigger.cs" />
+    <Compile Include="TRIGGER\QCMOCTHMOCTI\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QCPURTGPURTH\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\QC\EndFormTrigger.cs" />
     <Compile Include="TRIGGER\STOREFrm\EndFormTrigger.cs" />
